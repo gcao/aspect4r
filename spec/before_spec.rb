@@ -106,4 +106,23 @@ describe "Aspect4r - before_method" do
     
     o.value.should == 'init'
   end
+  
+  it "should default to before_xxx method if block is not given and method option is not specified" do
+    i = 100
+    
+    @klass.instance_eval do
+      define_method :before_test do |value|
+        i = 200
+      end
+
+      before_method :test
+    end
+    
+    o = @klass.new
+    o.test('something')
+    
+    o.value.should == 'something'
+    
+    i.should == 200
+  end
 end

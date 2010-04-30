@@ -16,10 +16,11 @@ module Aspect4r
         alias_method new_method, method
         
         define_method method do |*args|
-          result = if method_name = options[:method]
-              send method_name, *args
-            else
+          result = if block_given? 
               yield *([self] + args)
+            else
+              m = options[:method] || :"before_#{method}"
+              send m, *args
             end
 
           send new_method, *args if result or not options[:skip_if_false]
@@ -39,10 +40,11 @@ module Aspect4r
         define_method method do |*args|
           result = send new_method, *args
           
-          new_result = if method_name = options[:method]
-              send method_name, *([result] + args)
-            else
+          new_result = if block_given?
               yield *([self, result] + args)
+            else
+              m = options[:method] || :"after_#{method}"
+              send m, *([result] + args)
             end
           
           options[:use_return] ? new_result : result
@@ -60,10 +62,11 @@ module Aspect4r
         alias_method new_method, method
 
         define_method method do |*args|
-          if method_name = options[:method]
-            send method_name, *([new_method] + args)
-          else
+          if block_given?
             yield *([self, new_method] + args)
+          else
+            m = options[:method] || :"around_#{method}"
+            send m, *([new_method] + args)
           end
         end
       end
