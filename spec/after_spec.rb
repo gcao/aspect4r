@@ -22,7 +22,7 @@ describe "Aspect4r - after_method" do
     i = 100
     
     @klass.instance_eval do
-      after_method :test do |value, _self, result|
+      after_method :test do |_self, result, value|
         i = 200
       end
     end
@@ -37,7 +37,7 @@ describe "Aspect4r - after_method" do
   
   it "should use return value from after block if use_return option is true" do
     @klass.instance_eval do
-      after_method :test, :use_return => true do |value, _self, result|
+      after_method :test, :use_return => true do |_self, result, value|
         'after_block_return'
       end
     end
@@ -48,7 +48,7 @@ describe "Aspect4r - after_method" do
   
   it "should use return value from original method if use_return option is not set" do
     @klass.instance_eval do
-      after_method :test do |value, _self, result|
+      after_method :test do |_self, result, value|
         'after_block_return'
       end
     end
@@ -62,7 +62,7 @@ describe "Aspect4r - after_method" do
     i = 100
     
     @klass.instance_eval do
-      define_method :after_test do |value, result|
+      define_method :after_test do |result, value|
         i = 200
       end
   
@@ -79,7 +79,7 @@ describe "Aspect4r - after_method" do
 
   it "should use return value from after_* if use_return option is true" do
     @klass.instance_eval do
-      define_method :after_test do |value, result|
+      define_method :after_test do |result, value|
         'after_test_return'
       end
   
@@ -92,7 +92,7 @@ describe "Aspect4r - after_method" do
 
   it "should use return value from original method if use_return option is not set" do
     @klass.instance_eval do
-      define_method :after_test do |value, result|
+      define_method :after_test do |result, value|
         'after_test_return'
       end
   

@@ -19,7 +19,7 @@ module Aspect4r
           result = if method_name = options[:method]
               send method_name, *args
             else
-              yield *(args + [self])
+              yield *([self] + args)
             end
 
           send new_method, *args if result or not options[:skip_if_false]
@@ -40,9 +40,9 @@ module Aspect4r
           result = send new_method, *args
           
           new_result = if method_name = options[:method]
-              send method_name, *(args + [result])
+              send method_name, *([result] + args)
             else
-              yield *(args + [self, result])
+              yield *([self, result] + args)
             end
           
           options[:use_return] ? new_result : result
@@ -61,9 +61,9 @@ module Aspect4r
 
         define_method method do |*args|
           if method_name = options[:method]
-            send method_name, *(args + [new_method])
+            send method_name, *([new_method] + args)
           else
-            yield *(args + [self, new_method])
+            yield *([self, new_method] + args)
           end
         end
       end

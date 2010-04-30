@@ -21,7 +21,7 @@ describe "Aspect4r - before_method" do
     i = 100
     
     @klass.instance_eval do
-      before_method :test do |value, _self|
+      before_method :test do |_self, value|
         i = 200
       end
     end
@@ -36,7 +36,7 @@ describe "Aspect4r - before_method" do
   
   it "should skip method if block returns false and skip_if_false option is true" do
     @klass.instance_eval do
-      before_method :test, :skip_if_false => true do |value, _self|
+      before_method :test, :skip_if_false => true do |_self, value|
         false
       end
     end
@@ -49,7 +49,7 @@ describe "Aspect4r - before_method" do
   
   it "should skip method if block returns nil and skip_if_false option is true" do
     @klass.instance_eval do
-      before_method :test, :skip_if_false => true do |value, _self|
+      before_method :test, :skip_if_false => true do |_self, value|
         nil
       end
     end
@@ -62,7 +62,7 @@ describe "Aspect4r - before_method" do
   
   it "should not skip method if block did not return false and skip_if_false is not specified" do
     @klass.instance_eval do
-      before_method :test do |value, _self|
+      before_method :test do |_self, value|
         false
       end
     end

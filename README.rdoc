@@ -1,6 +1,32 @@
 = aspect4r
 
-Description goes here.
+Add before_method, after_method and around_method to classes.
+
+== Usage
+
+  class A
+    
+    def test value
+      ...
+    end
+
+		def do_something value
+			...
+	  end
+    
+    before_method :test do |_self, value|
+      puts "entering test(#{value})"
+    end
+
+    before_method :test, :method => :do_something
+    
+    after_method :test do |_self, result, value|
+      puts "test(#{value}) returned #{result}"
+    end
+
+    after_method :test, :method => :do_something
+
+  end
 
 == Note on Patches/Pull Requests
  

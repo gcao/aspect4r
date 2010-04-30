@@ -40,7 +40,7 @@ describe "Aspect4r - around_method" do
     i = 100
     
     @klass.instance_eval do
-      around_method :test do |value, _self, orig_method|
+      around_method :test do |_self, orig_method, value|
         i = 200
         _self.send orig_method, value
       end
@@ -58,7 +58,7 @@ describe "Aspect4r - around_method" do
     i = 100
     
     @klass.instance_eval do
-      define_method :around_test do |value, orig_method|
+      define_method :around_test do |orig_method, value|
         i = 200
         'around_test_return'
       end
@@ -78,7 +78,7 @@ describe "Aspect4r - around_method" do
     i = 100
     
     @klass.instance_eval do
-      define_method :around_test do |value, orig_method|
+      define_method :around_test do |orig_method, value|
         i = 200
         send orig_method, value
       end
