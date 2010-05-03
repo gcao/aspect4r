@@ -21,7 +21,7 @@ describe "Aspect4r - around_method" do
   it "should run block instead of original method" do
     i = 100
     
-    @klass.instance_eval do
+    @klass.class_eval do
       around_method :test do |value, _self|
         i = 200
         'around_block_return'
@@ -39,7 +39,7 @@ describe "Aspect4r - around_method" do
   it "should be able to invoke original method" do
     i = 100
     
-    @klass.instance_eval do
+    @klass.class_eval do
       around_method :test do |_self, orig_method, value|
         i = 200
         _self.send orig_method, value
@@ -55,42 +55,30 @@ describe "Aspect4r - around_method" do
   end
   
   it "should run around_* method instead of original method" do
-    i = 100
-    
-    @klass.instance_eval do
-      define_method :around_test do |orig_method, value|
-        i = 200
-        'around_test_return'
+    @klass.class_eval do
+      def do_something orig_method, value
+        raise 'error'
       end
   
-      around_method :test, :method => :around_test
+      around_method :test, :method => :do_something
     end
     
     o = @klass.new
-    o.test('something').should == 'around_test_return'
-    
-    o.value.should == 'init'
-    
-    i.should == 200
+    lambda { o.test('something') }.should raise_error
   end
   
   it "should be able to invoke original method from around_* method" do
-    i = 100
-    
-    @klass.instance_eval do
-      define_method :around_test do |orig_method, value|
-        i = 200
+    @klass.class_eval do
+      def do_something orig_method, value
         send orig_method, value
       end
   
-      around_method :test, :method => :around_test
+      around_method :test, :method => :do_something
     end
     
     o = @klass.new
     o.test('something').should == 'test_return'
     
     o.value.should == 'something'
-    
-    i.should == 200
   end
 end

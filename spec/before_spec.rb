@@ -20,7 +20,7 @@ describe "Aspect4r - before_method" do
   it "should run block before method" do
     i = 100
     
-    @klass.instance_eval do
+    @klass.class_eval do
       before_method :test do |_self, value|
         i = 200
       end
@@ -35,7 +35,7 @@ describe "Aspect4r - before_method" do
   end
   
   it "should skip method if block returns false and skip_if_false option is true" do
-    @klass.instance_eval do
+    @klass.class_eval do
       before_method :test, :skip_if_false => true do |_self, value|
         false
       end
@@ -48,7 +48,7 @@ describe "Aspect4r - before_method" do
   end
   
   it "should skip method if block returns nil and skip_if_false option is true" do
-    @klass.instance_eval do
+    @klass.class_eval do
       before_method :test, :skip_if_false => true do |_self, value|
         nil
       end
@@ -61,7 +61,7 @@ describe "Aspect4r - before_method" do
   end
   
   it "should not skip method if block did not return false and skip_if_false is not specified" do
-    @klass.instance_eval do
+    @klass.class_eval do
       before_method :test do |_self, value|
         false
       end
@@ -74,27 +74,21 @@ describe "Aspect4r - before_method" do
   end
   
   it "should run before_* before original method" do
-    i = 100
-    
-    @klass.instance_eval do
-      define_method :before_test do |value|
-        i = 200
+    @klass.class_eval do
+      def do_something value
+        raise 'error'
       end
 
       before_method :test, :method => :before_test
     end
     
     o = @klass.new
-    o.test('something')
-    
-    o.value.should == 'something'
-    
-    i.should == 200
+    lambda { o.test('something') }.should raise_error
   end
   
   it "should skip original method if before_* returns false and skip_if_false is true" do
-    @klass.instance_eval do
-      define_method :before_test do |value|
+    @klass.class_eval do
+      def before_test value
         false
       end
 
@@ -108,27 +102,21 @@ describe "Aspect4r - before_method" do
   end
   
   it "should default to before_xxx method if block is not given and method option is not specified" do
-    i = 100
-    
-    @klass.instance_eval do
-      define_method :before_test do |value|
-        i = 200
+    @klass.class_eval do
+      def before_test value
+        raise 'error'
       end
 
       before_method :test
     end
     
     o = @klass.new
-    o.test('something')
-    
-    o.value.should == 'something'
-    
-    i.should == 200
+    lambda { o.test('something') }.should raise_error
   end
   
   it "before_method_check" do
-    @klass.instance_eval do
-      define_method :before_test do |value|
+    @klass.class_eval do
+      def before_test value
         false
       end
 
