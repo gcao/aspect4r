@@ -27,6 +27,12 @@ module Aspect4r
         end
       end
     end
+    
+    def before_method_check *methods
+      options = methods.last.is_a?(Hash) ? methods.pop : {}
+      options.merge! :skip_if_false => true
+      before_method *(methods + [options])
+    end
 
     def after_method *methods
       options = {:use_return => false}
@@ -50,6 +56,12 @@ module Aspect4r
           options[:use_return] ? new_result : result
         end
       end
+    end
+    
+    def after_method_process *methods
+      options = methods.last.is_a?(Hash) ? methods.pop : {}
+      options.merge! :use_return => true
+      after_method *(methods + [options])
     end
 
     def around_method *methods, &block

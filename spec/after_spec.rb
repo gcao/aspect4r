@@ -102,4 +102,17 @@ describe "Aspect4r - after_method" do
     o = @klass.new
     o.test('something').should == 'test_return'
   end
+  
+  it "after_method_process" do
+    @klass.instance_eval do
+      define_method :after_test do |result, value|
+        'after_test_return'
+      end
+
+      after_method_process :test
+    end
+    
+    o = @klass.new
+    o.test('something').should == 'after_test_return'
+  end
 end

@@ -125,4 +125,19 @@ describe "Aspect4r - before_method" do
     
     i.should == 200
   end
+  
+  it "before_method_check" do
+    @klass.instance_eval do
+      define_method :before_test do |value|
+        false
+      end
+
+      before_method_check :test
+    end
+    
+    o = @klass.new
+    o.test('something').should be_false
+    
+    o.value.should == 'init'
+  end
 end
