@@ -5,7 +5,7 @@ describe "Aspect4r - before_method" do
     @klass = Class.new do
       include Aspect4r
       
-      attr_accessor :value
+      attr :value
       
       def initialize
         @value = 'init'
@@ -27,11 +27,24 @@ describe "Aspect4r - before_method" do
     end
     
     o = @klass.new
-    o.test('something')
+    o.test('something').should == 'something'
     
     o.value.should == 'something'
     
     i.should == 200
+  end
+  
+  it "should have access to instance variable inside before block" do
+    @klass.class_eval do
+      before_method :test do |value|
+        @var = 1
+      end
+    end
+    
+    o = @klass.new
+    o.test('something')
+    
+    o.instance_variable_get(:@var).should == 1
   end
   
   it "should skip method if block returns false and skip_if_false option is true" do
@@ -79,20 +92,20 @@ describe "Aspect4r - before_method" do
         raise 'error'
       end
 
-      before_method :test, :method => :before_test
+      before_method :test, :method => :do_something
     end
     
     o = @klass.new
-    lambda { o.test('something') }.should raise_error
+    lambda { o.test('something') }.should raise_error('error')
   end
   
   it "should skip original method if before_* returns false and skip_if_false is true" do
     @klass.class_eval do
-      def before_test value
+      def do_something value
         false
       end
 
-      before_method :test, :method => :before_test, :skip_if_false => true
+      before_method :test, :method => :do_something, :skip_if_false => true
     end
     
     o = @klass.new
