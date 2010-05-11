@@ -77,7 +77,7 @@ describe "Aspect4r - after_method" do
         raise 'error'
       end
   
-      after_method :test, :method => :do_something
+      after_method :test, :do_something
     end
     
     o = @klass.new
@@ -90,7 +90,7 @@ describe "Aspect4r - after_method" do
         'after_test_return'
       end
   
-      after_method :test, :method => :do_something, :use_return => true
+      after_method :test, :do_something, :use_return => true
     end
     
     o = @klass.new
@@ -103,7 +103,7 @@ describe "Aspect4r - after_method" do
         'after_test_return'
       end
   
-      after_method :test, :method => :do_something
+      after_method :test, :do_something
     end
     
     o = @klass.new
@@ -116,7 +116,7 @@ describe "Aspect4r - after_method" do
         'after_test_return'
       end
 
-      after_method_process :test, :method => :do_something
+      after_method_process :test, :do_something
     end
     
     o = @klass.new

@@ -22,7 +22,7 @@ describe "Aspect4r - around_method" do
     i = 100
     
     @klass.class_eval do
-      around_method :test do |value, _self|
+      around_method :test do |orig_method, value|
         i = 200
         'around_block_return'
       end
@@ -36,13 +36,26 @@ describe "Aspect4r - around_method" do
     i.should == 200
   end
   
+  it "should have access to instance variable inside around block" do
+    @klass.class_eval do
+      around_method :test do |orig_method, value|
+        @var = 1
+      end
+    end
+    
+    o = @klass.new
+    o.test('something')
+    
+    o.instance_variable_get(:@var).should == 1
+  end
+  
   it "should be able to invoke original method" do
     i = 100
     
     @klass.class_eval do
-      around_method :test do |_self, orig_method, value|
+      around_method :test do |orig_method, value|
         i = 200
-        _self.send orig_method, value
+        send orig_method, value
       end
     end
     
@@ -60,7 +73,7 @@ describe "Aspect4r - around_method" do
         raise 'error'
       end
   
-      around_method :test, :method => :do_something
+      around_method :test, :do_something
     end
     
     o = @klass.new
@@ -73,7 +86,7 @@ describe "Aspect4r - around_method" do
         send orig_method, value
       end
   
-      around_method :test, :method => :do_something
+      around_method :test, :do_something
     end
     
     o = @klass.new

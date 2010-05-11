@@ -23,13 +23,21 @@ Add before_method, after_method and around_method to classes.
       puts "entering test(#{value})"
     end
 
-    before_method :test, :method => :do_something
+    before_method :test, :do_something
+    
+    before_method_check :test do |value|
+      value >= 0
+    end
 
     after_method :test do |result, value|
       puts "test(#{value}) returned #{result}"
     end
 
-    after_method :test, :method => :do_something_else
+    after_method :test, :do_something_else
+    
+    after_method_process :test do |result, value|
+      result + 100
+    end
 
   end
 

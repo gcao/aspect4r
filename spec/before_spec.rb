@@ -92,7 +92,7 @@ describe "Aspect4r - before_method" do
         raise 'error'
       end
 
-      before_method :test, :method => :do_something
+      before_method :test, :do_something
     end
     
     o = @klass.new
@@ -105,7 +105,7 @@ describe "Aspect4r - before_method" do
         false
       end
 
-      before_method :test, :method => :do_something, :skip_if_false => true
+      before_method :test, :do_something, :skip_if_false => true
     end
     
     o = @klass.new
