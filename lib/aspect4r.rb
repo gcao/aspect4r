@@ -6,20 +6,23 @@ module Aspect4r
   end
 
   module ClassMethods
-    def before_method *methods
+    def before_method *methods, &block
       options = {:skip_if_false => false}
       options.merge!(methods.pop) if methods.last.is_a? Hash
 
       methods.each do |method|
-        new_method = Aspect4r::Helper.find_available_method_name self, "#{method}_before_"
+        new_method = Aspect4r::Helper.find_available_method_name self, "#{method}_"
+        new_before_method = Aspect4r::Helper.find_available_method_name self, "#{method}_before_"
         
         alias_method new_method, method
         
+        define_method new_before_method, &block if block_given?
+        
         define_method method do |*args|
           result = if block_given? 
-              yield *([self] + args)
+              send new_before_method, *args
             else
-              m = options[:method] || :"before_#{method}"
+              m = options[:method]
               send m, *args
             end
 
@@ -28,10 +31,10 @@ module Aspect4r
       end
     end
     
-    def before_method_check *methods
+    def before_method_check *methods, &block
       options = methods.last.is_a?(Hash) ? methods.pop : {}
       options.merge! :skip_if_false => true
-      before_method *(methods + [options])
+      before_method *(methods + [options]), &block
     end
 
     def after_method *methods

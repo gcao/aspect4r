@@ -21,7 +21,7 @@ describe "Aspect4r - before_method" do
     i = 100
     
     @klass.class_eval do
-      before_method :test do |_self, value|
+      before_method :test do |value|
         i = 200
       end
     end
@@ -36,7 +36,7 @@ describe "Aspect4r - before_method" do
   
   it "should skip method if block returns false and skip_if_false option is true" do
     @klass.class_eval do
-      before_method :test, :skip_if_false => true do |_self, value|
+      before_method :test, :skip_if_false => true do |value|
         false
       end
     end
@@ -49,7 +49,7 @@ describe "Aspect4r - before_method" do
   
   it "should skip method if block returns nil and skip_if_false option is true" do
     @klass.class_eval do
-      before_method :test, :skip_if_false => true do |_self, value|
+      before_method :test, :skip_if_false => true do |value|
         nil
       end
     end
@@ -62,7 +62,7 @@ describe "Aspect4r - before_method" do
   
   it "should not skip method if block did not return false and skip_if_false is not specified" do
     @klass.class_eval do
-      before_method :test do |_self, value|
+      before_method :test do |value|
         false
       end
     end
@@ -101,26 +101,11 @@ describe "Aspect4r - before_method" do
     o.value.should == 'init'
   end
   
-  it "should default to before_xxx method if block is not given and method option is not specified" do
-    @klass.class_eval do
-      def before_test value
-        raise 'error'
-      end
-
-      before_method :test
-    end
-    
-    o = @klass.new
-    lambda { o.test('something') }.should raise_error
-  end
-  
   it "before_method_check" do
     @klass.class_eval do
-      def before_test value
+      before_method_check :test do
         false
       end
-
-      before_method_check :test
     end
     
     o = @klass.new

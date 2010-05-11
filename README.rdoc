@@ -16,20 +16,16 @@ Add before_method, after_method and around_method to classes.
     end
     
     def do_something_else result, value
+      ...
     end
   
-    def before_test value
-    end
-    
-    before_method :test do |_self, value|
+    before_method :test do |value|
       puts "entering test(#{value})"
     end
 
     before_method :test, :method => :do_something
 
-    before_method :test    # will run before_test automagically
-    
-    after_method :test do |_self, result, value|
+    after_method :test do |result, value|
       puts "test(#{value}) returned #{result}"
     end
 
