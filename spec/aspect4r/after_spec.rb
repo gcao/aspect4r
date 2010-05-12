@@ -1,9 +1,9 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "Aspect4r - after_method" do
+describe Aspect4r::After do
   before do
     @klass = Class.new do
-      include Aspect4r
+      include Aspect4r::After
       
       attr_accessor :value
       

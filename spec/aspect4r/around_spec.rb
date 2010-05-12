@@ -1,9 +1,9 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "Aspect4r - around_method" do
+describe Aspect4r::Around do
   before do
     @klass = Class.new do
-      include Aspect4r
+      include Aspect4r::Around
       
       attr_accessor :value
       
