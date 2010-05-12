@@ -24,11 +24,12 @@ describe "Aspect4r - after_method" do
     @klass.class_eval do
       after_method :test do |result, value|
         i = 200
+        'after_test'
       end
     end
     
     o = @klass.new
-    o.test('something')
+    o.test('something').should == 'after_test'
     
     o.value.should == 'something'
     
@@ -46,80 +47,18 @@ describe "Aspect4r - after_method" do
     o.test('something')
     
     o.instance_variable_get(:@var).should == 1
-  end
-  
-  it "should use return value from after block if use_return option is true" do
-    @klass.class_eval do
-      after_method :test, :use_return => true do |result, value|
-        'after_block_return'
-      end
-    end
-    
-    o = @klass.new
-    o.test('something').should == 'after_block_return'
-  end
-  
-  it "should use return value from original method if use_return option is not set" do
-    @klass.class_eval do
-      after_method :test do |result, value|
-        'after_block_return'
-      end
-    end
-    
-    o = @klass.new
-    o.test('something').should == 'test_return'
-  end
-  
+  end  
   
   it "should run specified method after original method" do
     @klass.class_eval do
       def do_something result, value
-        raise 'error'
+        'do_something'
       end
   
       after_method :test, :do_something
     end
     
     o = @klass.new
-    lambda { o.test('something') }.should raise_error
-  end
-
-  it "should use return value from after_* if use_return option is true" do
-    @klass.class_eval do
-      def do_something result, value
-        'after_test_return'
-      end
-  
-      after_method :test, :do_something, :use_return => true
-    end
-    
-    o = @klass.new
-    o.test('something').should == 'after_test_return'
-  end
-
-  it "should use return value from original method if use_return option is not set" do
-    @klass.class_eval do
-      def do_something result, value
-        'after_test_return'
-      end
-  
-      after_method :test, :do_something
-    end
-    
-    o = @klass.new
-    o.test('something').should == 'test_return'
-  end
-  
-  it "after_method_process" do
-    @klass.class_eval do
-      def do_something result, value
-        'after_test_return'
-      end
-
-      after_method_process :test, :do_something
-    end
-    
-    o = @klass.new
-    o.test('something').should == 'after_test_return'
+    o.test('something').should == 'do_something'
   end
 end

@@ -114,6 +114,21 @@ describe "Aspect4r - before_method" do
     o.value.should == 'init'
   end
   
+  it "should skip original method if before_* returns instance of ReturnThis" do
+    @klass.class_eval do
+      def do_something value
+        Aspect4r::ReturnThis.new('do_something')
+      end
+
+      before_method :test, :do_something
+    end
+    
+    o = @klass.new
+    o.test('something').should == 'do_something'
+    
+    o.value.should == 'init'
+  end
+  
   it "before_method_check" do
     @klass.class_eval do
       before_method_check :test do
