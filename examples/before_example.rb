@@ -5,7 +5,7 @@ require 'aspect4r'
 class A
   include Aspect4r
   
-  a4r_debug
+  a4r_debug_mode
   
   def test value
     puts 'test'

@@ -7,8 +7,12 @@ module Aspect4r
     end
 
     module ClassMethods
-      def a4r_debug debug_mode = true
+      def a4r_debug_mode debug_mode = true
         @a4r_debug_mode = debug_mode
+      end
+      
+      def a4r_debug message
+        puts "A4R - #{message}" if @a4r_debug_mode
       end
       
       def a4r_definitions
@@ -19,26 +23,56 @@ module Aspect4r
       # definitions - an array of Aspect4r::Definition
       def a4r_create_method method, definitions
         define_method method do |*args|
+          self.class.a4r_debug "Entering #{method}(#{args.inspect[1..-2]})"
+          self.class.a4r_debug "Total definitions: #{definitions.length}"
+          
+          before_defs = definitions.select {|definition| definition.before? }
+          
+          self.class.a4r_debug "Total 'before' definitions: #{before_defs.length}"
+          
           result = nil
           
-          definitions.select {|definition| definition.before? }.each do |definition|
+          before_defs.each do |definition|
+            self.class.a4r_debug "Definition: #{definition.inspect}"
+            
             result = send(definition.with_method, *args)
+            
+            self.class.a4r_debug "Result: #{result.inspect}"
             
             break if result.is_a? ReturnThis
             
             if definition.options[:skip_if_false] and not result
+              self.class.a4r_debug "Wrap up result with ReturnThis"
+  
               result = ReturnThis.new(result)
               break
             end
           end
           
-          return result.value if result.is_a? ReturnThis
+          if result.is_a? ReturnThis
+            self.class.a4r_debug "Leaving #{method} with result: #{result.value.inspect}"
+            return result.value
+          end
+          
+          self.class.a4r_debug "Invoking original method"
             
           result = send(:"#{method}_without_a4r", *args)
           
-          definitions.select {|definition| definition.after? }.each do |definition|
+          self.class.a4r_debug "Result: #{result.inspect}"
+
+          after_defs = definitions.select {|definition| definition.after? }
+          
+          self.class.a4r_debug "Total 'after' definitions: #{after_defs.length}"
+          
+          after_defs.each do |definition|
+            self.class.a4r_debug "Definition: #{definition.inspect}"
+            
             result = send(definition.with_method, *([result] + args))
+            
+            self.class.a4r_debug "Result: #{result.inspect}"
           end
+          
+          self.class.a4r_debug "Leaving #{method} with result: #{result.inspect}"
           
           result
         end
