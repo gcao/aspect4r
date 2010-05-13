@@ -1,34 +1,33 @@
 require 'aspect4r/base'
-require 'aspect4r/helper'
 
 module Aspect4r
   module After
-    include Base
-    
     def self.included(base)
-       base.extend(ClassMethods)
+      base.send(:include, Base)
+      base.extend(ClassMethods)
     end
 
     module ClassMethods
       def after_method *methods, &block
-        after_method = methods.pop unless block_given?
+        options = {}
+        options.merge!(methods.pop) if methods.last.is_a? Hash
+
+        if block_given?
+          after_method = Aspect4r::Helper.find_available_method_name self, "a4r_after_"
+          define_method after_method, &block
+        else
+          after_method = methods.pop
+        end
 
         methods.each do |method|
-          new_method = Aspect4r::Helper.find_available_method_name self, "#{method}_"
-          alias_method new_method, method
-        
-          if block_given?
-            new_after_method = Aspect4r::Helper.find_available_method_name self, "#{method}_after_"
-            define_method new_after_method, &block
-          else
-            new_after_method = after_method
-          end
-        
-          define_method method do |*args|
-            result = send new_method, *args
+          method = method.to_sym
           
-            send new_after_method, *([result] + args)
-          end
+          a4r_rename_original_method method
+          
+          self.a4r_definitions[method] ||= []
+          self.a4r_definitions[method] << Aspect4r::Definition.after(method, after_method, options)
+          
+          a4r_create_method method, self.a4r_definitions[method]
         end
       end
     end

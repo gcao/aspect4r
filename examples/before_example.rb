@@ -1,9 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'aspect4r'
+require 'aspect4r/before'
 
 class A
-  include Aspect4r
+  include Aspect4r::Before
   
   a4r_debug_mode
   
@@ -16,6 +16,7 @@ class A
   end
   
   before_method_check :test do |value|
+    puts 'check before test'
     value >= 0
   end
 end
@@ -24,9 +25,11 @@ puts "Example 1:"
 A.new.test 1
 # ==== Output ====
 # before test
+# check before test
 # test
 
 puts "\nExample 2:"
 A.new.test -1
 # ==== Output ====
 # before test
+# check before test

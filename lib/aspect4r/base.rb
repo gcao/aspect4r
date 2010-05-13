@@ -1,4 +1,7 @@
 require 'aspect4r/class_ext'
+require 'aspect4r/return_this'
+require 'aspect4r/definition'
+require 'aspect4r/helper'
 
 module Aspect4r
   module Base
@@ -66,7 +69,7 @@ module Aspect4r
 
           after_defs = definitions.select {|definition| definition.after? }
           
-          self.class.a4r_debug method, "'after' aspect: #{after_defs.length}" if self.class.a4r_debug_mode?
+          self.class.a4r_debug method, "'after' aspects: #{after_defs.length}" if self.class.a4r_debug_mode?
           
           after_defs.each do |definition|
             self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?

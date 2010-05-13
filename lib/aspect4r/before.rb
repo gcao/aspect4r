@@ -1,7 +1,4 @@
 require 'aspect4r/base'
-require 'aspect4r/definition'
-require 'aspect4r/helper'
-require 'aspect4r/return_this'
 
 module Aspect4r
   module Before    
