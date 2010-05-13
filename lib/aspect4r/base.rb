@@ -11,8 +11,12 @@ module Aspect4r
         @a4r_debug_mode = debug_mode
       end
       
-      def a4r_debug message
-        puts "A4R - #{message}" if @a4r_debug_mode
+      def a4r_debug_mode?
+        @a4r_debug_mode
+      end
+      
+      def a4r_debug method, message
+        puts "A4R - [#{method}] #{message}" if @a4r_debug_mode
       end
       
       def a4r_definitions
@@ -23,26 +27,26 @@ module Aspect4r
       # definitions - an array of Aspect4r::Definition
       def a4r_create_method method, definitions
         define_method method do |*args|
-          self.class.a4r_debug "Entering #{method}(#{args.inspect[1..-2]})"
-          self.class.a4r_debug "Total definitions: #{definitions.length}"
+          self.class.a4r_debug method, "Entering #{method}(#{args.inspect[1..-2]})" if self.class.a4r_debug_mode?
+          self.class.a4r_debug method, "Aspects: #{definitions.length}" if self.class.a4r_debug_mode?
           
           before_defs = definitions.select {|definition| definition.before? }
           
-          self.class.a4r_debug "Total 'before' definitions: #{before_defs.length}"
+          self.class.a4r_debug method, "'before' aspects: #{before_defs.length}" if self.class.a4r_debug_mode?
           
           result = nil
           
           before_defs.each do |definition|
-            self.class.a4r_debug "Definition: #{definition.inspect}"
+            self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
             
             result = send(definition.with_method, *args)
             
-            self.class.a4r_debug "Result: #{result.inspect}"
+            self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
             
             break if result.is_a? ReturnThis
             
             if definition.options[:skip_if_false] and not result
-              self.class.a4r_debug "Wrap up result with ReturnThis"
+              self.class.a4r_debug method, "Wrap up result with ReturnThis" if self.class.a4r_debug_mode?
   
               result = ReturnThis.new(result)
               break
@@ -50,29 +54,29 @@ module Aspect4r
           end
           
           if result.is_a? ReturnThis
-            self.class.a4r_debug "Leaving #{method} with result: #{result.value.inspect}"
+            self.class.a4r_debug method, "Leaving #{method} with result: #{result.value.inspect}" if self.class.a4r_debug_mode?
             return result.value
           end
           
-          self.class.a4r_debug "Invoking original method"
+          self.class.a4r_debug method, "Invoking original method" if self.class.a4r_debug_mode?
             
           result = send(:"#{method}_without_a4r", *args)
           
-          self.class.a4r_debug "Result: #{result.inspect}"
+          self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
 
           after_defs = definitions.select {|definition| definition.after? }
           
-          self.class.a4r_debug "Total 'after' definitions: #{after_defs.length}"
+          self.class.a4r_debug method, "'after' aspect: #{after_defs.length}" if self.class.a4r_debug_mode?
           
           after_defs.each do |definition|
-            self.class.a4r_debug "Definition: #{definition.inspect}"
+            self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
             
             result = send(definition.with_method, *([result] + args))
             
-            self.class.a4r_debug "Result: #{result.inspect}"
+            self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
           end
           
-          self.class.a4r_debug "Leaving #{method} with result: #{result.inspect}"
+          self.class.a4r_debug method, "Leaving #{method} with result: #{result.inspect}" if self.class.a4r_debug_mode?
           
           result
         end
