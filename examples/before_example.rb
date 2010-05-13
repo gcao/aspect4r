@@ -5,6 +5,8 @@ require 'aspect4r'
 class A
   include Aspect4r
   
+  a4r_debug
+  
   def test value
     puts 'test'
   end
@@ -13,7 +15,6 @@ class A
     puts 'before test'
   end
   
-  # Will run before first before_method block !!!
   before_method_check :test do |value|
     value >= 0
   end
@@ -27,4 +28,5 @@ A.new.test 1
 
 puts "\nExample 2:"
 A.new.test -1
-# ==== No Output ====
+# ==== Output ====
+# before test

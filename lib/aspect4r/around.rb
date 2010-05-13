@@ -1,7 +1,10 @@
+require 'aspect4r/base'
 require 'aspect4r/helper'
 
 module Aspect4r
   module Around
+    include Base
+    
     def self.included(base)
        base.extend(ClassMethods)
     end

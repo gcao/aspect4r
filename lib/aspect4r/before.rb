@@ -1,10 +1,13 @@
+require 'aspect4r/base'
+require 'aspect4r/definition'
 require 'aspect4r/helper'
 require 'aspect4r/return_this'
 
 module Aspect4r
-  module Before
+  module Before    
     def self.included(base)
-       base.extend(ClassMethods)
+      base.send(:include, Base)
+      base.extend(ClassMethods)
     end
 
     module ClassMethods
@@ -12,36 +15,29 @@ module Aspect4r
         options = {:skip_if_false => false}
         options.merge!(methods.pop) if methods.last.is_a? Hash
       
-        before_method = methods.pop unless block_given?
+        if block_given?
+          before_method = Aspect4r::Helper.find_available_method_name self, "a4r_before_"
+          define_method before_method, &block
+        else
+          before_method = methods.pop
+        end
 
         methods.each do |method|
-          new_method = Aspect4r::Helper.find_available_method_name self, "#{method}_"
-          alias_method new_method, method
-        
-          if block_given?
-            new_before_method = Aspect4r::Helper.find_available_method_name self, "#{method}_before_"
-            define_method new_before_method, &block
-          else
-            new_before_method = before_method
-          end
-        
-          define_method method do |*args|
-            result = send new_before_method, *args
+          method = method.to_sym
           
-            if result.is_a? ReturnThis
-              result.value
-            elsif result or not options[:skip_if_false]
-              send new_method, *args
-            else
-              result
-            end
-          end
+          a4r_rename_original_method method
+          
+          self.a4r_definitions[method] ||= []
+          self.a4r_definitions[method] << Aspect4r::Definition.before(method, before_method, options)
+          
+          a4r_create_method method, self.a4r_definitions[method]
         end
       end
     
       def before_method_check *methods, &block
         options = methods.last.is_a?(Hash) ? methods.pop : {}
         options.merge! :skip_if_false => true
+
         before_method *(methods + [options]), &block
       end
     end
