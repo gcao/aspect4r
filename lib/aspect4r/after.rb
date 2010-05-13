@@ -22,12 +22,12 @@ module Aspect4r
         methods.each do |method|
           method = method.to_sym
           
-          a4r_rename_original_method method
+          Aspect4r::Helper.backup_original_method self, method
           
           self.a4r_definitions[method] ||= []
           self.a4r_definitions[method] << Aspect4r::Definition.after(method, after_method, options)
           
-          a4r_create_method method, self.a4r_definitions[method]
+          Aspect4r::Helper.create_method self, method, self.a4r_definitions[method]
         end
       end
     end

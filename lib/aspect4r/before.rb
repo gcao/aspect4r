@@ -1,7 +1,7 @@
 require 'aspect4r/base'
 
 module Aspect4r
-  module Before    
+  module Before
     def self.included(base)
       base.send(:include, Base)
       base.extend(ClassMethods)
@@ -22,12 +22,12 @@ module Aspect4r
         methods.each do |method|
           method = method.to_sym
           
-          a4r_rename_original_method method
+          Aspect4r::Helper.backup_original_method self, method
           
           self.a4r_definitions[method] ||= []
           self.a4r_definitions[method] << Aspect4r::Definition.before(method, before_method, options)
           
-          a4r_create_method method, self.a4r_definitions[method]
+          Aspect4r::Helper.create_method self, method, self.a4r_definitions[method]
         end
       end
     

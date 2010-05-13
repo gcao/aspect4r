@@ -5,7 +5,7 @@ require 'aspect4r/before'
 class A
   include Aspect4r::Before
   
-  a4r_debug_mode
+  # a4r_debug_mode
   
   def test value
     puts 'test'
