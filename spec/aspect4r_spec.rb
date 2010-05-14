@@ -184,8 +184,6 @@ describe "Mix aspects from module" do
       end
     end
 
-    # Aspect4r::Helper.create_method AspectMix, :test, AspectMix.a4r_definitions[:test] + AspectMod.a4r_definitions[:test]
-
     o = AspectMix.new
     o.test
     
@@ -193,7 +191,7 @@ describe "Mix aspects from module" do
   end
   
   it "should work with aspects defined in a module" do
-    class AspectMix
+    class AspectMix2
       include Aspect4r
 
       attr :value
@@ -225,11 +223,9 @@ describe "Mix aspects from module" do
       end   
     end
 
-    AspectMix.send :include, mod
+    AspectMix2.send :include, mod
 
-    Aspect4r::Helper.create_method AspectMix, :test, AspectMix.a4r_definitions[:test] + mod.a4r_definitions[:test]
-
-    o = AspectMix.new
+    o = AspectMix2.new
     o.test
     
     o.value.should == %w(before around1 test around2 after)
