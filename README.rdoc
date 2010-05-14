@@ -40,21 +40,22 @@ Add before_method, after_method and around_method to classes.
   
 == TODO
 
-* P2 before/... blocks can be given a name, this can be used in skip_before_method
+* P4 before/... blocks can be given a name, this can be used in skip_before_method
 
   before_method :xxx, :name => :do_something do
   end
 
 * P1 In before/after/around.rb, rename original method to xxx_without_a4r if xxx is defined and xxx_without_a4r is not
-* P1(documentation) Original method should be renamed to xxx_without_a4r if it is defined after before/after definitions.
+* P1 (documentation) Original method should be renamed to xxx_without_a4r if it is defined after before/after definitions.
 
   class A
     include Aspect4r
+    
     before_method :xxx do
       ...
     end
     
-    def xxx_a4r     # instead of xxx
+    def xxx_without_a4r     # instead of xxx
       ...
     end
   end
@@ -65,11 +66,13 @@ Add before_method, after_method and around_method to classes.
   See http://www.raulparolari.com/Rails/class_inheritable for how to implement class inheritable variable
   
 * P2 around_method will wrap original method only.
-* P5 around_outer_method will wrap before + after + original method (choose a better name if we do implement this)
+* P2 benchmark against putting all logic in original method
+* P3 enable/disable debug mode
+* P4 on_exception - catch and process given exception
 * P4 skip_before_method/skip_after_method/skip_around_method
+* P5 around_outer_method will wrap before + after + original method (choose a better name if we do implement this)
 * P5 can take :before option and insert aspect before given aspect
 * P5 can take :after option and insert aspect after given aspect
-* P3 enable/disable debug mode
 
 == Note on Patches/Pull Requests
  
