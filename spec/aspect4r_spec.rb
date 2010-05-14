@@ -150,7 +150,49 @@ describe "Include aspects from module" do
 end
 
 describe "Mix aspects from module" do
-  before do
+  it "basic mix" do
+    module AspectMod
+      include Aspect4r
+      
+      after_method :test do |result|
+        @value << "after"
+      end
+  
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end   
+    end
+    
+    class AspectMix
+      include Aspect4r
+      include AspectMod
+
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test_without_a4r
+        @value << "test"
+      end
+      
+      before_method :test do
+        @value << "before"
+      end
+    end
+
+    # Aspect4r::Helper.create_method AspectMix, :test, AspectMix.a4r_definitions[:test] + AspectMod.a4r_definitions[:test]
+
+    o = AspectMix.new
+    o.test
+    
+    o.value.should == %w(before around1 test around2 after)
+  end
+  
+  it "should work with aspects defined in a module" do
     class AspectMix
       include Aspect4r
 
@@ -168,9 +210,7 @@ describe "Mix aspects from module" do
         @value << "before"
       end
     end
-  end
-  
-  it "should work with aspects defined in a module" do
+    
     mod = Module.new do
       include Aspect4r
       

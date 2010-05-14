@@ -3,6 +3,8 @@ class Class
   
   def inherited_with_aspect4r(child)
     inherited_without_aspect4r(child) if respond_to?(:inherited_without_aspect4r)
+    
+    return if @a4r_definitions.nil? or @a4r_definitions.empty?
   
     a4r_definitions = 
       if @a4r_definitions.nil?
