@@ -36,7 +36,7 @@ module Aspect4r
     # definitions - instance of AspectForMethod which contains aspect definitions for target method
     def self.create_method klass, method, aspect
       if aspect.empty?
-        # There is no aspects defined.
+        # There is no aspect defined.
         klass.send :alias_method, method, backup_method_name(method)
         return
       end

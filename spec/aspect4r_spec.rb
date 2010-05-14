@@ -101,3 +101,46 @@ describe "Aspect4r result handling" do
     o.test.should == "around1 test around2 after"
   end
 end
+
+describe "Include aspects from module" do
+  before do
+    @klass = Class.new do
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+    end
+  end
+  
+  it "should work with aspects defined in a module" do
+    @mod = Module.new do
+      include Aspect4r
+      
+      before_method :test do
+        @value << "before"
+      end
+      
+      after_method :test do |result|
+        @value << "after"
+      end
+      
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end
+    end
+    
+    @klass.send(:include, @mod)
+    
+    o = @klass.new
+    o.test
+    
+    o.value.should == %w(before around1 test around2 after)
+  end
+end
