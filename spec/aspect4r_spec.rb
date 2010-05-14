@@ -118,26 +118,30 @@ describe "Include aspects from module" do
   end
   
   it "should work with aspects defined in a module" do
-    @mod = Module.new do
+    module M
       include Aspect4r
       
       before_method :test do
         @value << "before"
       end
-      
+  
       after_method :test do |result|
         @value << "after"
       end
-      
+  
       around_method :test do |proxy_method|
         @value << "around1"
         send proxy_method
         @value << "around2"
-      end
+      end   
     end
+
+    @klass.send :alias_method, Aspect4r::Helper.backup_method_name(:test), :test
+    @klass.send :include, Aspect4r
+    @klass.send :include, M
     
-    @klass.send(:include, @mod)
-    
+    Aspect4r::Helper.create_method @klass, :test, M.a4r_definitions[:test]
+
     o = @klass.new
     o.test
     
