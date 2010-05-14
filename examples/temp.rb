@@ -26,13 +26,10 @@ A = Class.new do
     result
   end
   
-  p a4r_definitions
 end
 
-p A.a4r_definitions # Should output 3 aspects
-
-# puts "Example 1:"
-# puts A.new.test(1)
+puts "Example 1:"
+puts A.new.test(1)
 # ==== Output ====
 # Example 1:
 # before test
