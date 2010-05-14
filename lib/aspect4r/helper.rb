@@ -6,10 +6,26 @@ module Aspect4r
         return m unless klass.instance_methods.include?(m)
       end
     end
+    
+    def self.backup_method_name method
+      "#{method}_without_a4r"
+    end
+    
+    def self.wrap_method method, i
+      "#{method}_a4r_around_#{i}"
+    end
+    
+    def self.wrapped_method method, i
+      if i > 0
+        "#{method}_a4r_around_#{i - 1}"
+      else
+        backup_method_name(method)
+      end
+    end
       
     def self.backup_original_method klass, method
       method             = method.to_s
-      method_without_a4r = "#{method}_without_a4r"
+      method_without_a4r = backup_method_name(method)
 
       if klass.instance_methods.include?(method) and not klass.instance_methods.include?(method_without_a4r)
         klass.send :alias_method, method_without_a4r, method
@@ -17,19 +33,39 @@ module Aspect4r
     end
     
     # method      - target method
-    # definitions - an array of Aspect4r::Definition
-    def self.create_method klass, method, definitions
+    # definitions - instance of AspectForMethod which contains aspect definitions for target method
+    def self.create_method klass, method, aspect
+      if aspect.empty?
+        # There is no aspects defined.
+        klass.send :alias_method, method, backup_method_name(method)
+        return
+      end
+      
+      if aspect.around_aspects?
+        aspect.around_aspects.reverse.each_with_index do |definition, i|
+          wrap_method    = wrap_method(method, i)
+          wrapped_method = wrapped_method(method, i)
+          
+          klass.send :define_method, wrap_method do |*args|
+            self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
+            
+            result = send definition.with_method, wrapped_method, *args
+            
+            self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
+            
+            result
+          end
+        end
+      end
+      
       klass.send :define_method, method do |*args|
         self.class.a4r_debug method, "Entering #{method}(#{args.inspect[1..-2]})" if self.class.a4r_debug_mode?
-        self.class.a4r_debug method, "Aspects: #{definitions.length}" if self.class.a4r_debug_mode?
         
-        before_defs = definitions.select {|definition| definition.before? }
-        
-        self.class.a4r_debug method, "'before' aspects: #{before_defs.length}" if self.class.a4r_debug_mode?
+        self.class.a4r_debug method, "'before' aspects: #{aspect.before_aspects.length}" if self.class.a4r_debug_mode?
         
         result = nil
         
-        before_defs.each do |definition|
+        aspect.before_aspects.each do |definition|
           self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
           
           result = send(definition.with_method, *args)
@@ -51,17 +87,22 @@ module Aspect4r
           return result.value
         end
         
-        self.class.a4r_debug method, "Invoking original method" if self.class.a4r_debug_mode?
+        if aspect.around_aspects.empty?
+          self.class.a4r_debug method, "Invoking original method" if self.class.a4r_debug_mode?
           
-        result = send(:"#{method}_without_a4r", *args)
+          result = send(:"#{method}_without_a4r", *args)
+        else
+          self.class.a4r_debug method, "'around' aspects: #{aspect.around_aspects.length}" if self.class.a4r_debug_mode?
+          
+          wrap_method = Aspect4r::Helper.wrap_method(method, aspect.around_aspects.length - 1)
+          result = send wrap_method, *args
+        end
         
         self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
 
-        after_defs = definitions.select {|definition| definition.after? }
+        self.class.a4r_debug method, "'after' aspects: #{aspect.after_aspects.length}" if self.class.a4r_debug_mode?
         
-        self.class.a4r_debug method, "'after' aspects: #{after_defs.length}" if self.class.a4r_debug_mode?
-        
-        after_defs.each do |definition|
+        aspect.after_aspects.each do |definition|
           self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
           
           result = send(definition.with_method, *([result] + args))

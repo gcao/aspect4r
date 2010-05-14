@@ -9,6 +9,9 @@ module Aspect4r
 
     module ClassMethods
       def around_method *methods, &block
+        options = {:skip_if_false => false}
+        options.merge!(methods.pop) if methods.last.is_a? Hash
+        
         if block_given?
           around_method = Aspect4r::Helper.find_available_method_name self, "a4r_around_"
           define_method around_method, &block
@@ -21,8 +24,8 @@ module Aspect4r
           
           Aspect4r::Helper.backup_original_method self, method
           
-          self.a4r_definitions[method] ||= []
-          self.a4r_definitions[method] << Aspect4r::Definition.around(method, around_method, options)
+          self.a4r_definitions[method] ||= AspectForMethod.new(method)
+          self.a4r_definitions[method].add Aspect4r::Definition.around(around_method, options)
           
           Aspect4r::Helper.create_method self, method, self.a4r_definitions[method]
         end

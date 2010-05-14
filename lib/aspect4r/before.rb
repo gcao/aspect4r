@@ -24,8 +24,8 @@ module Aspect4r
           
           Aspect4r::Helper.backup_original_method self, method
           
-          self.a4r_definitions[method] ||= []
-          self.a4r_definitions[method] << Aspect4r::Definition.before(method, before_method, options)
+          self.a4r_definitions[method] ||= AspectForMethod.new(method)
+          self.a4r_definitions[method].add Aspect4r::Definition.before(before_method, options)
           
           Aspect4r::Helper.create_method self, method, self.a4r_definitions[method]
         end
