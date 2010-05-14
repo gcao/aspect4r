@@ -118,7 +118,7 @@ describe "Include aspects from module" do
   end
   
   it "should work with aspects defined in a module" do
-    module M
+    mod = Module.new do
       include Aspect4r
       
       before_method :test do
@@ -138,11 +138,58 @@ describe "Include aspects from module" do
 
     @klass.send :alias_method, Aspect4r::Helper.backup_method_name(:test), :test
     @klass.send :include, Aspect4r
-    @klass.send :include, M
+    @klass.send :include, mod
     
-    Aspect4r::Helper.create_method @klass, :test, M.a4r_definitions[:test]
+    Aspect4r::Helper.create_method @klass, :test, mod.a4r_definitions[:test]
 
     o = @klass.new
+    o.test
+    
+    o.value.should == %w(before around1 test around2 after)
+  end
+end
+
+describe "Mix aspects from module" do
+  before do
+    class AspectMix
+      include Aspect4r
+
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+      
+      before_method :test do
+        @value << "before"
+      end
+    end
+  end
+  
+  it "should work with aspects defined in a module" do
+    mod = Module.new do
+      include Aspect4r
+      
+      after_method :test do |result|
+        @value << "after"
+      end
+  
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end   
+    end
+
+    AspectMix.send :include, mod
+
+    Aspect4r::Helper.create_method AspectMix, :test, AspectMix.a4r_definitions[:test] + mod.a4r_definitions[:test]
+
+    o = AspectMix.new
     o.test
     
     o.value.should == %w(before around1 test around2 after)

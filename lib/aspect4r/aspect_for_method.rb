@@ -35,5 +35,12 @@ module Aspect4r
     def empty?
       before_aspects.empty? and after_aspects.empty? and around_aspects.empty?
     end
+    
+    def + another
+      before_aspects.push *another.before_aspects
+      after_aspects.push  *another.after_aspects
+      around_aspects.push *another.around_aspects
+      self
+    end
   end
 end
