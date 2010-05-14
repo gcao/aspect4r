@@ -6,14 +6,10 @@ class Class
     
     return if @a4r_definitions.nil? or @a4r_definitions.empty?
   
-    a4r_definitions = 
-      if @a4r_definitions.nil?
-        {}
-      else
-        @a4r_definitions.inject({}) do |memo,(key, value)|
-          memo.update(key => (value.dup rescue value))
-        end
-      end
+    a4r_definitions = @a4r_definitions.inject({}) do |memo, (key, value)|
+      memo[key] = (value.clone rescue value)
+      memo
+    end
     
     child.instance_variable_set('@a4r_definitions', a4r_definitions)
   end

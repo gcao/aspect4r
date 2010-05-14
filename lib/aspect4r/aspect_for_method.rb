@@ -23,7 +23,7 @@ module Aspect4r
     end
     
     def after_aspects?
-      @after_aspects and not @after_aspects.empty?
+      @after_aspects  and not @after_aspects.empty?
     end
     
     def around_aspects?

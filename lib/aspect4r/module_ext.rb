@@ -19,7 +19,7 @@ class Module
         existing_aspects[method].merge!(definition)
       else
         Aspect4r::Helper.backup_original_method base, method
-        existing_aspects[method] = definition.clone
+        existing_aspects[method] = (definition.clone rescue definition)
       end
       
       Aspect4r::Helper.create_method base, method, existing_aspects[method]
