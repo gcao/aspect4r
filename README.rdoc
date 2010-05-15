@@ -52,6 +52,10 @@ Note: target method should be renamed to xxx_without_a4r if it is defined after 
     end
   end
   
+== How does it work?
+
+
+  
 == TODO 
 
 See github issues tab http://github.com/gcao/aspect4r/issues
