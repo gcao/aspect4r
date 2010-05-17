@@ -5,9 +5,9 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "aspect4r"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
-    gem.email = "gcao@vonage.com"
+    gem.summary = %Q{Aspect Oriented Programming for ruby}
+    gem.description = %Q{AOP for ruby - use before_method, after_method and around_method to trim your fat methods and reduce code duplication}
+    gem.email = "gcao99@gmail.com"
     gem.homepage = "http://github.com/gcao/aspect4r"
     gem.authors = ["Guoliang Cao"]
     gem.add_development_dependency "rspec", ">= 1.2.9"

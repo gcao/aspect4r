@@ -65,7 +65,7 @@ Use class A above as an example, here is what happens under the hood
 
     * For each before_method aspects, call its associated method. 
     * If the associated method returns false/nil and options[:skip_if_false] is specified, return immediately. 
-    * Otherwise, call a4r_without_a4r and return its result
+    * Otherwise, call test_without_a4r and return its result
 
 * When second before_method is called
 
