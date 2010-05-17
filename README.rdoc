@@ -58,10 +58,10 @@ Use class A above as an example, here is what happens under the hood
 
 * When first before_method is called
 
-** Alias test as test_without_a4r
-** Create a new method (whose name is like 'a4r_before_0_???') that wraps the block associated with before_method
-** Create a new AspectForMethod object and store it into class instance variable a4r_definitions(which is a hash {method => definition} )
-** Recreate method 'test' to do this:
+  * Alias test as test_without_a4r
+  * Create a new method (whose name is like 'a4r_before_0_???') that wraps the block associated with before_method
+  * Create a new AspectForMethod object and store it into class instance variable a4r_definitions(which is a hash {method => definition} )
+  * Recreate method 'test' to do this:
 
 *** For each before_method aspects, call its associated method. 
 *** If the associated method returns false/nil and options[:skip_if_false] is specified, return immediately. 
