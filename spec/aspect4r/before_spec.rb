@@ -86,6 +86,21 @@ describe Aspect4r::Before do
     o.value.should == 'something'
   end
   
+  it "should pass method name as first arg if method_name_arg is true" do
+    s = nil
+    
+    @klass.class_eval do
+      before_method :test, :method_name_arg => true do |method, value|
+        s = method
+      end
+    end
+    
+    o = @klass.new
+    o.test('something')
+
+    s.should == 'test'
+  end
+  
   it "should run before_* before original method" do
     @klass.class_eval do
       def do_something value

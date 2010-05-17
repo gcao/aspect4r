@@ -67,6 +67,22 @@ describe Aspect4r::Around do
     i.should == 200
   end
   
+  it "should pass method name as first arg if method_name_arg is true" do
+    s = nil
+    
+    @klass.class_eval do
+      around_method :test, :method_name_arg => true do |method, orig_method, value|
+        s = method
+        send orig_method, value
+      end
+    end
+    
+    o = @klass.new
+    o.test('something')
+
+    s.should == 'test'
+  end
+  
   it "should run around_* method instead of original method" do
     @klass.class_eval do
       def do_something orig_method, value

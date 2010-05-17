@@ -35,7 +35,3 @@ Mix aspects from multiple modules
 Mix aspects in body and inherited
 
 Mix aspects in body, inherited and in module
-
-== MISC
-
-Move a4r_debug* into Aspect4r as class methods

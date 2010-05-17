@@ -49,7 +49,11 @@ module Aspect4r
           klass.send :define_method, wrap_method do |*args|
             self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
             
-            result = send definition.with_method, wrapped_method, *args
+            if definition.options[:method_name_arg]
+              result = send definition.with_method, method.to_s, wrapped_method, *args
+            else
+              result = send definition.with_method, wrapped_method, *args
+            end
             
             self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
             
@@ -68,7 +72,11 @@ module Aspect4r
         aspect.before_aspects.each do |definition|
           self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
           
-          result = send(definition.with_method, *args)
+          if definition.options[:method_name_arg]
+            result = send(definition.with_method, method.to_s, *args)
+          else
+            result = send(definition.with_method, *args)
+          end
           
           self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
           
@@ -105,7 +113,11 @@ module Aspect4r
         aspect.after_aspects.each do |definition|
           self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
           
-          result = send(definition.with_method, *([result] + args))
+          if definition.options[:method_name_arg]
+            result = send(definition.with_method, method.to_s, result, *args)
+          else
+            result = send(definition.with_method, result, *args)
+          end
           
           self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
         end

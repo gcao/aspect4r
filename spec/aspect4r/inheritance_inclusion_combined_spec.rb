@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Aspect4r do
   it "inherit aspects from parent class which include aspects from module" do
-    module SimpleMod
+    module Mod
       include Aspect4r
       
       before_method :test do
@@ -21,7 +21,7 @@ describe Aspect4r do
     end
     
     parent = Class.new do
-      include SimpleMod
+      include Mod
       
       attr :value
       
@@ -44,7 +44,7 @@ describe Aspect4r do
   end
   
   it "method in parent class need to be renamed to xxx_without_a4r if it is after aspects are defined, and can be called from child class" do
-    module SimpleMod2
+    module Mod2
       include Aspect4r
       
       before_method :test do
@@ -63,7 +63,7 @@ describe Aspect4r do
     end
     
     parent = Class.new do
-      include SimpleMod2
+      include Mod2
       
       attr :value
       
@@ -91,7 +91,7 @@ describe Aspect4r do
   end
   
   it "mix aspects in parent class and included modules" do
-    module SimpleMod3
+    module Mod3
       include Aspect4r
       
       before_method :test do
@@ -124,7 +124,7 @@ describe Aspect4r do
     end
     
     class Child < Parent
-      include SimpleMod3
+      include Mod3
       
       def test_without_a4r
         @value << "test"
