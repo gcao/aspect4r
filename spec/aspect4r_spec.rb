@@ -101,3 +101,70 @@ describe "Aspect4r result handling" do
     o.test.should == "around1 test around2 after"
   end
 end
+
+describe "Aspect4r chaining" do
+  it "execution order" do
+    @klass = Class.new do
+      include Aspect4r
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+      
+      def do_something
+        @value << "do_something"
+      end
+      
+      def process_result result
+        @value << "process_result"
+      end
+      
+      before_method :test do
+        @value << "before1"
+      end
+      
+      before_method :test, :do_something
+      
+      before_method :do_something do
+        @value << "before(do_something)"
+      end
+      
+      after_method :do_something do
+        @value << "after(do_something)"
+      end
+      
+      after_method :test do |result|
+        @value << "after1"
+      end
+      
+      after_method :test, :process_result
+      
+      before_method :process_result do
+        @value << "before(process_result)"
+      end
+      
+      after_method :process_result do
+        @value << "after(process_result)"
+      end
+      
+      around_method :test do |proxy_method|
+        @value << "around11"
+        send proxy_method
+        @value << "around12"
+      end
+    end
+      
+    o = @klass.new
+    o.test
+    
+    o.value.should == %w(before1 before(do_something) do_something after(do_something) 
+                         around11 test around12 
+                         after1 before(process_result) process_result after(process_result))
+  end
+end
