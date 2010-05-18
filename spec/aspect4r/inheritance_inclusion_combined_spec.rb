@@ -109,7 +109,7 @@ describe Aspect4r do
       end
     end
     
-    class Parent
+    class Parent3
       include Aspect4r
       
       before_method :test do
@@ -123,7 +123,7 @@ describe Aspect4r do
       end
     end
     
-    class Child < Parent
+    class Child3 < Parent3
       include Mod3
       
       def test_without_a4r
@@ -132,7 +132,7 @@ describe Aspect4r do
     end
     
     
-    o = Child.new
+    o = Child3.new
     o.test
     
     o.value.should == %w(before(parent) before(module) around1 test around2 after)
