@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guoliang Cao"]
-  s.date = %q{2010-05-17}
+  s.date = %q{2010-05-18}
   s.description = %q{AOP for ruby - use before_method, after_method and around_method to trim your fat methods and reduce code duplication}
   s.email = %q{gcao99@gmail.com}
   s.extra_rdoc_files = [
@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "aspect4r.gemspec",
      "examples/after_example.rb",
      "examples/around_example.rb",
      "examples/before_example.rb",
