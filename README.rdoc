@@ -1,6 +1,13 @@
 = aspect4r
 
-Add before_method, after_method and around_method to classes.
+Aspect Oriented Programming support for Ruby
+
+== Feature
+
+* Extract common logic using before_method, after_method, around_method
+* before_method_check as method filters (work like before_filters in web application)
+* Aspects defined in super class will work in sub classes
+* When a module is included, its aspects are included too
 
 == Usage
 
