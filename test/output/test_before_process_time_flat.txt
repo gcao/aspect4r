@@ -1,22 +1,14 @@
 Thread ID: 108760
-Total: 2.268771
+Total: 0.630515
 
  %self     total     self     wait    child    calls  name
- 30.66      1.91     0.70     0.00     1.21    10000  BeforeTest::Test#test
- 19.10      0.74     0.43     0.00     0.31    20000  Array#each
- 12.49      0.28     0.28     0.00     0.00    70000  Aspect4r::Base::ClassMethods#a4r_debug_mode?
-  8.62      2.27     0.20     0.00     2.07        1  RubyProf::Test#run_profile
-  6.60      0.15     0.15     0.00     0.00    70000  Kernel#class
-  4.52      2.03     0.10     0.00     1.93    10000  BeforeTest#test_before
-  3.85      0.14     0.09     0.00     0.05    20000  Kernel#send
-  2.71      0.08     0.06     0.00     0.02    20000  Hash#[]
-  2.00      2.07     0.05     0.00     2.03    10000  Kernel#__send__
-  1.82      0.04     0.04     0.00     0.00    10000  Aspect4r::AspectForMethod#before_aspects
-  1.79      0.04     0.04     0.00     0.00    20000  Kernel#is_a?
-  1.76      0.04     0.04     0.00     0.00    10000  Aspect4r::AspectForMethod#after_aspects
-  1.44      0.03     0.03     0.00     0.00    10000  BeforeTest::Test#a4r_before_0_9099940
-  0.91      0.02     0.02     0.00     0.00    10000  Hash#default
-  0.86      0.02     0.02     0.00     0.00    10000  BeforeTest::Test#test_without_a4r
-  0.86      0.02     0.02     0.00     0.00    10000  BeforeTest::Test#test_no_aspect
+ 32.93      0.28     0.21     0.00     0.08    10000  BeforeTest::Test#test
+ 27.83      0.63     0.18     0.00     0.46        1  RubyProf::Test#run_profile
+ 16.96      0.41     0.11     0.00     0.30    10000  BeforeTest#test_before
+  7.20      0.46     0.05     0.00     0.41    10000  Kernel#__send__
+  5.23      0.03     0.03     0.00     0.00    10000  BeforeTest::Test#a4r_before_0_9091850
+  3.57      0.02     0.02     0.00     0.00    10000  Kernel#is_a?
+  3.19      0.02     0.02     0.00     0.00    10000  BeforeTest::Test#test_without_a4r
+  3.10      0.02     0.02     0.00     0.00    10000  BeforeTest::Test#test_no_aspect
 
 
