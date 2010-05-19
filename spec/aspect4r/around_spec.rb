@@ -36,6 +36,21 @@ describe Aspect4r::Around do
     i.should == 200
   end
   
+  it "should flatten arguments" do
+    i = 100
+    
+    @klass.class_eval do
+      around_method [:test] do |orig_method, value|
+        i = 200
+      end
+    end
+    
+    o = @klass.new
+    o.test('something')
+    
+    i.should == 200
+  end
+  
   it "should have access to instance variable inside around block" do
     @klass.class_eval do
       around_method :test do |orig_method, value|

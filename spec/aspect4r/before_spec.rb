@@ -34,6 +34,23 @@ describe Aspect4r::Before do
     i.should == 200
   end
   
+  it "should flatten arguments" do
+    i = 100
+    
+    @klass.class_eval do
+      before_method [:test] do |value|
+        i = 200
+      end
+    end
+    
+    o = @klass.new
+    o.test('something').should == 'something'
+    
+    o.value.should == 'something'
+    
+    i.should == 200
+  end
+  
   it "should have access to instance variable inside before block" do
     @klass.class_eval do
       before_method :test do |value|

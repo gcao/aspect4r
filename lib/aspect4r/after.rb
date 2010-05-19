@@ -9,6 +9,8 @@ module Aspect4r
 
     module ClassMethods
       def after_method *methods, &block
+        methods.flatten!
+        
         options = {}
         options.merge!(methods.pop) if methods.last.is_a? Hash
 

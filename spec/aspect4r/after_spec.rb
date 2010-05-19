@@ -36,6 +36,21 @@ describe Aspect4r::After do
     i.should == 200
   end
   
+  it "should flatten arguments" do
+    i = 100
+    
+    @klass.class_eval do
+      after_method [:test] do |result, value|
+        i = 200
+      end
+    end
+    
+    o = @klass.new
+    o.test('something')
+    
+    i.should == 200
+  end
+  
   it "should have access to instance variable inside after block" do
     @klass.class_eval do
       after_method :test do |result, value|
