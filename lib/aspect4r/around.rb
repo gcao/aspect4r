@@ -11,7 +11,7 @@ module Aspect4r
       def around_method *methods, &block
         methods.flatten!
         
-        options = {:skip_if_false => false}
+        options = {}
         options.merge!(methods.pop) if methods.last.is_a? Hash
         
         if block_given?
@@ -26,10 +26,10 @@ module Aspect4r
           
           Aspect4r::Helper.backup_original_method self, method
           
-          self.a4r_definitions[method] ||= AspectForMethod.new(method)
-          self.a4r_definitions[method].add Aspect4r::Definition.around(around_method, options)
+          aspect = self.a4r_definitions[method] ||= AspectForMethod.new(method)
+          aspect.add Aspect4r::Definition.around(around_method, options)
           
-          Aspect4r::Helper.create_method self, method, self.a4r_definitions[method]
+          Aspect4r::Helper.create_method_placeholder self, method
         end
       end
     end

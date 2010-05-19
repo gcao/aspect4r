@@ -32,10 +32,20 @@ module Aspect4r
       end
     end
     
-    # method      - target method
-    # definitions - instance of AspectForMethod which contains aspect definitions for target method
+    def self.create_method_placeholder klass, method
+      klass.class_eval <<-CODE
+        def #{method} *args
+          aspect = self.class.a4r_definitions[:'#{method}']
+          Aspect4r::Helper.create_method self.class, :'#{method}', aspect
+          #{method} *args
+        end
+      CODE
+    end
+    
+    # method - target method
+    # aspect - instance of AspectForMethod which contains aspect definitions for target method
     def self.create_method klass, method, aspect
-      if aspect.empty?
+      if aspect.nil? or aspect.empty?
         # There is no aspect defined.
         klass.send :alias_method, method, backup_method_name(method)
         return
@@ -45,7 +55,7 @@ module Aspect4r
         aspect.around_aspects.reverse.each_with_index do |definition, i|
           wrap_method    = wrap_method(method, i)
           wrapped_method = wrapped_method(method, i)
-          
+
           klass.send :define_method, wrap_method do |*args|
             self.class.a4r_debug method, "Aspect: #{definition.inspect}" if self.class.a4r_debug_mode?
             

@@ -35,3 +35,8 @@ Mix aspects from multiple modules
 Mix aspects in body and inherited
 
 Mix aspects in body, inherited and in module
+
+== optimization idea
+
+On create method, define method as a place holder which will generate the real method on first execution
+
