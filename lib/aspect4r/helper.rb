@@ -51,6 +51,8 @@ module Aspect4r
         return
       end
       
+      wrap_method = backup_method_name(method)
+      
       if aspect.around_aspects?
         aspect.around_aspects.reverse.each_with_index do |definition, i|
           wrap_method    = wrap_method(method, i)
@@ -69,6 +71,12 @@ module Aspect4r
             
             result
           end
+        end
+        
+        unless aspect.before_aspects? or aspect.after_aspects?
+          klass.send :alias_method, method, wrap_method
+          klass.send :remove_method, wrap_method
+          return
         end
       end
       
@@ -105,16 +113,7 @@ module Aspect4r
           return result.value
         end
         
-        if aspect.around_aspects.empty?
-          self.class.a4r_debug method, "Invoking original method" if self.class.a4r_debug_mode?
-          
-          result = send(:"#{method}_without_a4r", *args)
-        else
-          self.class.a4r_debug method, "'around' aspects: #{aspect.around_aspects.length}" if self.class.a4r_debug_mode?
-          
-          wrap_method = Aspect4r::Helper.wrap_method(method, aspect.around_aspects.length - 1)
-          result = send wrap_method, *args
-        end
+        result = send(wrap_method, *args)
         
         self.class.a4r_debug method, "Result: #{result.inspect}" if self.class.a4r_debug_mode?
 
