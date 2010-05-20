@@ -57,7 +57,7 @@ module Aspect4r
       end
     CODE
     
-    # Use local variables: method, wrap_method and aspect 
+    # Use local variables: method, wrap_method(backup of original method or wrap method of outmost around aspect) and aspect 
     METHOD_TEMPLATE = ERB.new <<-CODE
       def <%= method %> *args
         result = nil
@@ -117,6 +117,7 @@ module Aspect4r
       end
       
       code = METHOD_TEMPLATE.result(binding)
+      # puts code
       klass.class_eval code
     end
   end

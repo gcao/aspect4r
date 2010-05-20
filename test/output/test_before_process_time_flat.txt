@@ -1,14 +1,14 @@
-Thread ID: 108760
-Total: 0.630515
+Thread ID: 141530
+Total: 0.676771
 
  %self     total     self     wait    child    calls  name
- 32.93      0.28     0.21     0.00     0.08    10000  BeforeTest::Test#test
- 27.83      0.63     0.18     0.00     0.46        1  RubyProf::Test#run_profile
- 16.96      0.41     0.11     0.00     0.30    10000  BeforeTest#test_before
-  7.20      0.46     0.05     0.00     0.41    10000  Kernel#__send__
-  5.23      0.03     0.03     0.00     0.00    10000  BeforeTest::Test#a4r_before_0_9091850
-  3.57      0.02     0.02     0.00     0.00    10000  Kernel#is_a?
-  3.19      0.02     0.02     0.00     0.00    10000  BeforeTest::Test#test_without_a4r
-  3.10      0.02     0.02     0.00     0.00    10000  BeforeTest::Test#test_no_aspect
+ 28.85      0.68     0.20     0.00     0.48        1  RubyProf::Test#run_profile
+ 28.80      0.25     0.19     0.00     0.06    10000  BeforeTest::Test#test
+ 15.91      0.44     0.11     0.00     0.33    10000  BeforeTest#test_before
+  8.54      0.08     0.06     0.00     0.02    10000  BeforeTest::Test#test_no_aspect
+  6.50      0.48     0.04     0.00     0.44    10000  Kernel#__send__
+  5.66      0.04     0.04     0.00     0.00    20000  BeforeTest::Test#before_test
+  2.95      0.02     0.02     0.00     0.00    10000  Kernel#is_a?
+  2.78      0.02     0.02     0.00     0.00    10000  BeforeTest::Test#test_without_a4r
 
 
