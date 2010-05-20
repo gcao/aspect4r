@@ -1,8 +1,6 @@
 class Class 
-  private
-  
   def inherited_with_aspect4r(child)
-    inherited_without_aspect4r(child) if respond_to?(:inherited_without_aspect4r)
+    inherited_without_aspect4r(child) if respond_to?(:inherited_without_aspect4r, true)
     
     return if @a4r_definitions.nil? or @a4r_definitions.empty?
   

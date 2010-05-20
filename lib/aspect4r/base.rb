@@ -12,17 +12,17 @@ module Aspect4r
     end
 
     module ClassMethods
-      def a4r_debug_mode debug_mode = true
-        @a4r_debug_mode = debug_mode
-      end
-      
-      def a4r_debug_mode?
-        @a4r_debug_mode
-      end
-      
-      def a4r_debug method, message
-        puts "A4R - [#{method}] #{message}" if @a4r_debug_mode
-      end
+      # def a4r_debug_mode debug_mode = true
+      #   @a4r_debug_mode = debug_mode
+      # end
+      # 
+      # def a4r_debug_mode?
+      #   @a4r_debug_mode
+      # end
+      # 
+      # def a4r_debug method, message
+      #   puts "A4R - [#{method}] #{message}" if @a4r_debug_mode
+      # end
       
       def a4r_definitions
         @a4r_definitions ||= {}
