@@ -1,6 +1,4 @@
 class Module
-  private
-  
   def included_with_aspect4r(base)
     included_without_aspect4r(child) if respond_to?(:included_without_aspect4r)
     
