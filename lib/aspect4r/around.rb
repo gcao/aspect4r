@@ -27,7 +27,7 @@ module Aspect4r
           Aspect4r::Helper.backup_original_method self, method
           
           aspect = self.a4r_definitions[method] ||= AspectForMethod.new(method)
-          aspect.add Aspect4r::Definition.around(around_method, options)
+          aspect.add Aspect4r::Definition.around(around_method, Aspect4r::Helper.to_group(self), options)
           
           Aspect4r::Helper.create_method_placeholder self, method
         end

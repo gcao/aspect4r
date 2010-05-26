@@ -26,4 +26,15 @@ class Module
   
   alias included_without_aspect4r included
   alias included                  included_with_aspect4r
+  
+  def method_added_with_aspect4r(method)
+    method_added_without_aspect4r(child) if respond_to?(:method_added_without_aspect4r)
+    
+    # skip if method name starts with a4r_
+    
+    # rename method to method_without_a4r if there are advice(s) attached.
+  end
+  
+  alias method_added_without_aspect4r method_added
+  alias method_added                  method_added_with_aspect4r
 end

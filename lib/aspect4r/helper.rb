@@ -49,28 +49,34 @@ module Aspect4r
     end
     
     # Use local variables: wrap_method, wrapped_method(method to be invoked from inside), method, definition(around aspect definition)
+    # klass
+    # method
     WRAP_METHOD_TEMPLATE = ERB.new <<-CODE
       def <%= wrap_method %> *args
-        <% if definition.options[:method_name_arg] %>
-        result = <%= definition.with_method %> '<%= method %>', '<%= wrapped_method %>', *args
+        <% if advice.options[:method_name_arg] %>
+        result = <%= advice.with_method %> '<%= method %>', '<%= wrapped_method %>', *args
         <% else %>
-        result = <%= definition.with_method %> '<%= wrapped_method %>', *args
+        result = <%= advice.with_method %> '<%= wrapped_method %>', *args
         <% end %>
         
         result
       end
     CODE
     
-    def self.create_method_for_around_advice klass, method, wrapped_method, advice
+    def self.create_method_for_around_advice klass, method, wrap_method, wrapped_method, advice
       code = WRAP_METHOD_TEMPLATE.result(binding)
+      # puts code
       klass.class_eval code
     end
     
-    # Use local variables: method, wrap_method(backup of original method or wrap method of outmost around aspect) and aspect 
+    # wrap_method
+    # wrapped_method
+    # before_advices
+    # after_advices
     METHOD_TEMPLATE = ERB.new <<-CODE
-      def <%= method %> *args
+      def <%= wrap_method %> *args
         result = nil
-        <% aspect.before_aspects.each do |definition| %>
+        <% before_advices.each do |definition| %>
           <% if definition.options[:method_name_arg] %>
         result = <%= definition.with_method %> '<%= method %>', *args
           <% else %>
@@ -84,9 +90,9 @@ module Aspect4r
           <% end %>
         <% end %>
         
-        result = <%= wrap_method %> *args
+        result = <%= wrapped_method %> *args
         
-        <% aspect.after_aspects.each do |definition| %>
+        <% after_advices.each do |definition| %>
           <% if definition.options[:method_name_arg] %>
         result = <%= definition.with_method %> '<%= method %>', result, *args
           <% else %>
@@ -98,6 +104,15 @@ module Aspect4r
       end
     CODE
     
+    def self.create_method_for_before_after_advices klass, method, wrap_method, wrapped_method, advices
+      before_advices = advices.select {|advice| advice.before? }
+      after_advices  = advices.select {|advice| advice.after?  }
+      
+      code = METHOD_TEMPLATE.result(binding)
+      # puts code
+      klass.class_eval code
+    end
+    
     # method - target method
     # aspect - instance of AspectForMethod which contains aspect definitions for target method
     def self.create_method klass, method, aspect
@@ -107,15 +122,28 @@ module Aspect4r
         return
       end
       
-      wrap_method = backup_method_name(method)
-      
       grouped_advices = []
+      
+      i = 0
+      wrap_method = "#{method}_a4r_#{i}"
+      wrapped_method = backup_method_name(method)
       
       aspect.advices.each do |advice|
         if advice.around?
-          wrap_method = create_method_for_before_after_advices klass, method, wrap_method, advices unless grouped_advices.empty?
+          unless grouped_advices.empty?
+            wrap_method = "#{method}_a4r_#{i}"
+            
+            create_method_for_before_after_advices klass, method, wrap_method, wrapped_method, grouped_advices
+            
+            i += 1
+            wrapped_method = wrap_method
+          end
 
-          wrap_method = create_method_for_around_advice klass, method, wrap_method, advice
+          wrap_method = "#{method}_a4r_#{i}"
+          create_method_for_around_advice klass, method, wrap_method, wrapped_method, advice
+          
+          i += 1
+          wrapped_method = wrap_method
           
           grouped_advices = []
         else
@@ -123,31 +151,14 @@ module Aspect4r
         end
       end
       
+      # create wrap method for before/after advices which are not wrapped inside around advice.
       unless grouped_advices.empty?
-        wrap_method = create_method_for_before_after_advices klass, method, wrap_method, advices unless grouped_advices.empty?
-        alias method wrap_method
-        remove_method wrap_method
+        create_method_for_before_after_advices klass, method, wrap_method, wrapped_method, grouped_advices unless grouped_advices.empty?
       end
-      
-      if aspect.around_aspects?
-        aspect.around_aspects.reverse.each_with_index do |definition, i|
-          wrap_method    = wrap_method(method, i)
-          wrapped_method = wrapped_method(method, i)
 
-          code = WRAP_METHOD_TEMPLATE.result(binding)
-          klass.class_eval code
-        end
-        
-        unless aspect.before_aspects? or aspect.after_aspects?
-          klass.send :alias_method, method, wrap_method
-          klass.send :remove_method, wrap_method
-          return
-        end
-      end
-      
-      code = METHOD_TEMPLATE.result(binding)
-      # puts code
-      klass.class_eval code
+      # rename the outermost wrap method to the target method
+      klass.send :alias_method, method, wrap_method
+      klass.send :remove_method, wrap_method
     end
   end
 end
