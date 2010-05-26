@@ -20,7 +20,7 @@ class Module
         existing_aspects[method] = (definition.clone rescue definition)
       end
       
-      Aspect4r::Helper.create_method base, method, existing_aspects[method]
+      Aspect4r::Helper.create_method_placeholder base, method
     end
   end
   

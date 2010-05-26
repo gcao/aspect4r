@@ -84,6 +84,40 @@ describe Aspect4r do
     o.value.should == %w(before around1 test around2 after)
   end
   
+  it "double inclusion" do
+    pending "Assign each aspect a unique name and check duplication before insert"
+    module AspectMod1
+      include Aspect4r
+      
+      before_method :test do
+        @value << "before"
+      end
+    end
+    
+    class ParentClass
+      include AspectMod1
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test_without_a4r
+        @value << "test"
+      end
+    end
+    
+    class ChildClass < ParentClass
+      include AspectMod1
+    end
+    
+    o = ChildClass.new
+    o.test
+    
+    o.value.should == %w(before test) 
+  end
+  
   it "define aspects in body then include module with aspects" do
     class AspectMix2
       include Aspect4r

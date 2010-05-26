@@ -40,3 +40,17 @@ Mix aspects in body, inherited and in module
 
 On create method, define method as a place holder which will generate the real method on first execution
 
+== Inheritance / inclusion
+
+Automatically group aspects by the class/module that creates them
+Before aspects defined in base class run immediately before wrapped method
+After aspects run immediagely after
+Around aspects wrap around wrapped method
+
+Before aspects defined in module that are included at the beginning run before aspects from base class and after those in current class
+After aspects in module run after aspects from base class and before those in current class
+Around aspects in module wrap around wrapped method + before/after aspects in base class
+
+Before aspects defined in module that are included later run before all aspects already defined so far
+After aspects in module run after all aspects
+Around aspects in module wrap around wrapped method + before/after aspects

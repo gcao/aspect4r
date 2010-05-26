@@ -9,6 +9,10 @@ module Aspect4r
       end
     end
     
+    def self.to_group class_or_module
+      class_or_module.hash
+    end
+    
     def self.backup_method_name method
       "#{method}_without_a4r"
     end
@@ -57,6 +61,11 @@ module Aspect4r
       end
     CODE
     
+    def self.create_method_for_around_advice klass, method, wrapped_method, advice
+      code = WRAP_METHOD_TEMPLATE.result(binding)
+      klass.class_eval code
+    end
+    
     # Use local variables: method, wrap_method(backup of original method or wrap method of outmost around aspect) and aspect 
     METHOD_TEMPLATE = ERB.new <<-CODE
       def <%= method %> *args
@@ -99,6 +108,26 @@ module Aspect4r
       end
       
       wrap_method = backup_method_name(method)
+      
+      grouped_advices = []
+      
+      aspect.advices.each do |advice|
+        if advice.around?
+          wrap_method = create_method_for_before_after_advices klass, method, wrap_method, advices unless grouped_advices.empty?
+
+          wrap_method = create_method_for_around_advice klass, method, wrap_method, advice
+          
+          grouped_advices = []
+        else
+          grouped_advices << advice
+        end
+      end
+      
+      unless grouped_advices.empty?
+        wrap_method = create_method_for_before_after_advices klass, method, wrap_method, advices unless grouped_advices.empty?
+        alias method wrap_method
+        remove_method wrap_method
+      end
       
       if aspect.around_aspects?
         aspect.around_aspects.reverse.each_with_index do |definition, i|

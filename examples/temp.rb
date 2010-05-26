@@ -2,40 +2,24 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'aspect4r'
 
-A = Class.new do
+class A
   include Aspect4r
   
-  def test value
-    puts 'test'
-    value
+  def test
+    puts 'A: test'
   end
   
-  before_method :test do |value|
-    puts 'before test'
+  before_method :test do
+    puts 'A: before(test)'
   end
-  
-  after_method :test do |result, value|
-    puts 'after test'
-    result
-  end
-  
-  around_method :test do |proxy_method, value|
-    puts 'around test 1'
-    result = send proxy_method, value
-    puts 'around test 2'
-    result
-  end
-  
 end
 
-puts "Example 1:"
-puts A.new.test(1)
-# ==== Output ====
-# Example 1:
-# before test
-# around test 1
-# test
-# around test 2
-# after test
-# 1
+class B < A
+  include Aspect4r
+  
+  before_method :test do
+    puts 'B: before(test)'
+  end
+end
 
+B.new.test
