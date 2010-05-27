@@ -15,18 +15,18 @@ describe Aspect4r do
         @value << "test"
       end
       
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end
+      
       before_method :test do
         @value << "before"
       end
       
       after_method :test do |result|
         @value << "after"
-      end
-      
-      around_method :test do |proxy_method|
-        @value << "around1"
-        send proxy_method
-        @value << "around2"
       end
     end
     

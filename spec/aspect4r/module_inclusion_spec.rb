@@ -16,6 +16,12 @@ describe Aspect4r do
     
     mod = Module.new do
       include Aspect4r
+  
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end   
       
       before_method :test do
         @value << "before"
@@ -24,12 +30,6 @@ describe Aspect4r do
       after_method :test do |result|
         @value << "after"
       end
-  
-      around_method :test do |proxy_method|
-        @value << "around1"
-        send proxy_method
-        @value << "around2"
-      end   
     end
 
     klass.send :alias_method, Aspect4r::Helper.backup_method_name(:test), :test
@@ -47,16 +47,16 @@ describe Aspect4r do
   it "include module with aspects then add aspects in body" do
     module AspectMod
       include Aspect4r
-      
-      after_method :test do |result|
-        @value << "after"
-      end
   
       around_method :test do |proxy_method|
         @value << "around1"
         send proxy_method
         @value << "around2"
-      end   
+      end
+      
+      after_method :test do |result|
+        @value << "after"
+      end
     end
     
     class AspectMix
@@ -85,7 +85,6 @@ describe Aspect4r do
   end
   
   it "double inclusion" do
-    pending "Assign each aspect a unique name and check duplication before insert"
     module AspectMod1
       include Aspect4r
       
@@ -139,16 +138,16 @@ describe Aspect4r do
     
     mod = Module.new do
       include Aspect4r
-      
-      after_method :test do |result|
-        @value << "after"
-      end
   
       around_method :test do |proxy_method|
         @value << "around1"
         send proxy_method
         @value << "around2"
-      end   
+      end
+      
+      after_method :test do |result|
+        @value << "after"
+      end
     end
 
     AspectMix2.send :include, mod
@@ -156,6 +155,74 @@ describe Aspect4r do
     o = AspectMix2.new
     o.test
     
-    o.value.should == %w(before around1 test around2 after)
+    o.value.should == %w(around1 before test around2 after)
+  end
+
+  it "before in body and in module" do
+    module AspectMod3
+      include Aspect4r
+      
+      before_method :test do
+        @value << "before(module)"
+      end
+    end
+    
+    class AspectMix3
+      include Aspect4r
+      include AspectMod3
+
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test_without_a4r
+        @value << "test"
+      end
+      
+      before_method :test do
+        @value << "before(body)"
+      end
+    end
+
+    o = AspectMix3.new
+    o.test
+    
+    o.value.should == %w(before(body) before(module) test)
+  end
+  
+  it "after in body and in module" do
+    module AspectMod4
+      include Aspect4r
+      
+      after_method :test do |result|
+        @value << "after(module)"
+      end
+    end
+    
+    class AspectMix4
+      include Aspect4r
+      include AspectMod4
+
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test_without_a4r
+        @value << "test"
+      end
+      
+      after_method :test do
+        @value << "after(body)"
+      end
+    end
+
+    o = AspectMix4.new
+    o.test
+    
+    o.value.should == %w(test after(module) after(body))
   end
 end

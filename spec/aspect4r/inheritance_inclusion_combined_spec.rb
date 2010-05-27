@@ -5,18 +5,18 @@ describe Aspect4r do
     module Mod
       include Aspect4r
       
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end
+      
       before_method :test do
         @value << "before"
       end
       
       after_method :test do |result|
         @value << "after"
-      end
-      
-      around_method :test do |proxy_method|
-        @value << "around1"
-        send proxy_method
-        @value << "around2"
       end
     end
     
@@ -47,18 +47,18 @@ describe Aspect4r do
     module Mod2
       include Aspect4r
       
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end
+      
       before_method :test do
         @value << "before"
       end
       
       after_method :test do |result|
         @value << "after"
-      end
-      
-      around_method :test do |proxy_method|
-        @value << "around1"
-        send proxy_method
-        @value << "around2"
       end
     end
     
@@ -94,18 +94,18 @@ describe Aspect4r do
     module Mod3
       include Aspect4r
       
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end
+      
       before_method :test do
         @value << "before(module)"
       end
       
       after_method :test do |result|
         @value << "after"
-      end
-      
-      around_method :test do |proxy_method|
-        @value << "around1"
-        send proxy_method
-        @value << "around2"
       end
     end
     
@@ -135,6 +135,6 @@ describe Aspect4r do
     o = Child3.new
     o.test
     
-    o.value.should == %w(before(parent) before(module) around1 test around2 after)
+    o.value.should == %w(before(module) around1 before(parent) test around2 after)
   end
 end

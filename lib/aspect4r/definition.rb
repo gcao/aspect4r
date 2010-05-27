@@ -13,6 +13,10 @@ module Aspect4r
       @options     = options
     end
     
+    def name
+      options[:name] || with_method
+    end
+    
     %w(before after around).each do |aspect|
       class_eval <<-CODE
         def self.#{aspect} with_method, group, options = {}
