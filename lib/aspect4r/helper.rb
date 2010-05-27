@@ -39,7 +39,7 @@ module Aspect4r
     end
     
     def self.create_method_placeholder klass, method
-      klass.class_eval <<-CODE
+      klass.class_eval <<-CODE, __FILE__, __LINE__
         def #{method} *args
           aspect = self.class.a4r_definitions[:'#{method}']
           Aspect4r::Helper.create_method self.class, :'#{method}', aspect
@@ -48,9 +48,9 @@ module Aspect4r
       CODE
     end
     
-    # Use local variables: wrap_method, wrapped_method(method to be invoked from inside), method, definition(around aspect definition)
-    # klass
-    # method
+    # wrap_method
+    # wrapped_method: method to be invoked from inside
+    # advice
     WRAP_METHOD_TEMPLATE = ERB.new <<-CODE
       def <%= wrap_method %> *args
         <% if advice.options[:method_name_arg] %>
@@ -66,7 +66,7 @@ module Aspect4r
     def self.create_method_for_around_advice klass, method, wrap_method, wrapped_method, advice
       code = WRAP_METHOD_TEMPLATE.result(binding)
       # puts code
-      klass.class_eval code
+      klass.class_eval code, __FILE__
     end
     
     # wrap_method
@@ -110,7 +110,7 @@ module Aspect4r
       
       code = METHOD_TEMPLATE.result(binding)
       # puts code
-      klass.class_eval code
+      klass.class_eval code, __FILE__
     end
     
     # method - target method
@@ -153,6 +153,7 @@ module Aspect4r
       
       # create wrap method for before/after advices which are not wrapped inside around advice.
       unless grouped_advices.empty?
+        wrap_method = "#{method}_a4r_#{i}"
         create_method_for_before_after_advices klass, method, wrap_method, wrapped_method, grouped_advices unless grouped_advices.empty?
       end
 

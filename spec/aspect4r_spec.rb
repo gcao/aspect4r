@@ -17,8 +17,32 @@ describe "Aspect4r execution order" do
     end
   end
   
-  it "should be correct" do
+  it "around + before + after" do
     @klass.class_eval do
+      around_method :test do |proxy_method|
+        @value << "around1"
+        send proxy_method
+        @value << "around2"
+      end
+      
+      before_method :test do
+        @value << "before"
+      end
+      
+      after_method :test do |result|
+        @value << "after"
+      end
+    end
+    
+    o = @klass.new
+    o.test
+    
+    o.value.should == %w(before around1 test around2 after)
+  end
+  
+  it "before + after + around" do
+    @klass.class_eval do
+      
       before_method :test do
         @value << "before"
       end
@@ -37,11 +61,23 @@ describe "Aspect4r execution order" do
     o = @klass.new
     o.test
     
-    o.value.should == %w(before around1 test around2 after)
+    o.value.should == %w(around1 before test after around2)
   end
   
-  it "should be correct when there are 2 of each" do
+  it "2 around + 2 before + 2 after" do
     @klass.class_eval do
+      around_method :test do |proxy_method|
+        @value << "around11"
+        send proxy_method
+        @value << "around12"
+      end
+      
+      around_method :test do |proxy_method|
+        @value << "around21"
+        send proxy_method
+        @value << "around22"
+      end
+      
       before_method :test do
         @value << "before1"
       end
@@ -57,24 +93,43 @@ describe "Aspect4r execution order" do
       after_method :test do
         @value << "after2"
       end
+    end
+    
+    o = @klass.new
+    o.test
+    
+    o.value.should == %w(before1 before2 around21 around11 test around12 around22 after1 after2)
+  end
+  
+  it "before + after + around + before + after" do
+    @klass.class_eval do
+      before_method :test do
+        @value << "before1"
+      end
       
-      around_method :test do |proxy_method|
-        @value << "around11"
-        send proxy_method
-        @value << "around12"
+      after_method :test do |result|
+        @value << "after1"
       end
       
       around_method :test do |proxy_method|
-        @value << "around21"
+        @value << "around1"
         send proxy_method
-        @value << "around22"
+        @value << "around2"
+      end
+      
+      before_method :test do
+        @value << "before2"
+      end
+      
+      after_method :test do |result|
+        @value << "after2"
       end
     end
     
     o = @klass.new
     o.test
     
-    o.value.should == %w(before1 before2 around11 around21 test around22 around12 after1 after2)
+    o.value.should == %w(before2 around1 before1 test after1 around2 after2)
   end
 end
 
@@ -86,14 +141,14 @@ describe "Aspect4r result handling" do
       def test
         "test"
       end
-
-      after_method :test do |result|
-        result + " after"
-      end
       
       around_method :test do |proxy_method|
         result = send proxy_method
         "around1 #{result} around2"
+      end
+
+      after_method :test do |result|
+        result + " after"
       end
     end
     
@@ -125,6 +180,12 @@ describe "Aspect4r chaining" do
         @value << "process_result"
       end
       
+      around_method :test do |proxy_method|
+        @value << "around11"
+        send proxy_method
+        @value << "around12"
+      end
+      
       before_method :test do
         @value << "before1"
       end
@@ -151,12 +212,6 @@ describe "Aspect4r chaining" do
       
       after_method :process_result do
         @value << "after(process_result)"
-      end
-      
-      around_method :test do |proxy_method|
-        @value << "around11"
-        send proxy_method
-        @value << "around12"
       end
     end
       

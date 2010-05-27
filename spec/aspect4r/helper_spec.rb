@@ -69,7 +69,7 @@ describe Aspect4r::Helper do
     
     it "before aspect" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add(Aspect4r::Definition.before :before_test)
+      aspect.add Aspect4r::Definition.before(:before_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -80,7 +80,7 @@ describe Aspect4r::Helper do
     
     it "after aspect" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add(Aspect4r::Definition.after :after_test)
+      aspect.add Aspect4r::Definition.after(:after_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -91,7 +91,7 @@ describe Aspect4r::Helper do
     
     it "around aspect" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add(Aspect4r::Definition.around :around_test)
+      aspect.add Aspect4r::Definition.around(:around_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -102,8 +102,8 @@ describe Aspect4r::Helper do
     
     it "before + after" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add(Aspect4r::Definition.before :before_test)
-      aspect.add(Aspect4r::Definition.after :after_test)
+      aspect.add Aspect4r::Definition.before(:before_test, 0)
+      aspect.add Aspect4r::Definition.after(:after_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -112,11 +112,11 @@ describe Aspect4r::Helper do
       o.value.should == %w(before_test test_without_a4r after_test)
     end
     
-    it "before + after + around" do
+    it "around + before + after" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add(Aspect4r::Definition.before :before_test)
-      aspect.add(Aspect4r::Definition.after :after_test)
-      aspect.add(Aspect4r::Definition.around :around_test)
+      aspect.add Aspect4r::Definition.around(:around_test, 0)
+      aspect.add Aspect4r::Definition.before(:before_test, 0)
+      aspect.add Aspect4r::Definition.after(:after_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
