@@ -28,6 +28,10 @@ module Aspect4r
         backup_method_name(method)
       end
     end
+    
+    def self.creating_method?
+      @creating_method
+    end
       
     def self.backup_original_method klass, method
       method             = method.to_s
@@ -39,6 +43,7 @@ module Aspect4r
     end
     
     def self.create_method_placeholder klass, method
+      @creating_method = true
       klass.class_eval <<-CODE, __FILE__, __LINE__
         def #{method} *args
           aspect = self.class.a4r_definitions[:'#{method}']
@@ -46,6 +51,7 @@ module Aspect4r
           #{method} *args
         end
       CODE
+      @creating_method = nil
     end
     
     # wrap_method

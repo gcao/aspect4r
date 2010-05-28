@@ -5,11 +5,16 @@ require 'aspect4r'
 class A
   include Aspect4r
   
-  # a4r_debug_mode
-  
   def test value
     puts 'test'
     value
+  end
+  
+  around_method :test do |proxy_method, value|
+    puts 'around test 1'
+    result = send proxy_method, value
+    puts 'around test 2'
+    result
   end
   
   before_method :test do |value|
@@ -18,13 +23,6 @@ class A
   
   after_method :test do |result, value|
     puts 'after test'
-    result
-  end
-  
-  around_method :test do |proxy_method, value|
-    puts 'around test 1'
-    result = send proxy_method, value
-    puts 'around test 2'
     result
   end
 end
@@ -39,4 +37,3 @@ puts A.new.test(1)
 # around test 2
 # after test
 # 1
-

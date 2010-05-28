@@ -225,4 +225,38 @@ describe Aspect4r do
     
     o.value.should == %w(test after(module) after(body))
   end
+  
+  it "attach module after both class and module is defined" do
+    # pending "backup method needs to be fixed"
+    module AspectMod5
+      include Aspect4r
+      
+      before_method :test do
+        @value << "before1"
+      end
+      
+      before_method :test do
+        @value << "before2"
+      end
+    end
+    
+    class AspectMix5
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+      
+      include AspectMod5
+    end
+
+    o = AspectMix5.new
+    o.test
+    
+    o.value.should == %w(before1 before2 test)
+  end
 end

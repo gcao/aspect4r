@@ -1,11 +1,9 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'aspect4r/after'
+require 'aspect4r'
 
 class A
-  include Aspect4r::After
-  
-  # a4r_debug_mode
+  include Aspect4r
   
   def test value
     puts 'test'
