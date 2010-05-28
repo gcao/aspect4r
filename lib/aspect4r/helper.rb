@@ -125,9 +125,12 @@ module Aspect4r
     # method - target method
     # aspect - instance of AspectForMethod which contains aspect definitions for target method
     def self.create_method klass, method, aspect
+      @creating_method = true
+
       if aspect.nil? or aspect.empty?
         # There is no aspect defined.
         klass.send :alias_method, method, backup_method_name(method)
+        @creating_method = nil
         return
       end
       
@@ -175,6 +178,8 @@ module Aspect4r
       # rename the outermost wrap method to the target method
       klass.send :alias_method, method, wrap_method
       klass.send :remove_method, wrap_method
+
+      @creating_method = nil
     end
   end
 end
