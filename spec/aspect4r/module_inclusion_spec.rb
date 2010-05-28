@@ -227,7 +227,6 @@ describe Aspect4r do
   end
   
   it "attach module after both class and module is defined" do
-    # pending "backup method needs to be fixed"
     module AspectMod5
       include Aspect4r
       

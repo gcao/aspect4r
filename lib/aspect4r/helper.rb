@@ -33,6 +33,7 @@ module Aspect4r
       @creating_method
     end
       
+    # TODO Create xxx_with_a4r alias in parent class if xxx is defined there
     def self.backup_original_method klass, method
       method             = method.to_s
       method_without_a4r = backup_method_name(method)
