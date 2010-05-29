@@ -10,12 +10,12 @@ class A
     value
   end
   
-  after_method :test do |result, value|
+  after :test do |result, value|
     puts 'after test'
     result
   end
   
-  after_method :test do |result, value|
+  after :test do |result, value|
     puts 'after test 2'
     result * 100
   end

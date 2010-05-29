@@ -19,17 +19,17 @@ describe "Aspect4r execution order" do
   
   it "around + before + after" do
     @klass.class_eval do
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around1"
-        send proxy_method
+        send proxy
         @value << "around2"
       end
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
     end
@@ -43,17 +43,17 @@ describe "Aspect4r execution order" do
   it "before + after + around" do
     @klass.class_eval do
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
       
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around1"
-        send proxy_method
+        send proxy
         @value << "around2"
       end
     end
@@ -66,31 +66,31 @@ describe "Aspect4r execution order" do
   
   it "2 around + 2 before + 2 after" do
     @klass.class_eval do
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around11"
-        send proxy_method
+        send proxy
         @value << "around12"
       end
       
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around21"
-        send proxy_method
+        send proxy
         @value << "around22"
       end
       
-      before_method :test do
+      before :test do
         @value << "before1"
       end
       
-      before_method :test do
+      before :test do
         @value << "before2"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after1"
       end
       
-      after_method :test do
+      after :test do
         @value << "after2"
       end
     end
@@ -103,25 +103,25 @@ describe "Aspect4r execution order" do
   
   it "before + after + around + before + after" do
     @klass.class_eval do
-      before_method :test do
+      before :test do
         @value << "before1"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after1"
       end
       
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around1"
-        send proxy_method
+        send proxy
         @value << "around2"
       end
       
-      before_method :test do
+      before :test do
         @value << "before2"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after2"
       end
     end
@@ -142,12 +142,12 @@ describe "Aspect4r result handling" do
         "test"
       end
       
-      around_method :test do |proxy_method|
-        result = send proxy_method
+      around :test do |proxy|
+        result = send proxy
         "around1 #{result} around2"
       end
 
-      after_method :test do |result|
+      after :test do |result|
         result + " after"
       end
     end
@@ -180,37 +180,37 @@ describe "Aspect4r chaining" do
         @value << "process_result"
       end
       
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around11"
-        send proxy_method
+        send proxy
         @value << "around12"
       end
       
-      before_method :test do
+      before :test do
         @value << "before1"
       end
       
-      before_method :test, :do_something
+      before :test, :do_something
       
-      before_method :do_something do
+      before :do_something do
         @value << "before(do_something)"
       end
       
-      after_method :do_something do
+      after :do_something do
         @value << "after(do_something)"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after1"
       end
       
-      after_method :test, :process_result
+      after :test, :process_result
       
-      before_method :process_result do
+      before :process_result do
         @value << "before(process_result)"
       end
       
-      after_method :process_result do
+      after :process_result do
         @value << "after(process_result)"
       end
     end

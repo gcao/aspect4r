@@ -10,9 +10,9 @@ class A
     value
   end
   
-  around_method :test do |proxy_method, value|
+  around :test do |proxy, value|
     puts 'before test'
-    result = send proxy_method, value
+    result = send proxy, value
     puts 'after test'
     result
   end

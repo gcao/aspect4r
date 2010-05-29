@@ -15,17 +15,17 @@ describe Aspect4r do
         @value << "test"
       end
       
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around1"
-        send proxy_method
+        send proxy
         @value << "around2"
       end
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
     end
@@ -52,11 +52,11 @@ describe Aspect4r do
         @value << "test"
       end
       
-      before_method :test do
+      before :test do
         @value << "before(parent)"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after(parent)"
       end
     end
@@ -64,11 +64,11 @@ describe Aspect4r do
     class Child < parent
       include Aspect4r
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
     end
@@ -93,11 +93,11 @@ describe Aspect4r do
         @value << "test"
       end
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
     end
@@ -105,9 +105,9 @@ describe Aspect4r do
     class Child1 < parent
       include Aspect4r
       
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around(before)"
-        send proxy_method
+        send proxy
         @value << "around(after)"
       end
     end

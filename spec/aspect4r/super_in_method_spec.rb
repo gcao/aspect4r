@@ -22,7 +22,7 @@ describe "super in method body" do
         @value << "self"
       end
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
     end

@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Aspect4r::Helper do
-  describe "self.find_available_method_name" do
+  describe "self.find_available_name" do
     it "should return test0 as first available method" do
       Aspect4r::Helper.find_available_method_name(Class.new, "test").should =~ /test0/
     end
@@ -16,7 +16,7 @@ describe Aspect4r::Helper do
     end
   end
   
-  describe "self.create_method" do
+  describe "self.create" do
     before do
       @klass = Class.new do
         include Aspect4r
@@ -40,9 +40,9 @@ describe Aspect4r::Helper do
           result
         end
         
-        def around_test proxy_method
+        def around_test proxy
           @value << "around_test_before"
-          result = send(proxy_method)
+          result = send(proxy)
           @value << "around_test_after"
           result
         end
@@ -69,7 +69,7 @@ describe Aspect4r::Helper do
     
     it "before aspect" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add Aspect4r::Definition.before(:before_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::BEFORE, :before_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -80,7 +80,7 @@ describe Aspect4r::Helper do
     
     it "after aspect" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add Aspect4r::Definition.after(:after_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -91,7 +91,7 @@ describe Aspect4r::Helper do
     
     it "around aspect" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add Aspect4r::Definition.around(:around_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AROUND, :around_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -102,8 +102,8 @@ describe Aspect4r::Helper do
     
     it "before + after" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add Aspect4r::Definition.before(:before_test, 0)
-      aspect.add Aspect4r::Definition.after(:after_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::BEFORE, :before_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -114,9 +114,9 @@ describe Aspect4r::Helper do
     
     it "around + before + after" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add Aspect4r::Definition.around(:around_test, 0)
-      aspect.add Aspect4r::Definition.before(:before_test, 0)
-      aspect.add Aspect4r::Definition.after(:after_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AROUND, :around_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::BEFORE, :before_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new

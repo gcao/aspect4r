@@ -17,17 +17,17 @@ describe Aspect4r do
     mod = Module.new do
       include Aspect4r
   
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around1"
-        send proxy_method
+        send proxy
         @value << "around2"
       end   
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
   
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
     end
@@ -44,13 +44,13 @@ describe Aspect4r do
     module AspectMod
       include Aspect4r
   
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around1"
-        send proxy_method
+        send proxy
         @value << "around2"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
     end
@@ -69,7 +69,7 @@ describe Aspect4r do
         @value << "test"
       end
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
     end
@@ -84,7 +84,7 @@ describe Aspect4r do
     module AspectMod1
       include Aspect4r
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
     end
@@ -127,7 +127,7 @@ describe Aspect4r do
         @value << "test"
       end
       
-      before_method :test do
+      before :test do
         @value << "before"
       end
     end
@@ -135,13 +135,13 @@ describe Aspect4r do
     mod = Module.new do
       include Aspect4r
   
-      around_method :test do |proxy_method|
+      around :test do |proxy|
         @value << "around1"
-        send proxy_method
+        send proxy
         @value << "around2"
       end
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after"
       end
     end
@@ -158,7 +158,7 @@ describe Aspect4r do
     module AspectMod3
       include Aspect4r
       
-      before_method :test do
+      before :test do
         @value << "before(module)"
       end
     end
@@ -177,7 +177,7 @@ describe Aspect4r do
         @value << "test"
       end
       
-      before_method :test do
+      before :test do
         @value << "before(body)"
       end
     end
@@ -192,7 +192,7 @@ describe Aspect4r do
     module AspectMod4
       include Aspect4r
       
-      after_method :test do |result|
+      after :test do |result|
         @value << "after(module)"
       end
     end
@@ -211,7 +211,7 @@ describe Aspect4r do
         @value << "test"
       end
       
-      after_method :test do
+      after :test do
         @value << "after(body)"
       end
     end
@@ -226,11 +226,11 @@ describe Aspect4r do
     module AspectMod5
       include Aspect4r
       
-      before_method :test do
+      before :test do
         @value << "before1"
       end
       
-      before_method :test do
+      before :test do
         @value << "before2"
       end
     end
@@ -259,11 +259,11 @@ describe Aspect4r do
     module AspectMod6
       include Aspect4r
       
-      before_method :test do
+      before :test do
         @value << "before1"
       end
       
-      before_method :test do
+      before :test do
         @value << "before2"
       end
     end

@@ -6,7 +6,7 @@ module Aspect4r
     
     attr_accessor :type, :with_method, :group, :options
     
-    def initialize type, with_method, group, options
+    def initialize type, with_method, group, options = {}
       @type        = type
       @with_method = with_method
       @group       = group
