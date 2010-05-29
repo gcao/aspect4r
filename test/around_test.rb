@@ -6,15 +6,15 @@ class AroundTest < Test::Unit::TestCase
   class Test
     include Aspect4r
     
+    around :test, :around_test
+    
     def test_no_aspect; end
     
     def test; end
     
-    def around_test proxy_method
-      send proxy_method
+    def around_test proxy
+      send proxy
     end
-    
-    around_method :test, :around_test
   end
   
   def setup

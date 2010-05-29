@@ -6,6 +6,8 @@ class BeforeTest < Test::Unit::TestCase
   class Test
     include Aspect4r
     
+    before :test, :before_test
+    
     def test_no_aspect
       before_test
     end
@@ -13,8 +15,6 @@ class BeforeTest < Test::Unit::TestCase
     def test; end
     
     def before_test; end
-    
-    before_method :test, :before_test
   end
   
   def setup

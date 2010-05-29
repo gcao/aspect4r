@@ -6,6 +6,10 @@ class CombinedTest < Test::Unit::TestCase
   class Test
     include Aspect4r
     
+    before :test, :before_test
+    after  :test, :after_test
+    around :test, :around_test
+    
     def test_no_aspect
       before_test
       
@@ -20,13 +24,9 @@ class CombinedTest < Test::Unit::TestCase
     
     def after_test result; end
     
-    def around_test proxy_method
-      send proxy_method
+    def around_test proxy
+      send proxy
     end
-    
-    before_method :test, :before_test
-    after_method  :test, :after_test
-    around_method :test, :around_test
   end
   
   def setup

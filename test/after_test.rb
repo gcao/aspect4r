@@ -6,6 +6,8 @@ class AfterTest < Test::Unit::TestCase
   class Test
     include Aspect4r
     
+    after :test, :after_test
+    
     def test_no_aspect
       result = nil
       
@@ -15,8 +17,6 @@ class AfterTest < Test::Unit::TestCase
     def test; end
     
     def after_test result; end
-    
-    after_method :test, :after_test
   end
   
   def setup
