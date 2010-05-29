@@ -4,8 +4,8 @@ Aspect Oriented Programming support for Ruby
 
 == Feature
 
-* Extract common logic using before_method, after_method, around_method
-* before_method_check as method filters (work like before_filters in web application)
+* Extract common logic using before, after, around
+* before_check as method filters (work like before_filters in web application)
 * Aspects defined in super class will work in sub classes
 * When a module is included, its aspects are included too
 
@@ -13,6 +13,27 @@ Aspect Oriented Programming support for Ruby
 
   class A
     include Aspect4r
+    
+    around :test do |proxy_method, value|
+      send proxy_method, value
+    end
+  
+    before :test do |value|
+      puts "entering test(#{value})"
+    end
+
+    before  :test, :do_something
+    
+    before_filter :test do |value|
+      value >= 0
+    end
+
+    after :test do |result, value|
+      puts "test(#{value}) returned #{result}"
+      result
+    end
+
+    after :test, :do_something_else
     
     def test value
       ...
@@ -25,61 +46,12 @@ Aspect Oriented Programming support for Ruby
     def do_something_else result, value
       ...
     end
-  
-    before_method :test do |value|
-      puts "entering test(#{value})"
-    end
 
-    before_method :test, :do_something
-    
-    before_method_check :test do |value|
-      value >= 0
-    end
-
-    after_method :test do |result, value|
-      puts "test(#{value}) returned #{result}"
-      result
-    end
-
-    after_method :test, :do_something_else
-
-  end
-
-Note: target method should be renamed to xxx_without_a4r if it is defined after before/after definitions. e.g.
-
-  class B
-    include Aspect4r
-  
-    before_method :xxx do
-      ...
-    end
-  
-    def xxx_without_a4r     # renamed from xxx
-      ...
-    end
   end
   
 == How does it work?
 
-Use class A above as an example, here is what happens under the hood
-
-* When first before_method is called
-
-  * Alias test as test_without_a4r
-  * Create a new method (whose name is like 'a4r_before_0_???') that wraps the block associated with before_method
-  * Create a new AspectForMethod object and store it into class instance variable a4r_definitions(which is a hash {method => definition} )
-  * Recreate method 'test' to do this:
-
-    * For each before_method aspects, call its associated method. 
-    * If the associated method returns false/nil and options[:skip_if_false] is specified, return immediately. 
-    * Otherwise, call test_without_a4r and return its result
-
-* When second before_method is called
-
-  * Create AspectForMethod object and store into a4r_definitions
-  * Recreate method 'test' with same logic above
-
-== TODO 
+== TODO
 
 See github issues tab http://github.com/gcao/aspect4r/issues
 

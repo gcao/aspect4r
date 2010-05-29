@@ -22,7 +22,7 @@ describe Aspect4r::After do
     i = 100
     
     @klass.class_eval do
-      after_method :test do |result, value|
+      after :test do |result, value|
         i = 200
         'after_test'
       end
@@ -40,7 +40,7 @@ describe Aspect4r::After do
     i = 100
     
     @klass.class_eval do
-      after_method [:test] do |result, value|
+      after [:test] do |result, value|
         i = 200
       end
     end
@@ -53,7 +53,7 @@ describe Aspect4r::After do
   
   it "should have access to instance variable inside after block" do
     @klass.class_eval do
-      after_method :test do |result, value|
+      after :test do |result, value|
         @var = 1
       end
     end
@@ -68,7 +68,7 @@ describe Aspect4r::After do
     s = nil
     
     @klass.class_eval do
-      after_method :test, :method_name_arg => true do |method, result, value|
+      after :test, :method_name_arg => true do |method, result, value|
         s = method
         result
       end
@@ -86,7 +86,7 @@ describe Aspect4r::After do
         'do_something'
       end
   
-      after_method :test, :do_something
+      after :test, :do_something
     end
     
     o = @klass.new

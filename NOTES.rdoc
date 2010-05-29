@@ -1,27 +1,3 @@
-== Execution order
-
-  0. original method
-  1. before
-  2. after
-  3. around
-  4. before
-  5. after
-  6. before
-  7. around
-
-  ==>
-
-  1
-  4
-  6
-     - 3.1
-    |       - 7.1
-  3 |  7 --|  0
-    |       - 7.2
-     - 3.2
-  2
-  5
-
 == TEST TODO
 
 Class inheritance
@@ -54,3 +30,13 @@ Around aspects in module wrap around wrapped method + before/after aspects in ba
 Before aspects defined in module that are included later run before all aspects already defined so far
 After aspects in module run after all aspects
 Around aspects in module wrap around wrapped method + before/after aspects
+
+== Clean up
+
+Reduce duplication in before/after/around.rb
+
+Include Aspect4r::Base in target module/class when a module with advices is included.
+
+Add included_with_a4r(for module) and inherited_with_a4r(for class) when Aspect4r::Base is included
+
+Rename class AspectForMethod, Definition etc.

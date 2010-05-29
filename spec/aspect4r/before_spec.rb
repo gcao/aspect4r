@@ -21,7 +21,7 @@ describe Aspect4r::Before do
     i = 100
     
     @klass.class_eval do
-      before_method :test do |value|
+      before :test do |value|
         i = 200
       end
     end
@@ -38,7 +38,7 @@ describe Aspect4r::Before do
     i = 100
     
     @klass.class_eval do
-      before_method [:test] do |value|
+      before [:test] do |value|
         i = 200
       end
     end
@@ -53,7 +53,7 @@ describe Aspect4r::Before do
   
   it "should have access to instance variable inside before block" do
     @klass.class_eval do
-      before_method :test do |value|
+      before :test do |value|
         @var = 1
       end
     end
@@ -66,7 +66,7 @@ describe Aspect4r::Before do
   
   it "should skip method if block returns false and skip_if_false option is true" do
     @klass.class_eval do
-      before_method :test, :skip_if_false => true do |value|
+      before :test, :skip_if_false => true do |value|
         false
       end
     end
@@ -79,7 +79,7 @@ describe Aspect4r::Before do
   
   it "should skip method if block returns nil and skip_if_false option is true" do
     @klass.class_eval do
-      before_method :test, :skip_if_false => true do |value|
+      before :test, :skip_if_false => true do |value|
         nil
       end
     end
@@ -92,7 +92,7 @@ describe Aspect4r::Before do
   
   it "should not skip method if block did not return false and skip_if_false is not specified" do
     @klass.class_eval do
-      before_method :test do |value|
+      before :test do |value|
         false
       end
     end
@@ -107,7 +107,7 @@ describe Aspect4r::Before do
     s = nil
     
     @klass.class_eval do
-      before_method :test, :method_name_arg => true do |method, value|
+      before :test, :method_name_arg => true do |method, value|
         s = method
       end
     end
@@ -124,7 +124,7 @@ describe Aspect4r::Before do
         raise 'error'
       end
 
-      before_method :test, :do_something
+      before :test, :do_something
     end
     
     o = @klass.new
@@ -137,7 +137,7 @@ describe Aspect4r::Before do
         false
       end
 
-      before_method :test, :do_something, :skip_if_false => true
+      before :test, :do_something, :skip_if_false => true
     end
     
     o = @klass.new
@@ -152,7 +152,7 @@ describe Aspect4r::Before do
         Aspect4r::ReturnThis.new('do_something')
       end
 
-      before_method :test, :do_something
+      before :test, :do_something
     end
     
     o = @klass.new
@@ -161,9 +161,9 @@ describe Aspect4r::Before do
     o.value.should == 'init'
   end
   
-  it "before_method_check" do
+  it "before_filter" do
     @klass.class_eval do
-      before_method_check :test do
+      before_filter :test do
         false
       end
     end

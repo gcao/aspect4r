@@ -17,29 +17,42 @@ module Aspect4r
       "#{method}_without_a4r"
     end
     
-    def self.wrap_method method, i
-      "#{method}_a4r_around_#{i}"
-    end
-    
-    def self.wrapped_method method, i
-      if i > 0
-        "#{method}_a4r_around_#{i - 1}"
-      else
-        backup_method_name(method)
-      end
-    end
-    
     def self.creating_method?
       @creating_method
     end
-      
-    # TODO Create xxx_with_a4r alias in parent class if xxx is defined there
+
     def self.backup_original_method klass, method
       method             = method.to_s
       method_without_a4r = backup_method_name(method)
 
       if klass.instance_methods.include?(method) and not klass.instance_methods.include?(method_without_a4r)
         klass.send :alias_method, method_without_a4r, method
+      end
+    end
+    
+    def self.process_advice meta_data, klass_or_module, *methods, &block
+      methods.flatten!
+      
+      options = meta_data.default_options.clone
+      options.merge!(methods.pop) if methods.last.is_a? Hash
+      options.merge!(meta_data.mandatory_options)
+      
+      if block_given?
+        with_method = find_available_method_name klass_or_module, meta_data.with_method_prefix
+        klass_or_module.send :define_method, with_method, &block
+      else
+        with_method = methods.pop
+      end
+      
+      methods.each do |method|
+        method = method.to_sym
+        
+        backup_original_method klass_or_module, method
+        
+        aspect = klass_or_module.a4r_definitions[method] ||= AspectForMethod.new(method)
+        aspect.add Aspect4r::Definition.new(meta_data.advice_type, with_method, to_group(klass_or_module), options)
+        
+        create_method_placeholder klass_or_module, method
       end
     end
     

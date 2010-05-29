@@ -32,12 +32,8 @@ describe Aspect4r do
       end
     end
 
-    klass.send :alias_method, Aspect4r::Helper.backup_method_name(:test), :test
-    klass.send :include, Aspect4r
     klass.send :include, mod
     
-    Aspect4r::Helper.create_method klass, :test, mod.a4r_definitions[:test]
-
     o = klass.new
     o.test
     
@@ -102,7 +98,7 @@ describe Aspect4r do
         @value = []
       end
       
-      def test_without_a4r
+      def test
         @value << "test"
       end
     end
@@ -177,7 +173,7 @@ describe Aspect4r do
         @value = []
       end
       
-      def test_without_a4r
+      def test
         @value << "test"
       end
       
@@ -211,7 +207,7 @@ describe Aspect4r do
         @value = []
       end
       
-      def test_without_a4r
+      def test
         @value << "test"
       end
       
@@ -226,7 +222,7 @@ describe Aspect4r do
     o.value.should == %w(test after(module) after(body))
   end
   
-  it "attach module after both class and module is defined" do
+  it "include module after both class and module is defined" do
     module AspectMod5
       include Aspect4r
       
@@ -254,6 +250,39 @@ describe Aspect4r do
     end
 
     o = AspectMix5.new
+    o.test
+    
+    o.value.should == %w(before1 before2 test)
+  end
+  
+  it "include advices from module and then define target method should work" do
+    module AspectMod6
+      include Aspect4r
+      
+      before_method :test do
+        @value << "before1"
+      end
+      
+      before_method :test do
+        @value << "before2"
+      end
+    end
+    
+    class AspectMix6
+      include AspectMod6
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+    end
+
+    o = AspectMix6.new
     o.test
     
     o.value.should == %w(before1 before2 test)

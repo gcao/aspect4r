@@ -19,10 +19,6 @@ module Aspect4r
     
     %w(before after around).each do |aspect|
       class_eval <<-CODE
-        def self.#{aspect} with_method, group, options = {}
-          new #{aspect.upcase}, with_method, group, options
-        end
-        
         def #{aspect}? 
           type == #{aspect.upcase}
         end

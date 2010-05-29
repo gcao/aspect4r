@@ -22,7 +22,7 @@ describe Aspect4r::Around do
     i = 100
     
     @klass.class_eval do
-      around_method :test do |orig_method, value|
+      around :test do |orig, value|
         i = 200
         'around_block_return'
       end
@@ -40,7 +40,7 @@ describe Aspect4r::Around do
     i = 100
     
     @klass.class_eval do
-      around_method [:test] do |orig_method, value|
+      around [:test] do |orig, value|
         i = 200
       end
     end
@@ -53,7 +53,7 @@ describe Aspect4r::Around do
   
   it "should have access to instance variable inside around block" do
     @klass.class_eval do
-      around_method :test do |orig_method, value|
+      around :test do |orig, value|
         @var = 1
       end
     end
@@ -68,9 +68,9 @@ describe Aspect4r::Around do
     i = 100
     
     @klass.class_eval do
-      around_method :test do |orig_method, value|
+      around :test do |orig, value|
         i = 200
-        send orig_method, value
+        send orig, value
       end
     end
     
@@ -86,9 +86,9 @@ describe Aspect4r::Around do
     s = nil
     
     @klass.class_eval do
-      around_method :test, :method_name_arg => true do |method, orig_method, value|
+      around :test, :method_name_arg => true do |method, orig, value|
         s = method
-        send orig_method, value
+        send orig, value
       end
     end
     
@@ -100,11 +100,11 @@ describe Aspect4r::Around do
   
   it "should run around_* method instead of original method" do
     @klass.class_eval do
-      def do_something orig_method, value
+      def do_something orig, value
         raise 'error'
       end
   
-      around_method :test, :do_something
+      around :test, :do_something
     end
     
     o = @klass.new
@@ -113,11 +113,11 @@ describe Aspect4r::Around do
   
   it "should be able to invoke original method from around_* method" do
     @klass.class_eval do
-      def do_something orig_method, value
-        send orig_method, value
+      def do_something orig, value
+        send orig, value
       end
   
-      around_method :test, :do_something
+      around :test, :do_something
     end
     
     o = @klass.new

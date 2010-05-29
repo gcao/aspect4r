@@ -63,10 +63,10 @@ class Module
     method_added_without_a4r(child) if respond_to?(:method_added_without_a4r)
     
     return if method.to_s =~ /a4r/
-    
+
     # rename method to method_without_a4r and recreate method if there are advice(s) attached and this is not created by aspect4r
-    if not Aspect4r::Helper.creating_method? and @a4r_definitions and @a4r_definitions[method.to_s]
-      alias_method method, Aspect4r::Helper.backup_method_name(method)
+    if not Aspect4r::Helper.creating_method? and @a4r_definitions and @a4r_definitions[method]
+      alias_method Aspect4r::Helper.backup_method_name(method), method
       Aspect4r::Helper.create_method_placeholder self, method
     end
   end
