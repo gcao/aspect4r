@@ -64,32 +64,6 @@ describe Aspect4r::Before do
     o.instance_variable_get(:@var).should == 1
   end
   
-  it "should skip method if block returns false and skip_if_false option is true" do
-    @klass.class_eval do
-      before :test, :skip_if_false => true do |value|
-        false
-      end
-    end
-    
-    o = @klass.new
-    o.test('something').should be_false
-
-    o.value.should == 'init'
-  end
-  
-  it "should skip method if block returns nil and skip_if_false option is true" do
-    @klass.class_eval do
-      before :test, :skip_if_false => true do |value|
-        nil
-      end
-    end
-    
-    o = @klass.new
-    o.test('something').should be_nil
-
-    o.value.should == 'init'
-  end
-  
   it "should not skip method if block did not return false and skip_if_false is not specified" do
     @klass.class_eval do
       before :test do |value|
@@ -129,21 +103,6 @@ describe Aspect4r::Before do
     
     o = @klass.new
     lambda { o.test('something') }.should raise_error('error')
-  end
-  
-  it "should skip original method if before_* returns false and skip_if_false is true" do
-    @klass.class_eval do
-      def do_something value
-        false
-      end
-
-      before :test, :do_something, :skip_if_false => true
-    end
-    
-    o = @klass.new
-    o.test('something').should be_false
-    
-    o.value.should == 'init'
   end
   
   it "should skip original method if before_* returns instance of ReturnThis" do

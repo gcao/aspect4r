@@ -80,7 +80,7 @@ describe Aspect4r::Helper do
     
     it "after aspect" do
       aspect = Aspect4r::AspectForMethod.new(:test)
-      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0, :result_arg => true)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -103,7 +103,7 @@ describe Aspect4r::Helper do
     it "before + after" do
       aspect = Aspect4r::AspectForMethod.new(:test)
       aspect.add Aspect4r::Definition.new(Aspect4r::Definition::BEFORE, :before_test, 0)
-      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0, :result_arg => true)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new
@@ -116,7 +116,7 @@ describe Aspect4r::Helper do
       aspect = Aspect4r::AspectForMethod.new(:test)
       aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AROUND, :around_test, 0)
       aspect.add Aspect4r::Definition.new(Aspect4r::Definition::BEFORE, :before_test, 0)
-      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0)
+      aspect.add Aspect4r::Definition.new(Aspect4r::Definition::AFTER, :after_test, 0, :result_arg => true)
       Aspect4r::Helper.create_method @klass, :test, aspect
       
       o = @klass.new

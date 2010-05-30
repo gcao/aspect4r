@@ -1,3 +1,4 @@
+require 'aspect4r/errors'
 require 'aspect4r/definition'
 require 'aspect4r/metadata'
 require 'aspect4r/aspect_for_method'

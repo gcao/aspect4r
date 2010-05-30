@@ -116,10 +116,14 @@ module Aspect4r
 
         # After advices
 <% after_advices.each do |definition| %>
-<% if definition.options[:method_name_arg] %>
+<% if definition.options[:method_name_arg] and definition.options[:result_arg] %>
         result = <%= definition.with_method %> '<%= method %>', result, *args
-<% else %>
+<% elsif definition.options[:method_name_arg] %>
+        <%= definition.with_method %> '<%= method %>', *args
+<% elsif definition.options[:result_arg] %>
         result = <%= definition.with_method %> result, *args
+<% else %>
+        <%= definition.with_method %> *args
 <% end %>
 <% end %>
         

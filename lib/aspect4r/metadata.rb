@@ -17,9 +17,9 @@ module Aspect4r
       end
     end
     
-    BEFORE        = new Aspect4r::Definition::BEFORE
+    BEFORE        = new Aspect4r::Definition::BEFORE, nil, :skip_if_false => false
     BEFORE_FILTER = new Aspect4r::Definition::BEFORE, nil, :skip_if_false => true
-    AFTER         = new Aspect4r::Definition::AFTER
+    AFTER         = new Aspect4r::Definition::AFTER, :result_arg => true
     AROUND        = new Aspect4r::Definition::AROUND
   end
 end

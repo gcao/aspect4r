@@ -92,4 +92,17 @@ describe Aspect4r::After do
     o = @klass.new
     o.test('something').should == 'do_something'
   end
+  
+  it "should not pass result and not change result if result_arg is set to false" do
+    @klass.class_eval do
+      def do_something value
+        'do_something'
+      end
+  
+      after :test, :do_something, :result_arg => false
+    end
+    
+    o = @klass.new
+    o.test('something').should == 'test_return'
+  end
 end
