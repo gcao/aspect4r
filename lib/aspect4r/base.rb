@@ -1,14 +1,14 @@
 require 'aspect4r/errors'
-require 'aspect4r/advice'
-require 'aspect4r/advices_for_method'
-require 'aspect4r/aspect_data'
-require 'aspect4r/advice_metadata'
+require 'aspect4r/model/advice'
+require 'aspect4r/model/advices_for_method'
+require 'aspect4r/model/aspect_data'
+require 'aspect4r/model/advice_metadata'
 require 'aspect4r/return_this'
 
 require 'aspect4r/helper'
 
-require 'aspect4r/class_extension'
-require 'aspect4r/module_extension'
+require 'aspect4r/extensions/class_extension'
+require 'aspect4r/extensions/module_extension'
 
 module Aspect4r
   module Base
@@ -18,7 +18,7 @@ module Aspect4r
 
     module ClassMethods
       def a4r_data
-        @a4r_data ||= AspectData.new
+        @a4r_data ||= Aspect4r::Model::AspectData.new
       end
     end
   end
