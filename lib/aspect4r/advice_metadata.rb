@@ -1,5 +1,5 @@
 module Aspect4r
-  class Metadata
+  class AdviceMetadata
     attr_reader :advice_type, :default_options, :mandatory_options
 
     def initialize advice_type, default_options = {}, mandatory_options = {}

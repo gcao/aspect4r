@@ -49,7 +49,7 @@ describe Aspect4r::Helper do
       end
     end
     
-    it "aspect is nil" do
+    it "advices is nil" do
       Aspect4r::Helper.create_method @klass, :test, nil
       
       o = @klass.new
@@ -58,7 +58,7 @@ describe Aspect4r::Helper do
       o.value.should == %w(test_without_a4r)
     end
     
-    it "aspect is empty" do
+    it "advices is empty" do
       Aspect4r::Helper.create_method @klass, :test, Aspect4r::AdvicesForMethod.new(:test)
       
       o = @klass.new
@@ -67,10 +67,10 @@ describe Aspect4r::Helper do
       o.value.should == %w(test_without_a4r)
     end
     
-    it "before aspect" do
-      aspect = Aspect4r::AdvicesForMethod.new(:test)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::BEFORE, :before_test, 0)
-      Aspect4r::Helper.create_method @klass, :test, aspect
+    it "before advices" do
+      advices = Aspect4r::AdvicesForMethod.new(:test)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::BEFORE, :before_test, 0)
+      Aspect4r::Helper.create_method @klass, :test, advices
       
       o = @klass.new
       o.test
@@ -78,10 +78,10 @@ describe Aspect4r::Helper do
       o.value.should == %w(before_test test_without_a4r)
     end
     
-    it "after aspect" do
-      aspect = Aspect4r::AdvicesForMethod.new(:test)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::AFTER, :after_test, 0, :result_arg => true)
-      Aspect4r::Helper.create_method @klass, :test, aspect
+    it "after advices" do
+      advices = Aspect4r::AdvicesForMethod.new(:test)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::AFTER, :after_test, 0, :result_arg => true)
+      Aspect4r::Helper.create_method @klass, :test, advices
       
       o = @klass.new
       o.test
@@ -89,10 +89,10 @@ describe Aspect4r::Helper do
       o.value.should == %w(test_without_a4r after_test)
     end
     
-    it "around aspect" do
-      aspect = Aspect4r::AdvicesForMethod.new(:test)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::AROUND, :around_test, 0)
-      Aspect4r::Helper.create_method @klass, :test, aspect
+    it "around advices" do
+      advices = Aspect4r::AdvicesForMethod.new(:test)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::AROUND, :around_test, 0)
+      Aspect4r::Helper.create_method @klass, :test, advices
       
       o = @klass.new
       o.test
@@ -101,10 +101,10 @@ describe Aspect4r::Helper do
     end
     
     it "before + after" do
-      aspect = Aspect4r::AdvicesForMethod.new(:test)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::BEFORE, :before_test, 0)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::AFTER, :after_test, 0, :result_arg => true)
-      Aspect4r::Helper.create_method @klass, :test, aspect
+      advices = Aspect4r::AdvicesForMethod.new(:test)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::BEFORE, :before_test, 0)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::AFTER, :after_test, 0, :result_arg => true)
+      Aspect4r::Helper.create_method @klass, :test, advices
       
       o = @klass.new
       o.test
@@ -113,11 +113,11 @@ describe Aspect4r::Helper do
     end
     
     it "around + before + after" do
-      aspect = Aspect4r::AdvicesForMethod.new(:test)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::AROUND, :around_test, 0)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::BEFORE, :before_test, 0)
-      aspect.add Aspect4r::Advice.new(Aspect4r::Advice::AFTER, :after_test, 0, :result_arg => true)
-      Aspect4r::Helper.create_method @klass, :test, aspect
+      advices = Aspect4r::AdvicesForMethod.new(:test)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::AROUND, :around_test, 0)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::BEFORE, :before_test, 0)
+      advices.add Aspect4r::Advice.new(Aspect4r::Advice::AFTER, :after_test, 0, :result_arg => true)
+      Aspect4r::Helper.create_method @klass, :test, advices
       
       o = @klass.new
       o.test

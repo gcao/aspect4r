@@ -49,7 +49,7 @@ module Aspect4r
         
         backup_original_method klass_or_module, method
         
-        aspect = klass_or_module.a4r_definitions[method] ||= AdvicesForMethod.new(method)
+        aspect = klass_or_module.a4r_data[method] ||= AdvicesForMethod.new(method)
         aspect.add Aspect4r::Advice.new(meta_data.advice_type, with_method, to_group(klass_or_module), options)
         
         create_method_placeholder klass_or_module, method
@@ -60,7 +60,7 @@ module Aspect4r
       @creating_method = true
       klass.class_eval <<-CODE, __FILE__, __LINE__
         def #{method} *args
-          aspect = self.class.a4r_definitions[:'#{method}']
+          aspect = self.class.a4r_data[:'#{method}']
           Aspect4r::Helper.create_method self.class, :'#{method}', aspect
           #{method} *args
         end
