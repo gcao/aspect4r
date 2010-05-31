@@ -10,16 +10,16 @@ module Aspect4r
     
     def with_method_prefix
       case advice_type
-      when Aspect4r::Definition::BEFORE then "a4r_before_"
-      when Aspect4r::Definition::AFTER  then "a4r_after_"
-      when Aspect4r::Definition::AROUND then "a4r_around_"
+      when Aspect4r::Advice::BEFORE then "a4r_before_"
+      when Aspect4r::Advice::AFTER  then "a4r_after_"
+      when Aspect4r::Advice::AROUND then "a4r_around_"
       else raise "Aspect4r internal error."
       end
     end
     
-    BEFORE        = new Aspect4r::Definition::BEFORE, nil, :skip_if_false => false
-    BEFORE_FILTER = new Aspect4r::Definition::BEFORE, nil, :skip_if_false => true
-    AFTER         = new Aspect4r::Definition::AFTER, :result_arg => true
-    AROUND        = new Aspect4r::Definition::AROUND
+    BEFORE        = new Aspect4r::Advice::BEFORE, nil, :skip_if_false => false
+    BEFORE_FILTER = new Aspect4r::Advice::BEFORE, nil, :skip_if_false => true
+    AFTER         = new Aspect4r::Advice::AFTER, :result_arg => true
+    AROUND        = new Aspect4r::Advice::AROUND
   end
 end

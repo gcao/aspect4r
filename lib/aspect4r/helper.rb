@@ -49,8 +49,8 @@ module Aspect4r
         
         backup_original_method klass_or_module, method
         
-        aspect = klass_or_module.a4r_definitions[method] ||= AspectForMethod.new(method)
-        aspect.add Aspect4r::Definition.new(meta_data.advice_type, with_method, to_group(klass_or_module), options)
+        aspect = klass_or_module.a4r_definitions[method] ||= AdvicesForMethod.new(method)
+        aspect.add Aspect4r::Advice.new(meta_data.advice_type, with_method, to_group(klass_or_module), options)
         
         create_method_placeholder klass_or_module, method
       end
@@ -141,7 +141,7 @@ module Aspect4r
     end
     
     # method - target method
-    # aspect - instance of AspectForMethod which contains aspect definitions for target method
+    # aspect - instance of AdvicesForMethod which contains aspect definitions for target method
     def self.create_method klass, method, aspect
       @creating_method = true
 

@@ -1,5 +1,5 @@
 module Aspect4r
-  class Definition
+  class Advice
     BEFORE = 1
     AFTER  = 2
     AROUND = 3

@@ -1,5 +1,5 @@
 module Aspect4r
-  class AspectForMethod
+  class AdvicesForMethod
     attr_reader :method
     
     def initialize method
@@ -33,7 +33,7 @@ module Aspect4r
     end
     
     def clone
-      o = AspectForMethod.new(method)
+      o = self.class.new(method)
       o.advices.push *advices unless empty?
 
       o

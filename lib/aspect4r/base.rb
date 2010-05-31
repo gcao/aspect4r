@@ -1,7 +1,7 @@
 require 'aspect4r/errors'
-require 'aspect4r/definition'
+require 'aspect4r/advice'
+require 'aspect4r/advices_for_method'
 require 'aspect4r/metadata'
-require 'aspect4r/aspect_for_method'
 require 'aspect4r/return_this'
 
 require 'aspect4r/helper'
