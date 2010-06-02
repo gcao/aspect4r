@@ -13,23 +13,10 @@ module Aspect4r
       class_or_module.hash
     end
     
-    def self.backup_method_name method
-      "#{method}_without_a4r"
-    end
-    
     def self.creating_method?
       @creating_method
     end
 
-    def self.backup_original_method klass, method
-      method             = method.to_s
-      method_without_a4r = backup_method_name(method)
-
-      if klass.instance_methods.include?(method) and not klass.instance_methods.include?(method_without_a4r)
-        klass.send :alias_method, method_without_a4r, method
-      end
-    end
-    
     def self.process_advice meta_data, klass_or_module, *methods, &block
       methods.flatten!
       
@@ -47,9 +34,8 @@ module Aspect4r
       methods.each do |method|
         method = method.to_sym
         
-        backup_original_method klass_or_module, method
-        
         aspect = klass_or_module.a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
+        aspect.wrapped_method = klass_or_module.instance_method(method) unless aspect.wrapped_method and klass_or_module.instance_methods.include?(method)
         aspect.add Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, to_group(klass_or_module), options)
         
         create_method_placeholder klass_or_module, method
@@ -68,19 +54,19 @@ module Aspect4r
       @creating_method = nil
     end
     
-    # wrap_method
-    # wrapped_method: method to be invoked from inside
+    # method
     # advice
     WRAP_METHOD_TEMPLATE = ERB.new <<-CODE, nil, '<>'
-      wrapped_method = instance_method(:<%= wrapped_method %>)
-      
-      define_method :<%= wrap_method %> do |*args|
-      # def <%= wrap_method %> *args
+<% if inner_most %>
+      wrapped_method = a4r_data[:<%= method %>].wrapped_method
+<% else %>
+      wrapped_method = instance_method(:<%= method %>)
+<% end %>
+
+      define_method :<%= method %> do |*args|
 <% if advice.options[:method_name_arg] %>
-        # result = <%= advice.with_method %> '<%= method %>', '<%= wrapped_method %>', *args
         result = <%= advice.with_method %> '<%= method %>', wrapped_method, *args
 <% else %>
-        # result = <%= advice.with_method %> '<%= wrapped_method %>', *args
         result = <%= advice.with_method %> wrapped_method, *args
 <% end %>
         
@@ -88,21 +74,23 @@ module Aspect4r
       end
     CODE
     
-    def self.create_method_for_around_advice klass, method, wrap_method, wrapped_method, advice
+    def self.create_method_for_around_advice klass, method, advice, inner_most
       code = WRAP_METHOD_TEMPLATE.result(binding)
       # puts code
       klass.class_eval code, __FILE__
     end
     
-    # wrap_method
-    # wrapped_method
+    # method
     # before_advices
     # after_advices
     METHOD_TEMPLATE = ERB.new <<-CODE, nil, '<>'
-      wrapped_method = instance_method(:<%= wrapped_method %>)
-      
-      define_method :<%= wrap_method %> do |*args|
-      # def <%= wrap_method %> *args
+<% if inner_most %>
+      wrapped_method = a4r_data[:<%= method %>].wrapped_method
+<% else %>
+      wrapped_method = instance_method(:<%= method %>)
+<% end %>
+
+      define_method :<%= method %> do |*args|
         result = nil
 
         # Before advices
@@ -120,7 +108,6 @@ module Aspect4r
 <% end %>
 
         # Call wrapped method
-        # result = <%= wrapped_method %> *args
         result = wrapped_method.bind(self).call *args
 
         # After advices
@@ -140,7 +127,7 @@ module Aspect4r
       end
     CODE
     
-    def self.create_method_for_before_after_advices klass, method, wrap_method, wrapped_method, advices
+    def self.create_method_for_before_after_advices klass, method, advices, inner_most
       before_advices = advices.select {|advice| advice.before? }
       after_advices  = advices.select {|advice| advice.after?  }
       
@@ -156,40 +143,28 @@ module Aspect4r
 
       if aspect.nil? or aspect.empty?
         # There is no aspect defined.
-        klass.send :alias_method, method, backup_method_name(method)
+        klass.define_method method, aspect.wrapped_method
         @creating_method = nil
         return
       end
       
-      grouped_advices = []
-      
-      wrapped_method = backup_method_name(method)
-      i = 0
-      wrap_method = method
-      # wrap_method = "#{method}_a4r_#{i}"
+      grouped_advices = []      
       group = nil
+      inner_most = true
 
       aspect.advices.each do |advice|
         if (advice.around? or (group and advice.group != group)) and not grouped_advices.empty?
           # wrap up advices before current advice
-          # wrap_method = "#{method}_a4r_#{i}"
+          create_method_for_before_after_advices klass, method, grouped_advices, inner_most
+          inner_most = false
           
-          create_method_for_before_after_advices klass, method, wrap_method, wrapped_method, grouped_advices
-          
-          wrapped_method = wrap_method
-          i += 1
-
           grouped_advices = []
         end
         
         # handle current advice
         if advice.around?
-          # wrap_method = "#{method}_a4r_#{i}"
-          
-          create_method_for_around_advice klass, method, wrap_method, wrapped_method, advice
-          
-          wrapped_method = wrap_method
-          i += 1
+          create_method_for_around_advice klass, method, advice, inner_most
+          inner_most = false
         else
           grouped_advices << advice
         end
@@ -199,13 +174,8 @@ module Aspect4r
       
       # create wrap method for before/after advices which are not wrapped inside around advice.
       unless grouped_advices.empty?
-        # wrap_method = "#{method}_a4r_#{i}"
-        create_method_for_before_after_advices klass, method, wrap_method, wrapped_method, grouped_advices unless grouped_advices.empty?
+        create_method_for_before_after_advices klass, method, grouped_advices, inner_most unless grouped_advices.empty?
       end
-
-      # rename the outermost wrap method to the target method
-      # klass.send :alias_method, method, wrap_method
-      # klass.send :remove_method, wrap_method
 
       @creating_method = nil
     end

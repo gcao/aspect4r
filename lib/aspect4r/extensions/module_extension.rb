@@ -19,9 +19,9 @@ class Module
       advices.each do |method, aspect|
         methods = instance_methods(true)
         
-        if methods.include?(method.to_s) and not methods.include?(Aspect4r::Helper.backup_method_name(method))
-          alias_method Aspect4r::Helper.backup_method_name(method), method
-        end
+        # if methods.include?(method.to_s) and not methods.include?(Aspect4r::Helper.backup_method_name(method))
+        #   alias_method Aspect4r::Helper.backup_method_name(method), method
+        # end
       end
     end
     
@@ -48,7 +48,7 @@ class Module
       if existing_aspects[method]
         existing_aspects[method].merge!(definition)
       else
-        Aspect4r::Helper.backup_original_method base, method
+        # Aspect4r::Helper.backup_original_method base, method
         existing_aspects[method] = (definition.clone rescue definition)
       end
       
@@ -65,10 +65,10 @@ class Module
     return if method.to_s =~ /a4r/
 
     # rename method to method_without_a4r and recreate method if there are advice(s) attached and this is not created by aspect4r
-    if not Aspect4r::Helper.creating_method? and @a4r_data and @a4r_data[method]
-      alias_method Aspect4r::Helper.backup_method_name(method), method
-      Aspect4r::Helper.create_method_placeholder self, method
-    end
+    # if not Aspect4r::Helper.creating_method? and @a4r_data and @a4r_data[method]
+    #   alias_method Aspect4r::Helper.backup_method_name(method), method
+    #   Aspect4r::Helper.create_method_placeholder self, method
+    # end
   end
   
   alias method_added_without_a4r method_added
