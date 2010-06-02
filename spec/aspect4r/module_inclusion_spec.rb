@@ -19,7 +19,7 @@ describe Aspect4r do
   
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        proxy.bind(self).call
         @value << "around2"
       end   
       
@@ -46,7 +46,7 @@ describe Aspect4r do
   
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        proxy.bind(self).call
         @value << "around2"
       end
       
@@ -137,7 +137,7 @@ describe Aspect4r do
   
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        proxy.bind(self).call
         @value << "around2"
       end
       

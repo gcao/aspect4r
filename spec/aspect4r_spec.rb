@@ -21,7 +21,7 @@ describe "Aspect4r execution order" do
     @klass.class_eval do
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        proxy.bind(self).call
         @value << "around2"
       end
       
@@ -53,7 +53,7 @@ describe "Aspect4r execution order" do
       
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        proxy.bind(self).call
         @value << "around2"
       end
     end
@@ -68,13 +68,13 @@ describe "Aspect4r execution order" do
     @klass.class_eval do
       around :test do |proxy|
         @value << "around11"
-        send proxy
+        proxy.bind(self).call
         @value << "around12"
       end
       
       around :test do |proxy|
         @value << "around21"
-        send proxy
+        proxy.bind(self).call
         @value << "around22"
       end
       
@@ -113,7 +113,7 @@ describe "Aspect4r execution order" do
       
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        proxy.bind(self).call
         @value << "around2"
       end
       
@@ -143,7 +143,7 @@ describe "Aspect4r result handling" do
       end
       
       around :test do |proxy|
-        result = send proxy
+        result = proxy.bind(self).call
         "around1 #{result} around2"
       end
 
@@ -182,7 +182,7 @@ describe "Aspect4r chaining" do
       
       around :test do |proxy|
         @value << "around11"
-        send proxy
+        proxy.bind(self).call
         @value << "around12"
       end
       

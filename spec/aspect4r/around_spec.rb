@@ -70,7 +70,7 @@ describe Aspect4r::Around do
     @klass.class_eval do
       around :test do |orig, value|
         i = 200
-        send orig, value
+        orig.bind(self).call value
       end
     end
     
@@ -88,7 +88,7 @@ describe Aspect4r::Around do
     @klass.class_eval do
       around :test, :method_name_arg => true do |method, orig, value|
         s = method
-        send orig, value
+        orig.bind(self).call value
       end
     end
     
@@ -114,7 +114,7 @@ describe Aspect4r::Around do
   it "should be able to invoke original method from around_* method" do
     @klass.class_eval do
       def do_something orig, value
-        send orig, value
+        orig.bind(self).call value
       end
   
       around :test, :do_something

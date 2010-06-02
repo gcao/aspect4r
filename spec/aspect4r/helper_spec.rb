@@ -42,7 +42,7 @@ describe Aspect4r::Helper do
         
         def around_test proxy
           @value << "around_test_before"
-          result = send(proxy)
+          result = proxy.bind(self).call
           @value << "around_test_after"
           result
         end
