@@ -13,8 +13,21 @@ module Aspect4r
       class_or_module.hash
     end
     
+    def self.backup_method_name method
+      "#{method}_without_a4r"
+    end
+    
     def self.creating_method?
       @creating_method
+    end
+    
+    def self.backup_original_method klass, method
+      method             = method.to_s
+      method_without_a4r = backup_method_name(method)
+
+      if klass.instance_methods.include?(method) and not klass.instance_methods.include?(method_without_a4r)
+        klass.send :alias_method, method_without_a4r, method
+      end
     end
 
     def self.process_advice meta_data, klass_or_module, *methods, &block
@@ -34,8 +47,9 @@ module Aspect4r
       methods.each do |method|
         method = method.to_sym
         
+        backup_original_method klass_or_module, method
+        
         aspect = klass_or_module.a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
-        aspect.wrapped_method = klass_or_module.instance_method(method) unless aspect.wrapped_method and klass_or_module.instance_methods.include?(method)
         aspect.add Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, to_group(klass_or_module), options)
         
         create_method_placeholder klass_or_module, method
@@ -58,7 +72,7 @@ module Aspect4r
     # advice
     WRAP_METHOD_TEMPLATE = ERB.new <<-CODE, nil, '<>'
 <% if inner_most %>
-      wrapped_method = a4r_data[:<%= method %>].wrapped_method
+      wrapped_method = instance_method(:<%= method.to_s + "_without_a4r" %>)
 <% else %>
       wrapped_method = instance_method(:<%= method %>)
 <% end %>
@@ -85,7 +99,7 @@ module Aspect4r
     # after_advices
     METHOD_TEMPLATE = ERB.new <<-CODE, nil, '<>'
 <% if inner_most %>
-      wrapped_method = a4r_data[:<%= method %>].wrapped_method
+      wrapped_method = instance_method(:<%= method.to_s + "_without_a4r" %>)
 <% else %>
       wrapped_method = instance_method(:<%= method %>)
 <% end %>
@@ -143,7 +157,7 @@ module Aspect4r
 
       if aspect.nil? or aspect.empty?
         # There is no aspect defined.
-        klass.define_method method, aspect.wrapped_method
+        klass.send :alias_method, method, backup_method_name(method)
         @creating_method = nil
         return
       end
