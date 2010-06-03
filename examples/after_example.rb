@@ -10,9 +10,8 @@ class A
     value
   end
   
-  after :test do |result, value|
+  after :test, :result_arg => false do |value|
     puts 'after test'
-    result
   end
   
   after :test do |result, value|
