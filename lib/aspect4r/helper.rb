@@ -46,6 +46,7 @@ module Aspect4r
       
       methods.each do |method|
         method = method.to_sym
+        klass_or_module.a4r_data.methods_with_advices << method
         
         backup_original_method klass_or_module, method
         
@@ -58,13 +59,14 @@ module Aspect4r
     
     def self.create_method_placeholder klass, method
       @creating_method = true
-      klass.class_eval <<-CODE, __FILE__, __LINE__
-        def #{method} *args
-          aspect = self.class.a4r_data[:'#{method}']
-          Aspect4r::Helper.create_method self.class, :'#{method}', aspect
-          #{method} *args
-        end
-      CODE
+      
+      aspect = klass.a4r_data[method.to_sym]
+
+      # klass.send :define_method, method do |*args|
+        Aspect4r::Helper.create_method klass, method, aspect
+      #   send method, *args
+      # end
+      
       @creating_method = nil
     end
     

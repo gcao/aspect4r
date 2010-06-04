@@ -101,6 +101,44 @@ describe Aspect4r do
     o.value.should == %w(before test test(child))
   end
   
+  it "override method with advices and call super" do
+    parent = Class.new do
+      include Aspect4r
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test(parent)"
+      end
+      
+      before :test do
+        @value << "before(parent)"
+      end
+    end
+    
+    child = Class.new(parent) do
+      include Aspect4r
+      
+      def test
+        super
+        @value << "test"
+      end
+      
+      before :test do
+        @value << "before"
+      end
+    end
+    
+    o = child.new
+    o.test
+    
+    o.value.should == %w(before before(parent) test(parent) test)
+  end
+  
   it "before/after aspects in body and inherited aspects can be combined" do
     parent = Class.new do
       include Aspect4r
@@ -112,7 +150,7 @@ describe Aspect4r do
       end
       
       def test
-        @value << "test"
+        @value << "test(parent)"
       end
       
       before :test do
@@ -127,6 +165,10 @@ describe Aspect4r do
     class Child < parent
       include Aspect4r
       
+      def test
+        @value << "test"
+      end
+      
       before :test do
         @value << "before"
       end
@@ -139,7 +181,7 @@ describe Aspect4r do
     o = Child.new
     o.test
     
-    o.value.should == %w(before before(parent) test after(parent) after)
+    o.value.should == %w(before test after)
   end
   
   it "around aspects in body and inherited aspects can be combined" do

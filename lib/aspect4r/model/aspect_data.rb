@@ -1,3 +1,5 @@
+require 'set'
+
 module Aspect4r
   module Model
     class AspectData < Hash
@@ -7,6 +9,10 @@ module Aspect4r
     
       def advices
         @advices ||= {}
+      end
+      
+      def methods_with_advices
+        @methods_with_advices ||= Set.new
       end
     end
   end

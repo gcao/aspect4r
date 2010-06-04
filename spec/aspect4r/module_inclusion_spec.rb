@@ -120,6 +120,10 @@ describe Aspect4r do
   it "include module with aspects then add aspects in body" do
     module AspectMod
       include Aspect4r
+      
+      def test
+        @value << "test(module)"
+      end
   
       around :test do |proxy|
         @value << "around1"
@@ -154,7 +158,7 @@ describe Aspect4r do
     o = AspectMix.new
     o.test
     
-    o.value.should == %w(before around1 test around2 after)
+    o.value.should == %w(before test)
   end
   
   it "double inclusion" do
@@ -187,7 +191,7 @@ describe Aspect4r do
     o = ChildClass.new
     o.test
     
-    o.value.should == %w(before test) 
+    o.value.should == %w(test) 
   end
   
   it "define aspects in body then include module with aspects" do
@@ -228,7 +232,7 @@ describe Aspect4r do
     o = AspectMix2.new
     o.test
     
-    o.value.should == %w(around1 before test around2 after)
+    o.value.should == %w(before test)
   end
 
   it "before in body and in module" do
@@ -262,7 +266,7 @@ describe Aspect4r do
     o = AspectMix3.new
     o.test
     
-    o.value.should == %w(before(body) before(module) test)
+    o.value.should == %w(before(body) test)
   end
   
   it "after in body and in module" do
@@ -296,72 +300,6 @@ describe Aspect4r do
     o = AspectMix4.new
     o.test
     
-    o.value.should == %w(test after(module) after(body))
-  end
-  
-  # it "include module after both class and module is defined" do
-  #   module AspectMod5
-  #     include Aspect4r
-  #     
-  #     before :test do
-  #       @value << "before1"
-  #     end
-  #     
-  #     before :test do
-  #       @value << "before2"
-  #     end
-  #   end
-  #   
-  #   class AspectMix5
-  #     attr :value
-  #     
-  #     def initialize
-  #       @value = []
-  #     end
-  #     
-  #     def test
-  #       @value << "test"
-  #     end
-  #     
-  #     include AspectMod5
-  #   end
-  # 
-  #   o = AspectMix5.new
-  #   o.test
-  #   
-  #   o.value.should == %w(before1 before2 test)
-  # end
-  
-  it "include advices from module and then define target method should work" do
-    module AspectMod6
-      include Aspect4r
-      
-      before :test do
-        @value << "before1"
-      end
-      
-      before :test do
-        @value << "before2"
-      end
-    end
-    
-    class AspectMix6
-      include AspectMod6
-      
-      attr :value
-      
-      def initialize
-        @value = []
-      end
-      
-      def test
-        @value << "test"
-      end
-    end
-
-    o = AspectMix6.new
-    o.test
-    
-    o.value.should == %w(before1 before2 test)
+    o.value.should == %w(test after(body))
   end
 end
