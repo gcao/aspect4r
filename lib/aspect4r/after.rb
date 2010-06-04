@@ -15,8 +15,8 @@ module Aspect4r
     
     module Classic
       def self.included(base)
-        base.send(:include, ::Aspect4r::Base)
-        base.extend(ClassMethods)
+        base.send(:include, Base::InstanceMethods)
+        base.extend(Base::ClassMethods, ClassMethods)
       end
 
       module ClassMethods

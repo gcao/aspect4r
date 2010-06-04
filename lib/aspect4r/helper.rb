@@ -9,10 +9,6 @@ module Aspect4r
       end
     end
     
-    def self.to_group class_or_module
-      class_or_module.hash
-    end
-    
     def self.creating_method?
       @creating_method
     end
@@ -37,7 +33,7 @@ module Aspect4r
         klass_or_module.a4r_data.methods_with_advices << method
         
         aspect = klass_or_module.a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
-        aspect.add Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, to_group(klass_or_module), options)
+        aspect.add Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, options)
         
         if not aspect.wrapped_method and klass_or_module.instance_methods.include?(method.to_s)
           aspect.wrapped_method = klass_or_module.instance_method(method)
@@ -130,7 +126,6 @@ module Aspect4r
     end
     
     # method - target method
-    # aspect - instance of AdvicesForMethod which contains aspect definitions for target method
     def self.create_method klass, method
       @creating_method = true
       

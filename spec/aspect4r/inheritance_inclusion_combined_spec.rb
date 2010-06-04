@@ -44,58 +44,6 @@ describe Aspect4r do
     o.value.should == %w(before around1 test around2 after)
   end
   
-  it "method in parent class need to be renamed to xxx_without_a4r if it is after aspects are defined, and can be called from child class" do
-    module Mod2
-      include Aspect4r
-      
-      def test
-        @value << "test(module)"
-      end
-      
-      around :test do |proxy|
-        @value << "around1"
-        a4r_invoke proxy
-        @value << "around2"
-      end
-      
-      before :test do
-        @value << "before"
-      end
-      
-      after :test do |result|
-        @value << "after"
-      end
-    end
-    
-    parent = Class.new do
-      include Mod2
-      
-      attr :value
-      
-      def initialize
-        @value = []
-      end
-      
-      def test
-        super
-        @value << "test(parent)"
-      end
-    end
-    
-    child = Class.new(parent) do
-      def test
-        super
-        @value << "test(child)"
-      end
-    end
-    
-    
-    o = child.new
-    o.test
-    
-    o.value.should == %w(before around1 test(module) around2 after test(parent) test(child))
-  end
-  
   it "advices in parent class and included modules" do
     module Mod3
       include Aspect4r
