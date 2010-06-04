@@ -20,7 +20,7 @@ module Aspect4r
       end
 
       module ClassMethods
-        def around_method *methods, &block
+        def a4r_around *methods, &block
           Aspect4r::Helper.process_advice Aspect4r::Model::AdviceMetadata::AROUND, self, methods, &block
         end
       end

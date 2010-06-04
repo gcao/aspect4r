@@ -20,7 +20,7 @@ module Aspect4r
       end
 
       module ClassMethods
-        def after_method *methods, &block
+        def a4r_after *methods, &block
           Aspect4r::Helper.process_advice Aspect4r::Model::AdviceMetadata::AFTER, self, methods, &block
         end
       end

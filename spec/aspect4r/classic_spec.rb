@@ -17,21 +17,21 @@ describe Aspect4r::Classic do
         @value << "test"
       end
 
-      around_method :test do |proxy_method|
+      a4r_around :test do |proxy_method|
         @value << "around1"
         a4r_invoke proxy_method
         @value << "around2"
       end
       
-      before_method :test do
+      a4r_before :test do
         @value << "before"
       end
       
-      before_method_filter :test do
+      a4r_before_filter :test do
         @value << "before_filter"
       end
       
-      after_method :test do |result|
+      a4r_after :test do |result|
         @value << "after"
       end
     end

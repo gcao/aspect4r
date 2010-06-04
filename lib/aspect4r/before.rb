@@ -24,11 +24,11 @@ module Aspect4r
       end
     
       module ClassMethods
-        def before_method *methods, &block
+        def a4r_before *methods, &block
           Aspect4r::Helper.process_advice Aspect4r::Model::AdviceMetadata::BEFORE, self, methods, &block
         end
     
-        def before_method_filter *methods, &block
+        def a4r_before_filter *methods, &block
           Aspect4r::Helper.process_advice Aspect4r::Model::AdviceMetadata::BEFORE_FILTER, self, methods, &block
         end
       end
