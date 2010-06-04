@@ -15,7 +15,7 @@ Aspect Oriented Programming support for Ruby
     include Aspect4r
     
     around :test do |proxy_method, value|
-      send proxy_method, value
+      a4r_invoke proxy_method, value
     end
   
     before :test do |value|

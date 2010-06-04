@@ -9,8 +9,11 @@ describe Aspect4r::Helper do
     it "should return test1 if find_available_method_name is called once already" do
       klass = Class.new
       klass.class_eval do
-        define_method Aspect4r::Helper.find_available_method_name(klass, "test") do
-        end
+        first = Aspect4r::Helper.find_available_method_name(klass, "test")
+        
+        define_method first do end
+        
+        private first
       end
       Aspect4r::Helper.find_available_method_name(klass, "test").should =~ /test1/
     end

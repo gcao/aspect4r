@@ -5,7 +5,7 @@ module Aspect4r
     def self.find_available_method_name klass, method_name_prefix
       0.upto(10000) do |i|
         m = "#{method_name_prefix}#{i}_#{klass.hash}"
-        return m unless klass.instance_methods.include?(m)
+        return m unless klass.private_instance_methods(false).include?(m)
       end
     end
     
@@ -24,6 +24,7 @@ module Aspect4r
       if block_given?
         with_method = find_available_method_name klass_or_module, meta_data.with_method_prefix
         klass_or_module.send :define_method, with_method, &block
+        klass_or_module.send :private, with_method
       else
         with_method = methods.pop
       end
