@@ -4,6 +4,7 @@ module Aspect4r
   module Around
     def self.included(base)
       base.send(:include, Base)
+      base.send(:include, Base::InstanceMethods)
       base.extend(ClassMethods)
     end
 

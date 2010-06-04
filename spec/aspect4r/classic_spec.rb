@@ -19,7 +19,7 @@ describe Aspect4r::Classic do
 
       around_method :test do |proxy_method|
         @value << "around1"
-        send proxy_method
+        proxy_method.bind(self).call
         @value << "around2"
       end
       

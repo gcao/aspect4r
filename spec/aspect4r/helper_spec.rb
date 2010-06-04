@@ -27,8 +27,8 @@ describe Aspect4r::Helper do
           @value = []
         end
         
-        def test_without_a4r
-          @value << "test_without_a4r"
+        def test
+          @value << "test"
         end
         
         def before_test
@@ -42,87 +42,73 @@ describe Aspect4r::Helper do
         
         def around_test proxy
           @value << "around_test_before"
-          result = send(proxy)
+          result = a4r_invoke proxy
           @value << "around_test_after"
           result
         end
       end
     end
     
-    it "advices is nil" do
-      Aspect4r::Helper.create_method @klass, :test, nil
+    it "No advice" do
+      Aspect4r::Helper.create_method @klass, :test
       
       o = @klass.new
       o.test
       
-      o.value.should == %w(test_without_a4r)
-    end
-    
-    it "advices is empty" do
-      Aspect4r::Helper.create_method @klass, :test, Aspect4r::Model::AdvicesForMethod.new(:test)
-      
-      o = @klass.new
-      o.test
-      
-      o.value.should == %w(test_without_a4r)
+      o.value.should == %w(test)
     end
     
     it "before advices" do
-      advices = Aspect4r::Model::AdvicesForMethod.new(:test)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::BEFORE, :before_test, 0)
-      Aspect4r::Helper.create_method @klass, :test, advices
+      @klass.before :test, :before_test
+      Aspect4r::Helper.create_method @klass, :test
       
       o = @klass.new
       o.test
       
-      o.value.should == %w(before_test test_without_a4r)
+      o.value.should == %w(before_test test)
     end
     
     it "after advices" do
-      advices = Aspect4r::Model::AdvicesForMethod.new(:test)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::AFTER, :after_test, 0, :result_arg => true)
-      Aspect4r::Helper.create_method @klass, :test, advices
+      @klass.after :test, :after_test
+      Aspect4r::Helper.create_method @klass, :test
       
       o = @klass.new
       o.test
       
-      o.value.should == %w(test_without_a4r after_test)
+      o.value.should == %w(test after_test)
     end
     
     it "around advices" do
-      advices = Aspect4r::Model::AdvicesForMethod.new(:test)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::AROUND, :around_test, 0)
-      Aspect4r::Helper.create_method @klass, :test, advices
+      @klass.around :test, :around_test
+      Aspect4r::Helper.create_method @klass, :test
       
       o = @klass.new
       o.test
       
-      o.value.should == %w(around_test_before test_without_a4r around_test_after)
+      o.value.should == %w(around_test_before test around_test_after)
     end
     
     it "before + after" do
-      advices = Aspect4r::Model::AdvicesForMethod.new(:test)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::BEFORE, :before_test, 0)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::AFTER, :after_test, 0, :result_arg => true)
-      Aspect4r::Helper.create_method @klass, :test, advices
+      @klass.before :test, :before_test
+      @klass.after :test, :after_test
+      Aspect4r::Helper.create_method @klass, :test
       
       o = @klass.new
       o.test
       
-      o.value.should == %w(before_test test_without_a4r after_test)
+      o.value.should == %w(before_test test after_test)
     end
     
     it "around + before + after" do
-      advices = Aspect4r::Model::AdvicesForMethod.new(:test)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::AROUND, :around_test, 0)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::BEFORE, :before_test, 0)
-      advices.add Aspect4r::Model::Advice.new(Aspect4r::Model::Advice::AFTER, :after_test, 0, :result_arg => true)
-      Aspect4r::Helper.create_method @klass, :test, advices
+      @klass.around :test, :around_test
+      @klass.before :test, :before_test
+      @klass.after :test, :after_test
+      Aspect4r::Helper.create_method @klass, :test
       
       o = @klass.new
       o.test
       
-      o.value.should == %w(before_test around_test_before test_without_a4r around_test_after after_test)
+      o.value.should == %w(before_test around_test_before test around_test_after after_test)
     end
   end
 end

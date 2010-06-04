@@ -68,9 +68,9 @@ describe Aspect4r::Around do
     i = 100
     
     @klass.class_eval do
-      around :test do |orig, value|
+      around :test do |proxy, value|
         i = 200
-        send orig, value
+        a4r_invoke proxy, value
       end
     end
     
@@ -86,9 +86,9 @@ describe Aspect4r::Around do
     s = nil
     
     @klass.class_eval do
-      around :test, :method_name_arg => true do |method, orig, value|
+      around :test, :method_name_arg => true do |method, proxy, value|
         s = method
-        send orig, value
+        a4r_invoke proxy, value
       end
     end
     
@@ -113,8 +113,8 @@ describe Aspect4r::Around do
   
   it "should be able to invoke original method from around_* method" do
     @klass.class_eval do
-      def do_something orig, value
-        send orig, value
+      def do_something proxy, value
+        a4r_invoke proxy, value
       end
   
       around :test, :do_something

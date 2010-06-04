@@ -19,7 +19,7 @@ describe Aspect4r do
   
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        a4r_invoke proxy
         @value << "around2"
       end   
       

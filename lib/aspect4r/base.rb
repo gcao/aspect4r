@@ -13,7 +13,14 @@ require 'aspect4r/extensions/module_extension'
 module Aspect4r
   module Base
     def self.included(base)
+      base.send(:include, InstanceMethods)
       base.extend(ClassMethods)
+    end
+      
+    module InstanceMethods
+      def a4r_invoke proxy, *args
+        proxy.bind(self).call *args
+      end
     end
 
     module ClassMethods

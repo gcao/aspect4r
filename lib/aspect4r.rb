@@ -4,6 +4,7 @@ require 'aspect4r/around'
 
 module Aspect4r
   def self.included(base)
-     base.extend Base::ClassMethods, Before::ClassMethods, After::ClassMethods, Around::ClassMethods
+    base.send(:include, Base::InstanceMethods)
+    base.extend Base::ClassMethods, Before::ClassMethods, After::ClassMethods, Around::ClassMethods
   end
 end

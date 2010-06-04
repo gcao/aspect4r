@@ -2,6 +2,7 @@ module Aspect4r
   module Model
     class AdvicesForMethod
       attr_reader :method
+      attr_accessor :wrapped_method
     
       def initialize method
         @method = method

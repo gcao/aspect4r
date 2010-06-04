@@ -5,9 +5,13 @@ describe Aspect4r do
     module Mod
       include Aspect4r
       
+      def test
+        @value << "test"
+      end
+      
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        a4r_invoke proxy
         @value << "around2"
       end
       
@@ -31,9 +35,6 @@ describe Aspect4r do
     end
     
     child = Class.new(parent) do
-      def test_without_a4r
-        @value << "test"
-      end
     end
     
     
@@ -47,9 +48,13 @@ describe Aspect4r do
     module Mod2
       include Aspect4r
       
+      def test
+        @value << "test(module)"
+      end
+      
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        a4r_invoke proxy
         @value << "around2"
       end
       
@@ -71,13 +76,14 @@ describe Aspect4r do
         @value = []
       end
       
-      def test_without_a4r
+      def test
+        super
         @value << "test(parent)"
       end
     end
     
     child = Class.new(parent) do
-      def test_without_a4r
+      def test
         super
         @value << "test(child)"
       end
@@ -87,16 +93,20 @@ describe Aspect4r do
     o = child.new
     o.test
     
-    o.value.should == %w(before around1 test(parent) test(child) around2 after)
+    o.value.should == %w(before around1 test(module) around2 after test(parent) test(child))
   end
   
-  it "mix aspects in parent class and included modules" do
+  it "advices in parent class and included modules" do
     module Mod3
       include Aspect4r
       
+      def test
+        @value << "test(module)"
+      end
+      
       around :test do |proxy|
         @value << "around1"
-        send proxy
+        a4r_invoke proxy
         @value << "around2"
       end
       
@@ -121,20 +131,20 @@ describe Aspect4r do
       def initialize
         @value = []
       end
+      
+      def test
+        @value << "test(parent)"
+      end
     end
     
     class Child3 < Parent3
       include Mod3
-      
-      def test_without_a4r
-        @value << "test"
-      end
     end
     
     
     o = Child3.new
     o.test
     
-    o.value.should == %w(before(module) around1 before(parent) test around2 after)
+    o.value.should == %w(before(module) around1 test(module) around2 after)
   end
 end

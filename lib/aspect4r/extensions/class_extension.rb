@@ -1,4 +1,3 @@
-# TODO: copy over list of methods which have advices
 class Class 
   def inherited_with_a4r(child)
     inherited_without_a4r(child) if respond_to?(:inherited_without_a4r, true)
