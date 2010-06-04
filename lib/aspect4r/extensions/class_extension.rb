@@ -3,10 +3,11 @@ class Class
     inherited_without_a4r(child) if respond_to?(:inherited_without_a4r, true)
     
     return if @a4r_data.nil? or @a4r_data.empty?
-  
-    a4r_data = @a4r_data.inject({}) do |memo, (key, value)|
-      memo[key] = (value.clone rescue value)
-      memo
+
+    a4r_data = Aspect4r::Model::AspectData.new
+    
+    @a4r_data.each do |key, value|
+      a4r_data[key] = (value.clone rescue value)
     end
     
     child.instance_variable_set('@a4r_data', a4r_data)

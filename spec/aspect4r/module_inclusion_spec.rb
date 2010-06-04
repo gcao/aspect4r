@@ -8,14 +8,14 @@ describe Aspect4r do
       def initialize
         @value = []
       end
-      
-      def test
-        @value << "test"
-      end
     end
     
     mod = Module.new do
       include Aspect4r
+      
+      def test
+        @value << "test"
+      end
   
       around :test do |proxy|
         @value << "around1"
@@ -38,6 +38,83 @@ describe Aspect4r do
     o.test
     
     o.value.should == %w(before around1 test around2 after)
+  end
+  
+  it "override" do
+    klass = Class.new do
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+    end
+    
+    mod = Module.new do
+      include Aspect4r
+      
+      def test
+        @value << "test(module)"
+      end
+  
+      around :test do |proxy|
+        @value << "around1"
+        send proxy
+        @value << "around2"
+      end   
+      
+      before :test do
+        @value << "before"
+      end
+  
+      after :test do |result|
+        @value << "after"
+      end
+    end
+
+    klass.send :include, mod
+    
+    o = klass.new
+    o.test
+    
+    o.value.should == %w(test)
+  end
+  
+  it "override + super" do
+    klass = Class.new do
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        super
+        @value << "test"
+      end
+    end
+    
+    mod = Module.new do
+      include Aspect4r
+      
+      def test
+        @value << "test(module)"
+      end   
+      
+      before :test do
+        @value << "before"
+      end
+    end
+
+    klass.send :include, mod
+    
+    o = klass.new
+    o.test
+    
+    o.value.should == %w(before test(module) test)
   end
 
   it "include module with aspects then add aspects in body" do
@@ -65,7 +142,7 @@ describe Aspect4r do
         @value = []
       end
       
-      def test_without_a4r
+      def test
         @value << "test"
       end
       
@@ -222,38 +299,38 @@ describe Aspect4r do
     o.value.should == %w(test after(module) after(body))
   end
   
-  it "include module after both class and module is defined" do
-    module AspectMod5
-      include Aspect4r
-      
-      before :test do
-        @value << "before1"
-      end
-      
-      before :test do
-        @value << "before2"
-      end
-    end
-    
-    class AspectMix5
-      attr :value
-      
-      def initialize
-        @value = []
-      end
-      
-      def test
-        @value << "test"
-      end
-      
-      include AspectMod5
-    end
-
-    o = AspectMix5.new
-    o.test
-    
-    o.value.should == %w(before1 before2 test)
-  end
+  # it "include module after both class and module is defined" do
+  #   module AspectMod5
+  #     include Aspect4r
+  #     
+  #     before :test do
+  #       @value << "before1"
+  #     end
+  #     
+  #     before :test do
+  #       @value << "before2"
+  #     end
+  #   end
+  #   
+  #   class AspectMix5
+  #     attr :value
+  #     
+  #     def initialize
+  #       @value = []
+  #     end
+  #     
+  #     def test
+  #       @value << "test"
+  #     end
+  #     
+  #     include AspectMod5
+  #   end
+  # 
+  #   o = AspectMix5.new
+  #   o.test
+  #   
+  #   o.value.should == %w(before1 before2 test)
+  # end
   
   it "include advices from module and then define target method should work" do
     module AspectMod6

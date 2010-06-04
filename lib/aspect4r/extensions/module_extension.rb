@@ -1,36 +1,4 @@
 class Module
-  def include_with_a4r *modules
-    # Rename xxx to xxx_without_a4r if advices are added in any module
-    advices = {}
-
-    modules.each do |mod|
-      next unless mod_advices = mod.instance_variable_get(:@a4r_data)
-      
-      mod_advices.each do |method, definitions|
-        if my_definitions = advices[method]
-          my_definitions.merge!(definitions)
-        else
-          advices[method] = definitions
-        end
-      end
-    end
-    
-    unless advices.empty?
-      advices.each do |method, aspect|
-        methods = instance_methods(true)
-        
-        if methods.include?(method.to_s) and not methods.include?(Aspect4r::Helper.backup_method_name(method))
-          alias_method Aspect4r::Helper.backup_method_name(method), method
-        end
-      end
-    end
-    
-    include_without_a4r *modules
-  end
-  
-  alias include_without_a4r include
-  alias include             include_with_a4r
-
   def included_with_a4r(base)
     included_without_a4r(child) if respond_to?(:included_without_a4r)
     
@@ -48,11 +16,8 @@ class Module
       if existing_aspects[method]
         existing_aspects[method].merge!(definition)
       else
-        Aspect4r::Helper.backup_original_method base, method
         existing_aspects[method] = (definition.clone rescue definition)
       end
-      
-      Aspect4r::Helper.create_method_placeholder base, method
     end
   end
   

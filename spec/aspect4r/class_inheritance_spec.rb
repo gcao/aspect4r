@@ -38,6 +38,69 @@ describe Aspect4r do
     o.value.should == %w(before around1 test around2 after)
   end
   
+  it "override method" do
+    parent = Class.new do
+      include Aspect4r
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+      
+      before :test do
+        @value << "before"
+      end
+    end
+    
+    child = Class.new(parent) do
+      def test
+        @value << "test(child)"
+      end
+    end
+    
+    o = child.new
+    o.test
+    
+    o.value.should == %w(test(child))
+  end
+  
+  it "override method and call super" do
+    parent = Class.new do
+      include Aspect4r
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+      
+      before :test do
+        @value << "before"
+      end
+    end
+    
+    child = Class.new(parent) do
+      def test
+        super
+        @value << "test(child)"
+      end
+    end
+    
+    o = child.new
+    o.test
+    
+    o.value.should == %w(before test test(child))
+  end
+  
   it "before/after aspects in body and inherited aspects can be combined" do
     parent = Class.new do
       include Aspect4r
