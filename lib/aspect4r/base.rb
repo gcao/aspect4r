@@ -16,7 +16,7 @@ module Aspect4r
       base.send(:include, InstanceMethods)
       base.extend(ClassMethods)
     end
-      
+
     module InstanceMethods
       def a4r_invoke proxy, *args
         proxy.bind(self).call *args

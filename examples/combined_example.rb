@@ -12,7 +12,7 @@ class A
   
   around :test do |proxy, value|
     puts 'around test 1'
-    result = send proxy, value
+    result = a4r_invoke proxy, value
     puts 'around test 2'
     result
   end

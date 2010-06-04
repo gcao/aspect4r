@@ -3,9 +3,8 @@ require 'aspect4r/base'
 module Aspect4r
   module Before
     def self.included(base)
-      base.send(:include, Base)
       base.send(:include, Base::InstanceMethods)
-      base.extend(ClassMethods)
+      base.extend(Base::ClassMethods, ClassMethods)
     end
 
     module ClassMethods

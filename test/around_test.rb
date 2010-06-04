@@ -13,7 +13,7 @@ class AroundTest < Test::Unit::TestCase
     def test; end
     
     def around_test proxy
-      send proxy
+      a4r_invoke proxy
     end
   end
   
