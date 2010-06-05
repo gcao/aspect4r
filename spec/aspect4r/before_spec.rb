@@ -17,7 +17,20 @@ describe Aspect4r::Before do
     end
   end
   
-  it "should run block before method" do
+  it "should run advice method before original method" do
+    @klass.class_eval do
+      def do_something value
+        raise 'error'
+      end
+
+      before :test, :do_something
+    end
+    
+    o = @klass.new
+    lambda { o.test('something') }.should raise_error('error')
+  end
+  
+  it "should run advice block before original method" do
     i = 100
     
     @klass.class_eval do
@@ -51,7 +64,7 @@ describe Aspect4r::Before do
     i.should == 200
   end
   
-  it "should have access to instance variable inside before block" do
+  it "should have access to instance variables inside advice block" do
     @klass.class_eval do
       before :test do |value|
         @var = 1
@@ -64,7 +77,7 @@ describe Aspect4r::Before do
     o.instance_variable_get(:@var).should == 1
   end
   
-  it "should not skip method if block did not return false and skip_if_false is not specified" do
+  it "should not skip method if before advice returned false" do
     @klass.class_eval do
       before :test do |value|
         false
@@ -77,7 +90,7 @@ describe Aspect4r::Before do
     o.value.should == 'something'
   end
   
-  it "should pass method name as first arg if method_name_arg is true" do
+  it "should pass method name as first arg to before advice block(or method) if method_name_arg is true" do
     s = nil
     
     @klass.class_eval do
@@ -92,20 +105,7 @@ describe Aspect4r::Before do
     s.should == 'test'
   end
   
-  it "should run before_* before original method" do
-    @klass.class_eval do
-      def do_something value
-        raise 'error'
-      end
-
-      before :test, :do_something
-    end
-    
-    o = @klass.new
-    lambda { o.test('something') }.should raise_error('error')
-  end
-  
-  it "should skip original method if before_* returns instance of ReturnThis" do
+  it "should skip original method if before advice returned instance of ReturnThis" do
     @klass.class_eval do
       def do_something value
         Aspect4r::ReturnThis.new('do_something')
@@ -120,7 +120,7 @@ describe Aspect4r::Before do
     o.value.should == 'init'
   end
   
-  it "before_filter" do
+  it "should skip original method if before_filter advice returned false" do
     @klass.class_eval do
       before_filter :test do
         false
@@ -131,5 +131,18 @@ describe Aspect4r::Before do
     o.test('something').should be_false
     
     o.value.should == 'init'
+  end
+  
+  it "should not skip original method if before_filter did not return false or nil" do
+    @klass.class_eval do
+      before_filter :test do
+        true
+      end
+    end
+    
+    o = @klass.new
+    o.test('something')
+    
+    o.value.should == 'something'
   end
 end

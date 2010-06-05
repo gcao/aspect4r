@@ -44,6 +44,48 @@ module Aspect4r
       end
     end
     
+    # method - target method
+    def self.create_method klass, method
+      @creating_method = true
+      
+      aspect = klass.a4r_data[method.to_sym]
+
+      if aspect.nil? or aspect.empty?
+        # There is no aspect defined.
+        @creating_method = nil
+        return
+      end
+      
+      grouped_advices = []
+      inner_most = true
+
+      aspect.advices.each do |advice|
+        if advice.around? and not grouped_advices.empty?
+          # wrap up advices before current advice
+          create_method_for_before_after_advices klass, method, grouped_advices, inner_most
+          
+          inner_most = false
+          
+          grouped_advices = []
+        end
+        
+        # handle current advice
+        if advice.around?
+          create_method_for_around_advice klass, method, advice, inner_most
+          inner_most = false
+        else
+          grouped_advices << advice
+        end
+      end
+      
+      # create wrap method for before/after advices which are not wrapped inside around advice.
+      unless grouped_advices.empty?
+        create_method_for_before_after_advices klass, method, grouped_advices, inner_most unless grouped_advices.empty?
+      end
+
+      @creating_method = nil
+    end
+    
     # method
     # advice
     WRAP_METHOD_TEMPLATE = ERB.new <<-CODE, nil, '<>'
@@ -124,48 +166,6 @@ module Aspect4r
       code = METHOD_TEMPLATE.result(binding)
       # puts code
       klass.class_eval code, __FILE__
-    end
-    
-    # method - target method
-    def self.create_method klass, method
-      @creating_method = true
-      
-      aspect = klass.a4r_data[method.to_sym]
-
-      if aspect.nil? or aspect.empty?
-        # There is no aspect defined.
-        @creating_method = nil
-        return
-      end
-      
-      grouped_advices = []
-      inner_most = true
-
-      aspect.advices.each do |advice|
-        if advice.around? and not grouped_advices.empty?
-          # wrap up advices before current advice
-          create_method_for_before_after_advices klass, method, grouped_advices, inner_most
-          
-          inner_most = false
-          
-          grouped_advices = []
-        end
-        
-        # handle current advice
-        if advice.around?
-          create_method_for_around_advice klass, method, advice, inner_most
-          inner_most = false
-        else
-          grouped_advices << advice
-        end
-      end
-      
-      # create wrap method for before/after advices which are not wrapped inside around advice.
-      unless grouped_advices.empty?
-        create_method_for_before_after_advices klass, method, grouped_advices, inner_most unless grouped_advices.empty?
-      end
-
-      @creating_method = nil
     end
   end
 end

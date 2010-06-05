@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Aspect4r do
-  it "inherit aspects from parent class which include aspects from module" do
+  it "inherit from parent class which includes method+advices from module" do
     module Mod
       include Aspect4r
       
@@ -44,7 +44,7 @@ describe Aspect4r do
     o.value.should == %w(before around1 test around2 after)
   end
   
-  it "advices in parent class and included modules" do
+  it "method+advices in parent class and included modules - modules takes precedence" do
     module Mod3
       include Aspect4r
       

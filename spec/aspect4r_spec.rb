@@ -157,7 +157,7 @@ describe "Aspect4r result handling" do
   end
 end
 
-describe "Aspect4r chaining" do
+describe "Aspect4r chaining (add advice to advice method)" do
   it "execution order" do
     @klass = Class.new do
       include Aspect4r
@@ -221,5 +221,75 @@ describe "Aspect4r chaining" do
     o.value.should == %w(before1 before(do_something) do_something after(do_something) 
                          around11 test around12 
                          after1 before(process_result) process_result after(process_result))
+  end
+
+  it "should return correct result (after advice on advices)" do
+    @klass = Class.new do
+      include Aspect4r
+      
+      def test
+        "test"
+      end
+      
+      def around_test proxy
+        result = a4r_invoke proxy
+        "around1 #{result} around2"
+      end
+      
+      def after_test result
+        result + " after_test"
+      end
+      
+      around :test, :around_test
+      
+      after :test, :after_test
+      
+      after :after_test do |result, *args|
+        result + " after(after_test)"
+      end
+      
+      after :around_test do |result, *args|
+        result + " after(around_test)"
+      end
+    end
+    
+    o = @klass.new
+    o.test.should == "around1 test around2 after(around_test) after_test after(after_test)"
+  end
+  
+  it "should return correct result (around advice on advices)" do
+    @klass = Class.new do
+      include Aspect4r
+      
+      def test
+        "test"
+      end
+      
+      def around_test proxy
+        result = a4r_invoke proxy
+        "around1 #{result} around2"
+      end
+      
+      def after_test result
+        result + " after_test"
+      end
+      
+      around :test, :around_test
+      
+      after :test, :after_test
+      
+      around :after_test do |proxy, *args|
+        result = a4r_invoke proxy, *args
+        "around1(after_test) " + result + " around2(after_test)"
+      end
+      
+      around :around_test do |proxy, *args|
+        result = a4r_invoke proxy, *args
+        "around1(around_test) " + result + " around2(around_test)"
+      end
+    end
+    
+    o = @klass.new
+    o.test.should == "around1(after_test) around1(around_test) around1 test around2 around2(around_test) after_test around2(after_test)"
   end
 end

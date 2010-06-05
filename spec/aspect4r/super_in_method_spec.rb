@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe "super in method body" do
-  it "advice in child class" do
+  it "advice in child class and no advice in parent class" do
     parent = Class.new do
       def test
         @value << "parent"
@@ -33,7 +33,7 @@ describe "super in method body" do
     o.value.should == %w(before parent self)
   end
   
-  it "advice in parent class" do
+  it "no advice in child class and advice in parent class" do
     parent = Class.new do
       include Aspect4r
       
@@ -65,17 +65,29 @@ describe "super in method body" do
     o.value.should == %w(before parent self)
   end
   
-  it "grand parent + parent + self" do
+  it "advices in grand parent and parent and self" do
     grand_parent = Class.new do
+      include Aspect4r
+      
+      before :test do
+        @value << "before(grand_parent)"
+      end
+      
       def test
-        @value << "grand_parent"
+        @value << "test(grand_parent)"
       end
     end
     
     parent = Class.new(grand_parent) do
+      include Aspect4r
+      
+      before :test do
+        @value << "before(parent)"
+      end
+      
       def test
         super
-        @value << "parent"
+        @value << "test(parent)"
       end
     end
     
@@ -94,13 +106,13 @@ describe "super in method body" do
       
       def test
         super
-        @value << "self"
+        @value << "test"
       end
     end
     
     o = klass.new
     o.test
     
-    o.value.should == %w(before grand_parent parent self)
+    o.value.should == %w(before before(parent) before(grand_parent) test(grand_parent) test(parent) test)
   end
 end

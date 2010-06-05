@@ -18,7 +18,20 @@ describe Aspect4r::Around do
     end
   end
   
-  it "should run block instead of original method" do
+  it "should run advice method instead of original method" do
+    @klass.class_eval do
+      def do_something orig, value
+        raise 'error'
+      end
+  
+      around :test, :do_something
+    end
+    
+    o = @klass.new
+    lambda { o.test('something') }.should raise_error
+  end
+  
+  it "should run advice block instead of original method" do
     i = 100
     
     @klass.class_eval do
@@ -51,7 +64,7 @@ describe Aspect4r::Around do
     i.should == 200
   end
   
-  it "should have access to instance variable inside around block" do
+  it "should have access to instance variables inside advice block" do
     @klass.class_eval do
       around :test do |orig, value|
         @var = 1
@@ -64,7 +77,7 @@ describe Aspect4r::Around do
     o.instance_variable_get(:@var).should == 1
   end
   
-  it "should be able to invoke original method" do
+  it "should be able to invoke original method from advice block" do
     i = 100
     
     @klass.class_eval do
@@ -82,7 +95,22 @@ describe Aspect4r::Around do
     i.should == 200
   end
   
-  it "should pass method name as first arg if method_name_arg is true" do
+  it "should be able to invoke original method from advice method" do
+    @klass.class_eval do
+      def do_something proxy, value
+        a4r_invoke proxy, value
+      end
+  
+      around :test, :do_something
+    end
+    
+    o = @klass.new
+    o.test('something').should == 'test_return'
+    
+    o.value.should == 'something'
+  end
+  
+  it "should pass method name to advice block(or method) as first arg if method_name_arg is true" do
     s = nil
     
     @klass.class_eval do
@@ -96,33 +124,5 @@ describe Aspect4r::Around do
     o.test('something')
 
     s.should == 'test'
-  end
-  
-  it "should run around_* method instead of original method" do
-    @klass.class_eval do
-      def do_something orig, value
-        raise 'error'
-      end
-  
-      around :test, :do_something
-    end
-    
-    o = @klass.new
-    lambda { o.test('something') }.should raise_error
-  end
-  
-  it "should be able to invoke original method from around_* method" do
-    @klass.class_eval do
-      def do_something proxy, value
-        a4r_invoke proxy, value
-      end
-  
-      around :test, :do_something
-    end
-    
-    o = @klass.new
-    o.test('something').should == 'test_return'
-    
-    o.value.should == 'something'
   end
 end

@@ -18,7 +18,20 @@ describe Aspect4r::After do
     end
   end
   
-  it "should run block after method" do
+  it "should run advice method after original method" do
+    @klass.class_eval do
+      def do_something result, value
+        'do_something'
+      end
+  
+      after :test, :do_something
+    end
+    
+    o = @klass.new
+    o.test('something').should == 'do_something'
+  end
+  
+  it "should run advice block after original method" do
     i = 100
     
     @klass.class_eval do
@@ -51,7 +64,7 @@ describe Aspect4r::After do
     i.should == 200
   end
   
-  it "should have access to instance variable inside after block" do
+  it "should have access to instance variables inside advice block" do
     @klass.class_eval do
       after :test do |result, value|
         @var = 1
@@ -64,7 +77,7 @@ describe Aspect4r::After do
     o.instance_variable_get(:@var).should == 1
   end  
   
-  it "should pass method name as first arg if method_name_arg is true" do
+  it "should pass method name to advice block(or method) as first arg if method_name_arg is true" do
     s = nil
     
     @klass.class_eval do
@@ -80,17 +93,17 @@ describe Aspect4r::After do
     s.should == 'test'
   end
   
-  it "should run specified method after original method" do
+  it "should pass result to advice method(or block) and return modified result" do
     @klass.class_eval do
       def do_something result, value
-        'do_something'
+        result + ' enhanced'
       end
   
       after :test, :do_something
     end
     
     o = @klass.new
-    o.test('something').should == 'do_something'
+    o.test('something').should == 'test_return enhanced'
   end
   
   it "should not pass result and not change result if result_arg is set to false" do

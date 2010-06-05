@@ -49,7 +49,7 @@ describe Aspect4r do
       end
       
       def test
-        @value << "test"
+        @value << "test(parent)"
       end
       
       before :test do
@@ -59,14 +59,14 @@ describe Aspect4r do
     
     child = Class.new(parent) do
       def test
-        @value << "test(child)"
+        @value << "test"
       end
     end
     
     o = child.new
     o.test
     
-    o.value.should == %w(test(child))
+    o.value.should == %w(test)
   end
   
   it "override method and call super" do
@@ -80,7 +80,7 @@ describe Aspect4r do
       end
       
       def test
-        @value << "test"
+        @value << "test(parent)"
       end
       
       before :test do
@@ -91,14 +91,14 @@ describe Aspect4r do
     child = Class.new(parent) do
       def test
         super
-        @value << "test(child)"
+        @value << "test"
       end
     end
     
     o = child.new
     o.test
     
-    o.value.should == %w(before test test(child))
+    o.value.should == %w(before test(parent) test)
   end
   
   it "override method with advices and call super" do
@@ -139,7 +139,7 @@ describe Aspect4r do
     o.value.should == %w(before before(parent) test(parent) test)
   end
   
-  it "before/after aspects in body and inherited aspects can be combined" do
+  it "method+advices in child class and method+advices in parent class" do
     parent = Class.new do
       include Aspect4r
       
@@ -184,7 +184,36 @@ describe Aspect4r do
     o.value.should == %w(before test after)
   end
   
-  it "around aspects in body and inherited aspects can be combined" do
+  it "around advice in child class and method in parent class" do
+    parent = Class.new do
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+    end
+    
+    class Child1 < parent
+      include Aspect4r
+      
+      around :test do |proxy|
+        @value << "around(before)"
+        a4r_invoke proxy
+        @value << "around(after)"
+      end
+    end
+    
+    o = Child1.new
+    o.test
+    
+    o.value.should == %w(around(before) test around(after))
+  end
+  
+  it "around advice in child class and method+advices in parent class" do
     parent = Class.new do
       include Aspect4r
       
@@ -207,7 +236,7 @@ describe Aspect4r do
       end
     end
     
-    class Child1 < parent
+    class Child2 < parent
       include Aspect4r
       
       around :test do |proxy|
@@ -217,7 +246,7 @@ describe Aspect4r do
       end
     end
     
-    o = Child1.new
+    o = Child2.new
     o.test
     
     o.value.should == %w(around(before) before test after around(after))

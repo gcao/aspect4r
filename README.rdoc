@@ -4,10 +4,10 @@ Aspect Oriented Programming support for Ruby
 
 == Feature
 
-* Extract common logic using before, after, around
-* before_check as method filters (work like before_filters in web application)
-* Aspects defined in super class will work in sub classes
-* When a module is included, its aspects are included too
+* extract common logic from multiple methods into before, after, around advices
+* before_filter as method filters (work like before_filters in web application)
+* advices can be customized (e.g. to take an optional method name argument)
+* work as a supporting piece for more complex AOP tasks
 
 == Usage
 
@@ -17,7 +17,7 @@ Aspect Oriented Programming support for Ruby
     around :test do |proxy_method, value|
       a4r_invoke proxy_method, value
     end
-  
+
     before :test do |value|
       puts "entering test(#{value})"
     end

@@ -19,7 +19,7 @@ describe Aspect4r::Helper do
     end
   end
   
-  describe "self.create" do
+  describe "self.create_method" do
     before do
       @klass = Class.new do
         include Aspect4r
@@ -91,7 +91,7 @@ describe Aspect4r::Helper do
       o.value.should == %w(around_test_before test around_test_after)
     end
     
-    it "before + after" do
+    it "before + after advices" do
       @klass.before :test, :before_test
       @klass.after :test, :after_test
       Aspect4r::Helper.create_method @klass, :test
@@ -102,7 +102,7 @@ describe Aspect4r::Helper do
       o.value.should == %w(before_test test after_test)
     end
     
-    it "around + before + after" do
+    it "around + before + after advices" do
       @klass.around :test, :around_test
       @klass.before :test, :before_test
       @klass.after :test, :after_test
