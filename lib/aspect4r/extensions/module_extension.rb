@@ -29,7 +29,6 @@ class Module
   alias method_added             method_added_with_a4r
 
   def singleton_method_added_with_a4r(method)
-    # puts "singleton_method_added_with_a4r(#{method})"
     singleton_method_added_without_a4r(method) if respond_to?(:singleton_method_added_without_a4r)
     
     return if method.to_s =~ /a4r/

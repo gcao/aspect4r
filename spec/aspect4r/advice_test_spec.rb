@@ -37,24 +37,24 @@ describe "Test Advices" do
     end
   end
   
-  it "Verify advices" do
-    @klass.a4r_data[:test].advices.size.should == 4
+  it "number of advices" do
+    @klass.a4r_data[:test].size.should == 4
   end
-  
+
   it "around advice" do
-    advice = @klass.a4r_data[:test].advices[0]
+    advice = @klass.a4r_data[:test][0]
     advice.around?.should be_true
 
     o = @klass.new
-    o.expects(:a4r_invoke).with(nil, 1)
+    o.expects(:a4r_invoke).with(:proxy, 1)
      
-    advice.invoke(o, nil, 1)
+    advice.invoke(o, :proxy, 1)
 
     o.value.should == %w(around(before) around(after))
   end
   
   it "before advice" do
-    advice = @klass.a4r_data[:test].advices[1]
+    advice = @klass.a4r_data[:test][1]
     advice.before?.should be_true
 
     o = @klass.new
@@ -63,8 +63,8 @@ describe "Test Advices" do
     o.value.should == %w(before)
   end
   
-  it "before_filter advice" do
-    advice = @klass.a4r_data[:test].advices[2]
+  it "before_filter advice returns true if input is not negative" do
+    advice = @klass.a4r_data[:test][2]
     advice.before_filter?.should be_true
 
     o = @klass.new
@@ -73,15 +73,15 @@ describe "Test Advices" do
     o.value.should == %w(before_filter)
   end
   
-  it "before_filter advice returns false" do
-    advice = @klass.a4r_data[:test].advices[2]
+  it "before_filter advice returns false if input is negative" do
+    advice = @klass.a4r_data[:test][2]
 
     o = @klass.new
     advice.invoke(o, -1).should be_false
   end
   
   it "after advice" do
-    advice = @klass.a4r_data[:test].advices[3]
+    advice = @klass.a4r_data[:test][3]
     advice.after?.should be_true
 
     o = @klass.new

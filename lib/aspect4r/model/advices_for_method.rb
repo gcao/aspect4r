@@ -11,9 +11,19 @@ module Aspect4r
       def advices
         @advices ||= []
       end
+      
+      def [] index
+        advices[index]
+      end
     
       def add new_advice
         advices << new_advice unless include?(new_advice)
+      end
+      
+      alias << add
+      
+      def size
+        empty? ? 0 : @advices.size
       end
     
       def empty?
