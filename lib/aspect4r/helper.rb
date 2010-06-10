@@ -160,7 +160,7 @@ module Aspect4r
     CODE
     
     def self.create_method_for_before_after_advices klass, method, advices, inner_most
-      before_advices = advices.select {|advice| advice.before? }
+      before_advices = advices.select {|advice| advice.before? or advice.before_filter? }
       after_advices  = advices.select {|advice| advice.after?  }
       
       code = METHOD_TEMPLATE.result(binding)

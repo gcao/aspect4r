@@ -16,13 +16,25 @@ module Aspect4r
       def name
         options[:name] || with_method
       end
-    
-      %w(before after around).each do |aspect|
-        class_eval <<-CODE
-          def #{aspect}? 
-            type == #{aspect.upcase}
-          end
-        CODE
+      
+      def before?
+        type == BEFORE and not options[:skip_if_false]
+      end
+      
+      def before_filter?
+        type == BEFORE and options[:skip_if_false]
+      end
+      
+      def after?
+        type == AFTER
+      end
+      
+      def around?
+        type == AROUND
+      end
+      
+      def invoke obj, *args
+        obj.send with_method, *args
       end
     end
   end

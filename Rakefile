@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "aspect4r"
     gem.summary = %Q{Aspect Oriented Programming for ruby}
-    gem.description = %Q{AOP for ruby - use before_method, after_method and around_method to trim your fat methods and reduce code duplication}
+    gem.description = %Q{AOP for ruby - use before, after and around to trim your fat methods and reduce code duplication}
     gem.email = "gcao99@gmail.com"
     gem.homepage = "http://github.com/gcao/aspect4r"
     gem.authors = ["Guoliang Cao"]

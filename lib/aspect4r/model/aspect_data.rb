@@ -6,10 +6,6 @@ module Aspect4r
       def initialize *args
         super
       end
-    
-      def advices
-        @advices ||= {}
-      end
       
       def methods_with_advices
         @methods_with_advices ||= Set.new
