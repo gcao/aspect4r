@@ -17,7 +17,7 @@ describe "Test Advices" do
         @value << "around(after)"
       end
       
-      before :test do |input|
+      before :test, :name => 'before_advice' do |input|
         @value << 'before'
       end
       
@@ -55,6 +55,16 @@ describe "Test Advices" do
   
   it "before advice" do
     advice = @klass.a4r_data[:test][1]
+    advice.before?.should be_true
+
+    o = @klass.new
+    advice.invoke(o, 1)
+
+    o.value.should == %w(before)
+  end
+  
+  it "before advice retrieved by name" do
+    advice = @klass.a4r_data[:test][:before_advice]
     advice.before?.should be_true
 
     o = @klass.new

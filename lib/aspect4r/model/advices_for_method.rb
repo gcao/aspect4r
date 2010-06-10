@@ -1,6 +1,6 @@
 module Aspect4r
   module Model
-    class AdvicesForMethod
+    class AdvicesForMethod < Array
       attr_reader :method
       attr_accessor :wrapped_method
     
@@ -8,47 +8,18 @@ module Aspect4r
         @method = method
       end
     
-      def advices
-        @advices ||= []
+      def add new_advice
+        self << new_advice unless include?(new_advice)
+      end
+
+      def include? new_advice
+        detect { |advice| advice.name == new_advice.name }
       end
       
       def [] index
-        advices[index]
-      end
-    
-      def add new_advice
-        advices << new_advice unless include?(new_advice)
-      end
-      
-      alias << add
-      
-      def size
-        empty? ? 0 : @advices.size
-      end
-    
-      def empty?
-        @advices.nil? or @advices.empty?
-      end
-    
-      def include? new_advice
-        advices.detect { |advice| advice.name == new_advice.name }
-      end
-    
-      def merge! another
-        unless another.nil? or another.empty?
-          another.advices.each do |advice|
-            advices.push advice unless include?(advice)
-          end
-        end
-
-        self
-      end
-    
-      def clone
-        o = self.class.new(method)
-        o.advices.push *advices unless empty?
-
-        o
+        return super unless index.is_a? String or index.is_a? Symbol
+        
+        detect {|advice| advice.name.to_sym == index.to_sym }
       end
     end
   end

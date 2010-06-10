@@ -59,7 +59,7 @@ module Aspect4r
       grouped_advices = []
       inner_most = true
 
-      aspect.advices.each do |advice|
+      aspect.each do |advice|
         if advice.around? and not grouped_advices.empty?
           # wrap up advices before current advice
           create_method_for_before_after_advices klass, method, grouped_advices, inner_most

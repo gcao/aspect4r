@@ -37,7 +37,7 @@ describe "Advice on class method" do
   end
   
   it "method after advices" do
-    pending "Fix singleton_method_added in module_extension.rb"
+    pending "Need to think about how to handle advices for class methods, one way is to add 'self.' to advised method name and handle it differently"
     klass = Class.new do
       class << self
         include Aspect4r
