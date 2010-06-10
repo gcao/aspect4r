@@ -25,7 +25,16 @@ module Aspect4r
 
     module ClassMethods
       def a4r_data
-        @a4r_data ||= Aspect4r::Model::AspectData.new
+        @a4r_data ||= Aspect4r::Model::AspectData.new(self)
+      end
+      
+      def a4r_group
+        a4r_data.change_group
+        
+        if block_given?
+          yield
+          a4r_data.change_group
+        end
       end
     end
   end

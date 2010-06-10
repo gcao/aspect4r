@@ -5,11 +5,13 @@ module Aspect4r
       AFTER  = 2
       AROUND = 3
     
+      attr :group
       attr_accessor :type, :with_method, :options
     
-      def initialize type, with_method, options = {}
+      def initialize type, with_method, group, options = {}
         @type        = type
         @with_method = with_method
+        @group       = group
         @options     = options
       end
     

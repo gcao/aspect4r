@@ -41,8 +41,9 @@ module Aspect4r
         method = method.to_sym
         klass_or_module.a4r_data.methods_with_advices << method
         
-        aspect = klass_or_module.a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
-        aspect.add Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, options)
+        a4r_data = klass_or_module.a4r_data
+        aspect   = a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
+        aspect.add Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, a4r_data.group, options)
         
         if not aspect.wrapped_method and klass_or_module.instance_methods.include?(method.to_s)
           aspect.wrapped_method = klass_or_module.instance_method(method)
@@ -65,16 +66,16 @@ module Aspect4r
       end
       
       grouped_advices = []
-      inner_most = true
+      group           = nil
+      inner_most      = true
 
       aspect.each do |advice|
-        if advice.around? and not grouped_advices.empty?
+        if ((group and group != advice.group) or advice.around?) and not grouped_advices.empty?
           # wrap up advices before current advice
           create_method_for_before_after_advices klass, method, grouped_advices, inner_most
           
-          inner_most = false
-          
           grouped_advices = []
+          inner_most      = false
         end
         
         # handle current advice
@@ -84,6 +85,8 @@ module Aspect4r
         else
           grouped_advices << advice
         end
+        
+        group = advice.group
       end
       
       # create wrap method for before/after advices which are not wrapped inside around advice.

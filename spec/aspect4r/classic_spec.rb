@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-require 'aspect4r/classic'
+require 'aspect4r'
 
 describe Aspect4r::Classic do
   it "should work" do
