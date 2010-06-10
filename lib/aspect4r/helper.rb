@@ -13,10 +13,18 @@ module Aspect4r
       @creating_method
     end
     
+    def self.eigen_class klass_or_module
+      klass_or_module.module_eval do
+        class << self
+          self
+        end
+      end
+    end
+    
     # Store original method in aspect data and refer to it whenever recreating method
     def self.process_advice meta_data, klass_or_module, *methods, &block
       methods.flatten!
-      
+
       options = meta_data.default_options.clone
       options.merge!(methods.pop) if methods.last.is_a? Hash
       options.merge!(meta_data.mandatory_options)

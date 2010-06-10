@@ -1,71 +1,69 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe "Advice on class method" do
-  it "method before advices" do
-    pending
-    klass = Class.new do
-      include Aspect4r
-      
-      def self.value
-        @value ||= []
-      end
-      
-      def self.test input
-        value << "test"
-      end
-      
-      around 'self.test' do |proxy, input|
-        value << "around(before)"
-        a4r_invoke proxy, input
-        value << "around(after)"
-      end
-      
-      before 'self.test' do |input|
-        value << "before"
-      end
-      
-      after 'self.test' do |result, input|
-        value << "after"
-        result
+describe "Advices on singleton method (also known as class method)" do
+  it "class method" do
+    class AdvicesOnClassMethod
+      class << self
+        include Aspect4r
+        
+        def value
+          @value ||= []
+        end
+        
+        around :test do |proxy|
+          value << "around(before)"
+          a4r_invoke proxy
+          value << "around(after)"
+        end
+        
+        before :test do
+          value << "before"
+        end
+        
+        after :test do
+          value << "after"
+        end
+        
+        def test
+          value << "test"
+        end
       end
     end
     
-    klass.test 1
-    
-    klass.value.should == %w(before around(before) test around(after) after)
+    AdvicesOnClassMethod.test
+    AdvicesOnClassMethod.value.should == %w(before around(before) test around(after) after)
   end
-  
-  it "method after advices" do
-    pending
-    klass = Class.new do
-      include Aspect4r
-      
-      def self.value
-        @value ||= []
-      end
-      
-      around 'self.test' do |proxy, input|
-        value << "around(before)"
-        a4r_invoke proxy, input
-        value << "around(after)"
-      end
-      
-      before 'self.test' do |input|
-        value << "before"
-      end
-      
-      after 'self.test' do |result, input|
-        value << "after"
-        result
-      end
-      
-      def self.test input
-        value << "test"
+
+  it "module singleton method" do
+    module AdvicesOnModuleSingletonMethod
+      class << self
+        include Aspect4r
+        
+        def value
+          @value ||= []
+        end
+        
+        around :test do |proxy|
+          value << "around(before)"
+          a4r_invoke proxy
+          value << "around(after)"
+        end
+        
+        before :test do
+          value << "before"
+        end
+        
+        after :test do
+          value << "after"
+        end
+        
+        def test
+          value << "test"
+        end
       end
     end
     
-    klass.test 1
-    
-    klass.value.should == %w(before around(before) test around(after) after)
+    AdvicesOnModuleSingletonMethod.test
+    AdvicesOnModuleSingletonMethod.value.should == %w(before around(before) test around(after) after)
   end
 end
