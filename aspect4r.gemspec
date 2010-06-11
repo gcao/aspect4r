@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aspect4r}
-  s.version = "0.8.0"
+  s.version = "0.8.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guoliang Cao"]
-  s.date = %q{2010-06-10}
+  s.date = %q{2010-06-11}
   s.description = %q{AOP for ruby - use before, after and around to trim your fat methods and reduce code duplication}
   s.email = %q{gcao99@gmail.com}
   s.extra_rdoc_files = [
@@ -99,7 +99,8 @@ Gem::Specification.new do |s|
      "examples/after_example.rb",
      "examples/around_example.rb",
      "examples/before_example.rb",
-     "examples/combined_example.rb"
+     "examples/combined_example.rb",
+     "examples/method_to_advices_example.rb"
   ]
 
   if s.respond_to? :specification_version then
