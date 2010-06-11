@@ -13,6 +13,13 @@ module Aspect4r
       @creating_method
     end
     
+    def self.define_method klass_or_module, *args, &block
+      @creating_method = true
+      klass_or_module.send :define_method, *args, &block
+    ensure
+      @creating_method = false
+    end
+
     def self.eigen_class klass_or_module
       klass_or_module.module_eval do
         class << self
@@ -60,12 +67,8 @@ module Aspect4r
       @creating_method = true
       
       aspect = klass.a4r_data[method.to_sym]
-
-      if aspect.nil? or aspect.empty?
-        # There is no aspect defined.
-        @creating_method = nil
-        return
-      end
+      
+      return if aspect.nil? or aspect.empty?
       
       grouped_advices = []
       group           = nil
@@ -95,7 +98,7 @@ module Aspect4r
       unless grouped_advices.empty?
         create_method_for_before_after_advices klass, method, grouped_advices, inner_most unless grouped_advices.empty?
       end
-
+    ensure
       @creating_method = nil
     end
     

@@ -99,4 +99,13 @@ describe "Test Advices" do
 
     o.value.should == %w(after)
   end
+  
+  it "test method without advices" do
+    @klass.a4r_disable_advices_temporarily :test do
+      o = @klass.new
+      o.test 1
+      
+      o.value.should == %w(test)
+    end
+  end
 end

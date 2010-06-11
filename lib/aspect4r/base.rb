@@ -36,6 +36,25 @@ module Aspect4r
           a4r_data.change_group
         end
       end
+
+      def a4r_disable_advices_temporarily *methods
+        methods.each do |method|
+          advices = a4r_data[method.to_sym]
+          next if advices.nil? or advices.empty?
+          
+          Aspect4r::Helper.define_method self, method, advices.wrapped_method
+        end
+        
+        yield
+      ensure
+        methods.each do |method|
+          advices = a4r_data[method.to_sym]
+          
+          next if advices.nil? or advices.empty?
+          
+          Aspect4r::Helper.create_method self, method
+        end
+      end
     end
   end
 end
