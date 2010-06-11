@@ -37,13 +37,15 @@ module Aspect4r
         with_method = methods.pop
       end
       
+      a4r_data = klass_or_module.a4r_data
+      advice   = Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, a4r_data.group, options)
+      
       methods.each do |method|
         method = method.to_sym
         klass_or_module.a4r_data.methods_with_advices << method
         
-        a4r_data = klass_or_module.a4r_data
-        aspect   = a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
-        aspect.add Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, a4r_data.group, options)
+        aspect = a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
+        aspect.add advice
         
         if not aspect.wrapped_method and klass_or_module.instance_methods.include?(method.to_s)
           aspect.wrapped_method = klass_or_module.instance_method(method)
