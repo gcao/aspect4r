@@ -28,11 +28,11 @@ module Aspect4r
         @a4r_data ||= Aspect4r::Model::AspectData.new(self)
       end
       
-      def a4r_group
+      def a4r_group &block
         a4r_data.change_group
         
         if block_given?
-          yield
+          instance_eval &block
           a4r_data.change_group
         end
       end
