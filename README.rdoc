@@ -11,6 +11,8 @@ Aspect Oriented Programming support for Ruby
 
 == Usage
 
+API documentation: http://gcao.posterous.com/aspect4r-usage-and-public-api
+
   class A
     include Aspect4r
     
@@ -51,9 +53,11 @@ Aspect Oriented Programming support for Ruby
   
 == How does it work?
 
+Execution model: http://gcao.posterous.com/aspect4r-documentation-advice-execution-model
+
 == TODO
 
-See github issues tab http://github.com/gcao/aspect4r/issues
+See github issues http://github.com/gcao/aspect4r/issues
 
 == Note on Patches/Pull Requests
  
