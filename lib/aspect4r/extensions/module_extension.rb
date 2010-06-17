@@ -1,18 +1,4 @@
 class Module
-  def included_with_a4r(base)
-    included_without_a4r(base)
-    
-    return if @a4r_data.nil? or @a4r_data.empty?
-  
-    base.send(:include, Aspect4r)
-    
-    existing_aspects = base.a4r_data
-    existing_aspects.methods_with_advices.merge(@a4r_data.methods_with_advices)    
-  end
-  
-  alias included_without_a4r included
-  alias included             included_with_a4r
-  
   def method_added_with_a4r(method)
     method_added_without_a4r(method)
     

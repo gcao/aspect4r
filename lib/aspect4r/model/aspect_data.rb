@@ -18,10 +18,6 @@ module Aspect4r
       def change_group
         @group_index = group_index + 1
       end
-      
-      def methods_with_advices
-        @methods_with_advices ||= Set.new
-      end
     end
   end
 end

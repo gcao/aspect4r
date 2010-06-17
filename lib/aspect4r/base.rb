@@ -7,7 +7,6 @@ require 'aspect4r/return_this'
 
 require 'aspect4r/helper'
 
-require 'aspect4r/extensions/class_extension'
 require 'aspect4r/extensions/module_extension'
 
 module Aspect4r
@@ -15,6 +14,7 @@ module Aspect4r
     def self.included(base)
       base.send(:include, InstanceMethods)
       base.extend(ClassMethods)
+      base.instance_variable_set('@a4r_data', Aspect4r::Model::AspectData.new(base))
     end
 
     module InstanceMethods

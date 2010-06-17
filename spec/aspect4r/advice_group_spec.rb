@@ -14,6 +14,10 @@ describe "Group of advices" do
       def test
         @value << "test"
       end
+      
+      before :test do
+        @value << "before"
+      end
 
       a4r_group do
         before :test do
@@ -31,6 +35,6 @@ describe "Group of advices" do
     o = klass.new
     o.test
     
-    o.value.should == %w(before(group2) before(group1) test)
+    o.value.should == %w(before(group2) before(group1) before test)
   end
 end

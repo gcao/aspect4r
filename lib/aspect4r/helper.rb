@@ -49,7 +49,6 @@ module Aspect4r
       
       methods.each do |method|
         method = method.to_sym
-        klass_or_module.a4r_data.methods_with_advices << method
         
         aspect = a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
         aspect.add advice
