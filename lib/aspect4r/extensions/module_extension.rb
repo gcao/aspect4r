@@ -20,7 +20,12 @@ class Module
     return if method.to_s =~ /a4r/
 
     # save unbound method and create new method
-    eigen_class = Aspect4r::Helper.eigen_class(self)
+    eigen_class = instance_eval do
+      class << self
+        self
+      end
+    end
+
     my_advices  = eigen_class.instance_variable_get(:@a4r_data)
     
     if my_advices and method_advices = my_advices[method] and not Aspect4r::Helper.creating_method?

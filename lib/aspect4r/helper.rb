@@ -20,14 +20,6 @@ module Aspect4r
       @creating_method = false
     end
 
-    def self.eigen_class klass_or_module
-      klass_or_module.module_eval do
-        class << self
-          self
-        end
-      end
-    end
-    
     # Store original method in aspect data and refer to it whenever recreating method
     def self.process_advice meta_data, klass_or_module, *methods, &block
       methods.flatten!
