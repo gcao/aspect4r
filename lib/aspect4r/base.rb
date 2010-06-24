@@ -6,6 +6,7 @@ require 'aspect4r/model/advice_metadata'
 require 'aspect4r/return_this'
 
 require 'aspect4r/helper'
+require 'aspect4r/debugger'
 
 require 'aspect4r/extensions/module_extension'
 
