@@ -1,5 +1,5 @@
 module Aspect4r
-  class Debugger
+  class Debugger    
     attr :method
     
     def initialize klass_or_module, method
@@ -25,6 +25,7 @@ module Aspect4r
   
   def self.debug klass_or_module, *methods
     @debug_info ||= {}
+
     methods.each do |method|
       debugger = @debug_info[debug_key(klass_or_module, method)] = Debugger.new(klass_or_module, method)
       debugger.add_meta "Enabled debug mode for #{debugger.target}"
@@ -42,12 +43,12 @@ module Aspect4r
       
       @debug_info.delete key
     end
+
+    @debug_info = nil if @debug_info.empty?
   end
   
-  def self.debug? klass_or_module, method
-    return false unless @debug_info
-    
-    !!@debug_info[debug_key(klass_or_module, method)]
+  def self.debugger klass_or_module, method
+    @debug_info and @debug_info[debug_key(klass_or_module, method)]
   end
   
   private

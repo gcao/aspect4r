@@ -38,6 +38,20 @@ module Aspect4r
       def invoke obj, *args
         obj.send with_method, *args
       end
+      
+      def advice_type_name
+        if before?
+          "Before"
+        elsif before_filter?
+          "Before Filter"
+        elsif after?
+          "After"
+        elsif around?
+          "Around"
+        else
+          "Invalid"
+        end
+      end
     end
   end
 end

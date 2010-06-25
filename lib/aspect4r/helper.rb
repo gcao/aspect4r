@@ -25,7 +25,10 @@ module Aspect4r
       methods.flatten!
 
       options = meta_data.default_options.clone
-      options.merge!(methods.pop) if methods.last.is_a? Hash
+      
+      options_arg = methods.last.is_a?(Hash) ? methods.pop : {}
+      
+      options.merge!(options_arg)
       options.merge!(meta_data.mandatory_options)
       
       if block_given?
@@ -44,6 +47,18 @@ module Aspect4r
         
         aspect = a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
         aspect.add advice
+        
+        if debugger = Aspect4r.debugger(klass_or_module, method)
+          index = aspect.index(advice)
+          block_or_method_message = 
+            if block_given?
+              "a block whose arity is #{block.arity}"  
+            else
+              "method \"#{with_method}\""
+            end
+          
+          debugger.add_meta("advice#{index} <#{advice.advice_type_name.upcase}> is created with options #{options_arg.inspect} and #{block_or_method_message}")
+        end
         
         if not aspect.wrapped_method and klass_or_module.instance_methods.include?(method.to_s)
           aspect.wrapped_method = klass_or_module.instance_method(method)

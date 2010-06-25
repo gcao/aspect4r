@@ -4,6 +4,10 @@ class Module
     
     return if method.to_s =~ /a4r/
 
+    if not Aspect4r::Helper.creating_method? and debugger = Aspect4r.debugger(self, method)
+      debugger.add_meta "method \"#{method}\" is created"
+    end
+      
     # save unbound method and create new method
     if @a4r_data and method_advices = @a4r_data[method] and not Aspect4r::Helper.creating_method?
       method_advices.wrapped_method = instance_method(method)
@@ -18,6 +22,10 @@ class Module
     singleton_method_added_without_a4r(method)
     
     return if method.to_s =~ /a4r/
+
+    if not Aspect4r::Helper.creating_method? and debugger = Aspect4r.debugger(self, method)
+      debugger.add_meta "singleton method \"#{method}\" is created"
+    end
 
     # save unbound method and create new method
     eigen_class = instance_eval do
