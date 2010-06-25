@@ -110,7 +110,7 @@ module Aspect4r
     
     # method
     # advice
-    WRAP_METHOD_TEMPLATE = ERB.new <<-CODE, nil, '<>'
+    WRAP_METHOD_TEMPLATE = ERB.new <<-CODE, nil, '%<>'
 <% if inner_most %>
       wrapped_method = a4r_data[:<%= method %>].wrapped_method
 <% else %>
@@ -119,19 +119,19 @@ module Aspect4r
 
       define_method :<%= method %> do |*args|
 <% if advice.options[:method_name_arg] %>
-<% if debugger %>
+<%   if debugger %>
         debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{wrapped_method}, \#{args}")
-<% end %>
+<%   end %>
         result = <%= advice.with_method %> '<%= method %>', wrapped_method, *args
 <% else %>
-<% if debugger %>
+<%   if debugger %>
         debugger.add("Invoke <%= advice_name %> with arguments: \#{wrapped_method}, \#{args}")
-<% end %>
+<%   end %>
         result = <%= advice.with_method %> wrapped_method, *args
 <% end %>
 
 <% if debugger %>
-        debugger.add("<%= advice_name %> returns \#{result}")
+        debugger.add("<%= advice_name %> returns \#{result.inspect}")
 <% end %>
         result
       end
@@ -160,33 +160,55 @@ module Aspect4r
         result = nil
 
         # Before advices
-<% before_advices.each do |definition| %>
-<% if definition.options[:method_name_arg] %>
-        result = <%= definition.with_method %> '<%= method %>', *args
-<% else %>
-        result = <%= definition.with_method %> *args
-<% end %>
-
+<% before_advices.each do |advice| %>
+<%   advice_name = "advice\#{klass.a4r_data[method].index(advice)}" if debugger %>
+<%   if advice.options[:method_name_arg] %>
+<%     if debugger %>
+        debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{args}") 
+<%     end %>
+        result = <%= advice.with_method %> '<%= method %>', *args
+<%   else %>
+<%     if debugger %>
+        debugger.add("Invoke <%= advice_name %> with arguments: \#{args}") 
+<%     end %>
+        result = <%= advice.with_method %> *args
+<%   end %>
+<%   if debugger %>
+        debugger.add("<%= advice_name %> returns \#{result.inspect}")
+<%   end %>
         return result.value if result.is_a? ReturnThis
-<% if definition.options[:skip_if_false] %>
+<%   if advice.options[:skip_if_false] %>
         return unless result
-<% end %>
+<%   end %>
 <% end %>
 
         # Call wrapped method
         result = wrapped_method.bind(self).call *args
 
         # After advices
-<% after_advices.each do |definition| %>
-<% if definition.options[:method_name_arg] and definition.options[:result_arg] %>
-        result = <%= definition.with_method %> '<%= method %>', result, *args
-<% elsif definition.options[:method_name_arg] %>
-        <%= definition.with_method %> '<%= method %>', *args
-<% elsif definition.options[:result_arg] %>
-        result = <%= definition.with_method %> result, *args
-<% else %>
-        <%= definition.with_method %> *args
-<% end %>
+<% after_advices.each do |advice| %>
+<%   advice_name = "advice\#{klass.a4r_data[method].index(advice)}" if debugger %>
+<%   if advice.options[:method_name_arg] and advice.options[:result_arg] %>
+<%     if debugger %>
+        debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{result}, \#{args}") 
+<%     end %>
+        result = <%= advice.with_method %> '<%= method %>', result, *args
+<%   elsif advice.options[:method_name_arg] %>
+<%     if debugger %>
+        debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{args}") 
+<%     end %>
+        <%= advice.with_method %> '<%= method %>', *args
+<%   elsif advice.options[:result_arg] %>
+<%     if debugger %>
+        debugger.add("Invoke <%= advice_name %> with arguments: \#{result}, \#{args}") 
+<%     end %>
+        result = <%= advice.with_method %> result, *args
+<%   else %>
+        <%= advice.with_method %> *args
+<%   end %>
+<%   if debugger %>
+        debugger.add("<%= advice_name %> returns \#{result.inspect}")
+<%   end %>
 <% end %>
         
         result
@@ -194,6 +216,8 @@ module Aspect4r
     CODE
     
     def self.create_method_for_before_after_advices klass, method, advices, inner_most
+      debugger = Aspect4r.debugger(klass, method)
+      
       before_advices = advices.select {|advice| advice.before? or advice.before_filter? }
       after_advices  = advices.select {|advice| advice.after?  }
       
