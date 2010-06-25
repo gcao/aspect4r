@@ -119,16 +119,28 @@ module Aspect4r
 
       define_method :<%= method %> do |*args|
 <% if advice.options[:method_name_arg] %>
+<% if debugger %>
+        debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{wrapped_method}, \#{args}")
+<% end %>
         result = <%= advice.with_method %> '<%= method %>', wrapped_method, *args
 <% else %>
+<% if debugger %>
+        debugger.add("Invoke <%= advice_name %> with arguments: \#{wrapped_method}, \#{args}")
+<% end %>
         result = <%= advice.with_method %> wrapped_method, *args
 <% end %>
-        
+
+<% if debugger %>
+        debugger.add("<%= advice_name %> returns \#{result}")
+<% end %>
         result
       end
     CODE
     
     def self.create_method_for_around_advice klass, method, advice, inner_most
+      if debugger = Aspect4r.debugger(klass, method)
+        advice_name = "advice#{klass.a4r_data[method].index(advice)}"
+      end
       code = WRAP_METHOD_TEMPLATE.result(binding)
       # puts code
       klass.class_eval code, __FILE__
