@@ -5,8 +5,8 @@ require 'aspect4r/debugger'
 
 class A
   include Aspect4r
-  
-  Aspect4r.debug self, :test
+
+  Aspect4r.debug A, :test
   
   def test value
     puts 'test'

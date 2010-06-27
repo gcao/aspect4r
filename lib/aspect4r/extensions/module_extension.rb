@@ -10,7 +10,8 @@ class Module
       
     # save unbound method and create new method
     if @a4r_data and method_advices = @a4r_data[method] and not Aspect4r::Helper.creating_method?
-      method_advices.wrapped_method = instance_method(method)
+      wrapped_method = method_advices.wrapped_method = instance_method(method)
+      wrapped_method.instance_variable_set "@advised_method", true
       Aspect4r::Helper.create_method self, method
     end
   end
@@ -37,7 +38,8 @@ class Module
     my_advices  = eigen_class.instance_variable_get(:@a4r_data)
     
     if my_advices and method_advices = my_advices[method] and not Aspect4r::Helper.creating_method?
-      method_advices.wrapped_method = eigen_class.instance_method(method)
+      wrapped_method = method_advices.wrapped_method = eigen_class.instance_method(method)
+      wrapped_method.instance_variable_set "@advised_method", true
       Aspect4r::Helper.create_method eigen_class, method
     end
   end

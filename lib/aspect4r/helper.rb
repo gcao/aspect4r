@@ -61,7 +61,8 @@ module Aspect4r
         end
         
         if not aspect.wrapped_method and klass_or_module.instance_methods.include?(method.to_s)
-          aspect.wrapped_method = klass_or_module.instance_method(method)
+          wrapped_method = aspect.wrapped_method = klass_or_module.instance_method(method)
+          wrapped_method.instance_variable_set "@advised_method", true
         end
         
         create_method klass_or_module, method if aspect.wrapped_method
@@ -117,10 +118,10 @@ module Aspect4r
         # before advice
 <%   advice_name = "advice\#{klass.a4r_data[method].index(advice)}" if debugger %>
 <%   if advice.options[:method_name_arg] %>
-        <% if debugger %>debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{args}") <% end %>
+        <% if debugger %>debugger.add("<%= advice_name %> is invoked with arguments: \"<%= method %>\", \#{args}") <% end %>
         result = <%= advice.with_method %> '<%= method %>', *args
 <%   else %>
-        <% if debugger %>debugger.add("Invoke <%= advice_name %> with arguments: \#{args}") <% end %>
+        <% if debugger %>debugger.add("<%= advice_name %> is invoked with arguments: \#{args}") <% end %>
         result = <%= advice.with_method %> *args
 <%   end %>
         <% if debugger %>debugger.add("<%= advice_name %> returns \#{result.inspect}") <% end %>
@@ -134,28 +135,31 @@ module Aspect4r
 <%   advice_name = "advice\#{klass.a4r_data[method].index(around_advice)}" if debugger %>
         # around advice
 <%   if around_advice.options[:method_name_arg] %>
-        <% if debugger %>debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{wrapped_method}, \#{args}") <% end %>
+        <% if debugger %>debugger.add("<%= advice_name %> is invoked with arguments: \"<%= method %>\", \#{wrapped_method}, \#{args}") <% end %>
         result = <%= around_advice.with_method %> '<%= method %>', wrapped_method, *args
 <%   else %>
-        <% if debugger %>debugger.add("Invoke <%= advice_name %> with arguments: \#{wrapped_method}, \#{args}") <% end %>
+        <% if debugger %>debugger.add("<%= advice_name %> is invoked with arguments: \#{wrapped_method}, \#{args}") <% end %>
         result = <%= around_advice.with_method %> wrapped_method, *args
 <%   end %>
+        <% if debugger %>debugger.add("<%= advice_name %> returns \#{result.inspect}") <% end %>
 <% else %>
         # Invoke wrapped method
+        <% if debugger %>debugger.add("\"\#{method}\" is invoked with arguments: \#{args}") <% end %>
         result = wrapped_method.bind(self).call *args
+        <% if debugger %>debugger.add("\"\#{method}\" returns \#{result.inspect}") <% end %>
 <% end %>
 
 <% after_advices.each do |advice| %>
         # after advice
 <%   advice_name = "advice\#{klass.a4r_data[method].index(advice)}" if debugger %>
 <%   if advice.options[:method_name_arg] and advice.options[:result_arg] %>
-        <% if debugger %>debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{result}, \#{args}") <% end %>
+        <% if debugger %>debugger.add("<%= advice_name %> is invoked with arguments: \"<%= method %>\", \#{result}, \#{args}") <% end %>
         result = <%= advice.with_method %> '<%= method %>', result, *args
 <%   elsif advice.options[:method_name_arg] %>
-        <% if debugger %>debugger.add("Invoke <%= advice_name %> with arguments: \"<%= method %>\", \#{args}") <% end %>
+        <% if debugger %>debugger.add("<%= advice_name %> is invoked with arguments: \"<%= method %>\", \#{args}") <% end %>
         <%= advice.with_method %> '<%= method %>', *args
 <%   elsif advice.options[:result_arg] %>
-        <% if debugger %>debugger.add("Invoke <%= advice_name %> with arguments: \#{result}, \#{args}") <% end %>
+        <% if debugger %>debugger.add("<%= advice_name %> is invoked with arguments: \#{result}, \#{args}") <% end %>
         result = <%= advice.with_method %> result, *args
 <%   else %>
         <%= advice.with_method %> *args

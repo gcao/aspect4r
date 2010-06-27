@@ -29,6 +29,9 @@ module Aspect4r
     methods.each do |method|
       debugger = @debug_info[debug_key(klass_or_module, method)] = Debugger.new(klass_or_module, method)
       debugger.add_meta "Enabled debug mode for #{debugger.target}"
+      # TODO show advices defined already and recreate method with advices
+      # aspect = klass_or_module.a4r_data[method]
+      # Aspect4r::Helper.create_method klass_or_module, method if aspect and aspect.wrapped_method
     end
   end
   

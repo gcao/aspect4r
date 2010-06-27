@@ -20,7 +20,13 @@ module Aspect4r
 
     module InstanceMethods
       def a4r_invoke proxy, *args
-        proxy.bind(self).call *args
+        debugger = Aspect4r.debugger(self.class, proxy.name)
+        debugger.add("\"#{proxy.name}\" is invoked with arguments: #{args}") if debugger and proxy.instance_variable_get("@advised_method")
+        
+        result = proxy.bind(self).call *args
+        
+        debugger.add("\"#{proxy.name}\" returns #{result.inspect}") if debugger and proxy.instance_variable_get("@advised_method")
+        result
       end
     end
 
