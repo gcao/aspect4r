@@ -4,9 +4,11 @@ module Aspect4r
       BEFORE = 1
       AFTER  = 2
       AROUND = 3
-    
-      attr :group
-      attr_accessor :type, :with_method, :options
+
+      # raw_options, logic_in_block and block_arity are for recording purpose.
+      attr_reader :group
+      attr_writer :logic_in_block
+      attr_accessor :type, :with_method, :options, :raw_options, :block_arity
     
       def initialize type, with_method, group, options = {}
         @type        = type
@@ -17,6 +19,10 @@ module Aspect4r
     
       def name
         options[:name] || with_method
+      end
+      
+      def logic_in_block?
+        @logic_in_block
       end
       
       def before?

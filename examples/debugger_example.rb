@@ -34,7 +34,7 @@ end
 
 puts "Example 1:"
 puts A.new.test(1)
-Aspect4r.debug_end A, :test
+Aspect4r.debug_end
 
 # ==== Output ====
 # a4r A#test: * Enabled debug mode for A#test

@@ -35,19 +35,14 @@ module Aspect4r
     end
   end
   
-  def self.debug_end klass_or_module, *methods
+  def self.debug_end
     return unless @debug_info
     
-    methods.each do |method|
-      key = debug_key(klass_or_module, method)
-      
-      debugger = @debug_info[key]
+    @debug_info.values.each do |debugger|
       debugger.add_meta("Disabled debug mode for #{debugger.target}")
-      
-      @debug_info.delete key
     end
 
-    @debug_info = nil if @debug_info.empty?
+    @debug_info = nil
   end
   
   def self.debugger klass_or_module, method
