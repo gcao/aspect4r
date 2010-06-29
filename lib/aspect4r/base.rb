@@ -5,6 +5,8 @@ require 'aspect4r/model/aspect_data'
 require 'aspect4r/model/advice_metadata'
 require 'aspect4r/return_this'
 
+require 'aspect4r/event'
+
 require 'aspect4r/helper'
 require 'aspect4r/debugger'
 
