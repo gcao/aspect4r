@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aspect4r}
-  s.version = "0.8.1"
+  s.version = "0.8.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guoliang Cao"]
-  s.date = %q{2010-06-11}
+  s.date = %q{2010-07-01}
   s.description = %q{AOP for ruby - use before, after and around to trim your fat methods and reduce code duplication}
   s.email = %q{gcao99@gmail.com}
   s.extra_rdoc_files = [
@@ -25,10 +25,12 @@ Gem::Specification.new do |s|
      "Rakefile",
      "VERSION",
      "aspect4r.gemspec",
+     "examples/advices_on_class_method_example.rb",
      "examples/after_example.rb",
      "examples/around_example.rb",
      "examples/before_example.rb",
      "examples/combined_example.rb",
+     "examples/test_advices_example.rb",
      "lib/aspect4r.rb",
      "lib/aspect4r/after.rb",
      "lib/aspect4r/around.rb",
@@ -36,7 +38,6 @@ Gem::Specification.new do |s|
      "lib/aspect4r/before.rb",
      "lib/aspect4r/classic.rb",
      "lib/aspect4r/errors.rb",
-     "lib/aspect4r/extensions/class_extension.rb",
      "lib/aspect4r/extensions/module_extension.rb",
      "lib/aspect4r/helper.rb",
      "lib/aspect4r/model/advice.rb",
@@ -55,8 +56,11 @@ Gem::Specification.new do |s|
      "spec/aspect4r/class_inheritance_spec.rb",
      "spec/aspect4r/classic_spec.rb",
      "spec/aspect4r/helper_spec.rb",
+     "spec/aspect4r/include_advices_from_module_spec.rb",
      "spec/aspect4r/inheritance_inclusion_combined_spec.rb",
+     "spec/aspect4r/method_added_spec.rb",
      "spec/aspect4r/module_inclusion_spec.rb",
+     "spec/aspect4r/singleton_method_added_spec.rb",
      "spec/aspect4r/super_in_method_spec.rb",
      "spec/aspect4r_spec.rb",
      "spec/spec.opts",
@@ -85,8 +89,11 @@ Gem::Specification.new do |s|
      "spec/aspect4r/class_inheritance_spec.rb",
      "spec/aspect4r/classic_spec.rb",
      "spec/aspect4r/helper_spec.rb",
+     "spec/aspect4r/include_advices_from_module_spec.rb",
      "spec/aspect4r/inheritance_inclusion_combined_spec.rb",
+     "spec/aspect4r/method_added_spec.rb",
      "spec/aspect4r/module_inclusion_spec.rb",
+     "spec/aspect4r/singleton_method_added_spec.rb",
      "spec/aspect4r/super_in_method_spec.rb",
      "spec/aspect4r_spec.rb",
      "spec/spec_helper.rb",
@@ -96,11 +103,12 @@ Gem::Specification.new do |s|
      "test/combined_test.rb",
      "test/method_invocation_test.rb",
      "test/test_helper.rb",
+     "examples/advices_on_class_method_example.rb",
      "examples/after_example.rb",
      "examples/around_example.rb",
      "examples/before_example.rb",
      "examples/combined_example.rb",
-     "examples/method_to_advices_example.rb"
+     "examples/test_advices_example.rb"
   ]
 
   if s.respond_to? :specification_version then
