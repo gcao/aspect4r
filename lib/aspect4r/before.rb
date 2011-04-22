@@ -7,7 +7,6 @@ module Aspect4r
       base.extend(ClassMethods)
       
       eigen_class = class << base; self; end
-      eigen_class.send(:include, Base)
       eigen_class.extend(ClassMethods)
     end
 
@@ -27,7 +26,6 @@ module Aspect4r
         base.extend(ClassMethods)
       
         eigen_class = class << base; self; end
-        eigen_class.send(:include, Base)
         eigen_class.extend(ClassMethods)
       end
     

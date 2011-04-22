@@ -3,9 +3,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "Advices on singleton method (also known as class method)" do
   it "class method" do
     class AdvicesOnClassMethod
+      include Aspect4r
+
       class << self
-        include Aspect4r
-        
+
         def value
           @value ||= []
         end
@@ -36,9 +37,10 @@ describe "Advices on singleton method (also known as class method)" do
 
   it "module singleton method" do
     module AdvicesOnModuleSingletonMethod
+      include Aspect4r
+
       class << self
-        include Aspect4r
-        
+ 
         def value
           @value ||= []
         end

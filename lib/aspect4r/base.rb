@@ -42,9 +42,10 @@ module Aspect4r
     
         return if method.to_s =~ /a4r/
 
+        eigen_class = class << self; self; end
+
         # save unbound method and create new method
-        if method_advices = a4r_data[method] and not Aspect4r::Helper.creating_method?
-          eigen_class = class << self; self; end
+        if method_advices = eigen_class.a4r_data[method] and not Aspect4r::Helper.creating_method?
           method_advices.wrapped_method = eigen_class.instance_method(method)
           Aspect4r::Helper.create_method eigen_class, method
         end

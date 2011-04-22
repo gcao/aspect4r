@@ -3,12 +3,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe "singleton_method_added" do
   it "should work if target method is defined after singleton_method_added and singleton_method_added calls super" do
     class AdvicesOnClassMethod1
+      include Aspect4r
+        
       def self.singleton_method_added(method)
         super
       end
       
       class << self
-        include Aspect4r
         
         def value
           @value ||= []
