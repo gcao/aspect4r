@@ -27,8 +27,8 @@ module Aspect4r
     module ClassMethods      
       def method_added method
         super method
-    
-        return if method.to_s[0..2] == /a4r/
+
+        return if method.to_s[0..2] == "a4r"
 
         # save unbound method and create new method
         if method_advices = a4r_data[method] and not Aspect4r::Helper.creating_method?
@@ -40,7 +40,7 @@ module Aspect4r
       def singleton_method_added method
         super method
     
-        return if method.to_s[0..2] == /a4r/
+        return if method.to_s[0..2] == "a4r"
 
         eigen_class = class << self; self; end
 
