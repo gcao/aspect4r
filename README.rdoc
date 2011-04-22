@@ -59,6 +59,9 @@ Execution model: http://gcao.posterous.com/aspect4r-documentation-advice-executi
 
 See github issues http://github.com/gcao/aspect4r/issues
 
+Experiment: change Base.included to define method_added and singleton_method_added. This will restrict
+impact on the class that includes Aspect4r
+
 == Note on Patches/Pull Requests
  
 * Fork the project.

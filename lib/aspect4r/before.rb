@@ -3,8 +3,12 @@ require 'aspect4r/base'
 module Aspect4r
   module Before
     def self.included(base)
-      base.send(:include, Base::InstanceMethods)
-      base.extend(Base::ClassMethods, ClassMethods)
+      base.send(:include, Base)
+      base.extend(ClassMethods)
+      
+      eigen_class = class << base; self; end
+      eigen_class.send(:include, Base)
+      eigen_class.extend(ClassMethods)
     end
 
     module ClassMethods
@@ -19,8 +23,12 @@ module Aspect4r
     
     module Classic
       def self.included(base)
-        base.send(:include, Base::InstanceMethods)
-        base.extend(Base::ClassMethods, ClassMethods)
+        base.send(:include, Base)
+        base.extend(ClassMethods)
+      
+        eigen_class = class << base; self; end
+        eigen_class.send(:include, Base)
+        eigen_class.extend(ClassMethods)
       end
     
       module ClassMethods

@@ -7,14 +7,15 @@ require 'aspect4r/return_this'
 
 require 'aspect4r/helper'
 
-require 'aspect4r/extensions/module_extension'
-
 module Aspect4r
   module Base
     def self.included(base)
       base.send(:include, InstanceMethods)
       base.extend(ClassMethods)
-      base.instance_variable_set('@a4r_data', Aspect4r::Model::AspectData.new(base))
+
+      eigen_class = class << base; self; end
+      eigen_class.send(:include, InstanceMethods)
+      eigen_class.extend(ClassMethods)
     end
 
     module InstanceMethods
@@ -23,7 +24,32 @@ module Aspect4r
       end
     end
 
-    module ClassMethods
+    module ClassMethods      
+      def method_added method
+        super method
+    
+        return if method.to_s =~ /a4r/
+
+        # save unbound method and create new method
+        if method_advices = a4r_data[method] and not Aspect4r::Helper.creating_method?
+          method_advices.wrapped_method = instance_method(method)
+          Aspect4r::Helper.create_method self, method
+        end
+      end
+  
+      def singleton_method_added method
+        super method
+    
+        return if method.to_s =~ /a4r/
+
+        # save unbound method and create new method
+        if method_advices = a4r_data[method] and not Aspect4r::Helper.creating_method?
+          eigen_class = class << self; self; end
+          method_advices.wrapped_method = eigen_class.instance_method(method)
+          Aspect4r::Helper.create_method eigen_class, method
+        end
+      end
+
       def a4r_data
         @a4r_data ||= Aspect4r::Model::AspectData.new(self)
       end
