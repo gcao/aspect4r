@@ -110,12 +110,12 @@ describe Aspect4r::Around do
     o.value.should == 'something'
   end
   
-  it "should pass method name to advice block(or method) as first arg if method_name_arg is true" do
+  it "should be able to access method name through proxy.name (this subjects to change)" do
     s = nil
     
     @klass.class_eval do
-      around :test, :method_name_arg => true do |method, proxy, value|
-        s = method
+      around :test do |proxy, value|
+        s = proxy.name
         a4r_invoke proxy, value
       end
     end

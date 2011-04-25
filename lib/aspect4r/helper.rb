@@ -112,11 +112,7 @@ module Aspect4r
 
 <% if around_advice %>
         # around advice
-<%   if around_advice.options[:method_name_arg] %>
-        result = <%= around_advice.with_method %> '<%= method %>', wrapped_method, *args
-<%   else %>
         result = <%= around_advice.with_method %> wrapped_method, *args
-<%   end %>
 <% else %>
         # Invoke wrapped method
         result = wrapped_method.bind(self).call *args
