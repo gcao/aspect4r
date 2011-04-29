@@ -20,4 +20,4 @@ pkg
 
 ## PROJECT::SPECIFIC
 test/output
-test/experiment.rb
+test/experiment*.rb
