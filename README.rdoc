@@ -59,11 +59,23 @@ Execution model: http://gcao.posterous.com/aspect4r-documentation-advice-executi
 
 See github issues http://github.com/gcao/aspect4r/issues
 
-Experiment: change Base.included to define method_added and singleton_method_added. This will restrict
-impact on the class that includes Aspect4r
+Advices are stored in an array. Whenever a method is created, the whole array is checked to find the advices that
+are applicable to it. Those applicable advices are used to construct the new method. This provides a lot 
+flexibilities but can be a performance burden. 
+
+One way to improve performance is to use array to store advices that use regular expression. Advices specific to 
+methods are stored in hash. (Do this only when performance is proved to be a problem in real world scenarios)
+
+Advice name: each advice can take a :name option. If no name is given, the advice method name is used as the advice
+name. If advice logic is in a block, no name is given to the advice.
+
+Inherit advices: add option :inherit to all advices. Advices whose :inherit options are set to true will be copied to 
+child modules/classes. By default :inherit is set to false.
+
+a4r_disable_advices: will remove advices with given names. If no name is given, all advices are removed.
 
 == Note on Patches/Pull Requests
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a

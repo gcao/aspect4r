@@ -69,6 +69,7 @@ module Aspect4r
           advices = a4r_data[method.to_sym]
           next if advices.nil? or advices.empty?
           
+          send :alias_method, :"#{method}_with_advices", method
           Aspect4r::Helper.define_method self, method, advices.wrapped_method
         end
         
@@ -79,7 +80,9 @@ module Aspect4r
           
           next if advices.nil? or advices.empty?
           
-          Aspect4r::Helper.create_method self, method
+          method_with_advices = :"#{method}_with_advices"
+          send :alias_method, method, method_with_advices
+          self.send :remove_method, method_with_advices
         end
       end
     end
