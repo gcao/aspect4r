@@ -27,7 +27,12 @@ module Aspect4r
       options = meta_data.default_options.clone
       options.merge!(methods.pop) if methods.last.is_a? Hash
       options.merge!(meta_data.mandatory_options)
-      
+
+      # Convert symbols to strings to avoid inconsistencies
+      methods.size.times do |i|
+        methods[i] = methods[i].to_s if methods[i].is_a? Symbol
+      end
+
       if block_given?
         with_method = find_available_method_name klass_or_module, meta_data.with_method_prefix
         klass_or_module.send :define_method, with_method, &block
@@ -45,9 +50,8 @@ module Aspect4r
       a4r_data << advice
       
       methods.each do |method|
-        next unless method.is_a? String or method.is_a? Symbol
+        next unless method.is_a? String
         
-        method = method.to_s
         wrapped_method = a4r_data.wrapped_methods[method]
         
         if not wrapped_method and klass_or_module.instance_methods.include?(method)
