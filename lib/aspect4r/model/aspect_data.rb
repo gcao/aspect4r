@@ -24,6 +24,7 @@ module Aspect4r
       end
       
       def advices_for_method method
+        method = method.to_s
         select {|advice| advice.method_matcher.match?(method) }
       end
     end
