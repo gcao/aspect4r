@@ -24,7 +24,7 @@ API documentation: http://gcao.posterous.com/aspect4r-usage-and-public-api
       puts "entering test(#{value})"
     end
 
-    before  :test, :do_something
+    before :test, :do_something
     
     before_filter :test do |value|
       value >= 0
@@ -67,7 +67,8 @@ One way to improve performance is to use array to store advices that use regular
 methods are stored in hash. (Do this only when performance is proved to be a problem in real world scenarios)
 
 Advice name: each advice can take a :name option. If no name is given, the advice method name is used as the advice
-name. If advice logic is in a block, no name is given to the advice.
+name. If advice logic is in a block and :name is not set, the advice will not have a name. Multiple advices can 
+have same name.
 
 Inherit advices: add option :inherit to all advices. Advices whose :inherit options are set to true will be copied to 
 child modules/classes. By default :inherit is set to false.
