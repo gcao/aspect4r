@@ -59,6 +59,9 @@ Execution model: http://gcao.posterous.com/aspect4r-documentation-advice-executi
 
 See github issues http://github.com/gcao/aspect4r/issues
 
+Support regular expression on methods to be advised. When such an advice is defined, methods defined before it 
+will not be processed, only new methods are.
+
 Advices are stored in an array. Whenever a method is created, the whole array is checked to find the advices that
 are applicable to it. Those applicable advices are used to construct the new method. This provides a lot 
 flexibilities but can be a performance burden. 

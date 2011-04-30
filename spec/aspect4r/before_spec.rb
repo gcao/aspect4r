@@ -4,7 +4,7 @@ describe Aspect4r::Before do
   before do
     @klass = Class.new do
       include Aspect4r::Before
-      
+
       attr :value
       
       def initialize

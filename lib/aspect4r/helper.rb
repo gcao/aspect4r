@@ -37,19 +37,25 @@ module Aspect4r
       end
       
       a4r_data = klass_or_module.a4r_data
-      advice   = Aspect4r::Model::Advice.new(meta_data.advice_type, with_method, a4r_data.group, options)
+      advice   = Aspect4r::Model::Advice.new(meta_data.advice_type, 
+                                             Aspect4r::Model::MethodMatcher.new(*methods), 
+                                             with_method, 
+                                             a4r_data.group, 
+                                             options)
+      a4r_data << advice
       
       methods.each do |method|
-        method = method.to_sym
+        next unless method.is_a? String or method.is_a? Symbol
         
-        aspect = a4r_data[method] ||= Aspect4r::Model::AdvicesForMethod.new(method)
-        aspect.add advice
+        method = method.to_s
+        wrapped_method = a4r_data.wrapped_methods[method]
         
-        if not aspect.wrapped_method and klass_or_module.instance_methods.include?(method.to_s)
-          aspect.wrapped_method = klass_or_module.instance_method(method)
+        if not wrapped_method and klass_or_module.instance_methods.include?(method)
+          wrapped_method = klass_or_module.instance_method(method)
+          a4r_data.wrapped_methods[method] = wrapped_method
         end
         
-        create_method klass_or_module, method if aspect.wrapped_method
+        create_method klass_or_module, method if wrapped_method
       end
     end
     
@@ -57,15 +63,14 @@ module Aspect4r
     def self.create_method klass, method
       @creating_method = true
       
-      aspect = klass.a4r_data[method.to_sym]
-      
-      return if aspect.nil? or aspect.empty?
+      advices = klass.a4r_data.advices_for_method method
+      return if advices.empty?
       
       grouped_advices = []
       group           = nil
       inner_most      = true
 
-      aspect.each do |advice|
+      advices.each do |advice|
         if ((group and group != advice.group) or advice.around?) and not grouped_advices.empty?
           create_method_with_advices klass, method, grouped_advices, inner_most
           
@@ -88,7 +93,7 @@ module Aspect4r
     # after_advices
     METHOD_TEMPLATE = ERB.new <<-CODE, nil, '<>'
 <% if inner_most %>
-      wrapped_method = a4r_data[:<%= method %>].wrapped_method
+      wrapped_method = a4r_data.wrapped_methods['<%= method %>']
 <% else %>
       wrapped_method = instance_method(:<%= method %>)
 <% end %>

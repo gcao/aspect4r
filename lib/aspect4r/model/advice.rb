@@ -6,10 +6,11 @@ module Aspect4r
       AROUND = 3
     
       attr :group
-      attr_accessor :type, :with_method, :options
+      attr_accessor :type, :method_matcher, :with_method, :options
     
-      def initialize type, with_method, group, options = {}
+      def initialize type, method_matcher, with_method, group, options = {}
         @type        = type
+        @method_matcher = method_matcher
         @with_method = with_method
         @group       = group
         @options     = options
