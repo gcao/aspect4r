@@ -24,8 +24,8 @@ class CombinedTest < Test::Unit::TestCase
     
     def after_test result; end
     
-    def around_test proxy
-      a4r_invoke proxy
+    def around_test
+      yield
     end
   end
   

@@ -19,9 +19,9 @@ describe "Aspect4r execution order" do
   
   it "around + before + after" do
     @klass.class_eval do
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around1"
-        a4r_invoke proxy
+        block.call
         @value << "around2"
       end
       
@@ -51,9 +51,9 @@ describe "Aspect4r execution order" do
         @value << "after"
       end
       
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around1"
-        a4r_invoke proxy
+        block.call
         @value << "around2"
       end
     end
@@ -66,15 +66,15 @@ describe "Aspect4r execution order" do
   
   it "2 around + 2 before + 2 after" do
     @klass.class_eval do
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around11"
-        a4r_invoke proxy
+        block.call
         @value << "around12"
       end
       
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around21"
-        a4r_invoke proxy
+        block.call
         @value << "around22"
       end
       
@@ -111,9 +111,9 @@ describe "Aspect4r execution order" do
         @value << "after1"
       end
       
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around1"
-        a4r_invoke proxy
+        block.call
         @value << "around2"
       end
       
@@ -142,8 +142,8 @@ describe "Aspect4r result handling" do
         "test"
       end
       
-      around :test do |proxy|
-        result = a4r_invoke proxy
+      around :test do |&block|
+        result = block.call
         "around1 #{result} around2"
       end
 
@@ -180,9 +180,9 @@ describe "Aspect4r chaining (add advice to advice method)" do
         @value << "process_result"
       end
       
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around11"
-        a4r_invoke proxy
+        block.call
         @value << "around12"
       end
       
@@ -231,8 +231,8 @@ describe "Aspect4r chaining (add advice to advice method)" do
         "test"
       end
       
-      def around_test proxy
-        result = a4r_invoke proxy
+      def around_test
+        result = yield
         "around1 #{result} around2"
       end
       
@@ -265,8 +265,8 @@ describe "Aspect4r chaining (add advice to advice method)" do
         "test"
       end
       
-      def around_test proxy
-        result = a4r_invoke proxy
+      def around_test
+        result = yield
         "around1 #{result} around2"
       end
       
@@ -278,13 +278,13 @@ describe "Aspect4r chaining (add advice to advice method)" do
       
       after :test, :after_test
       
-      around :after_test do |proxy, *args|
-        result = a4r_invoke proxy, *args
+      around :after_test do |*args, &block|
+        result = block.call *args
         "around1(after_test) " + result + " around2(after_test)"
       end
       
-      around :around_test do |proxy, *args|
-        result = a4r_invoke proxy, *args
+      around :around_test do |*args, &block|
+        result = block.call *args
         "around1(around_test) " + result + " around2(around_test)"
       end
     end

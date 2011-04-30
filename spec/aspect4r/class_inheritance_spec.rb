@@ -15,9 +15,9 @@ describe Aspect4r do
         @value << "test"
       end
       
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around1"
-        a4r_invoke proxy
+        block.call
         @value << "around2"
       end
       
@@ -200,9 +200,9 @@ describe Aspect4r do
     class Child1 < parent
       include Aspect4r
       
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around(before)"
-        a4r_invoke proxy
+        block.call
         @value << "around(after)"
       end
     end
@@ -239,9 +239,9 @@ describe Aspect4r do
     class Child2 < parent
       include Aspect4r
       
-      around :test do |proxy|
+      around :test do |&block|
         @value << "around(before)"
-        a4r_invoke proxy
+        block.call
         @value << "around(after)"
       end
     end

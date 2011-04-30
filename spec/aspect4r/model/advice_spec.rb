@@ -52,13 +52,11 @@ module Aspect4r::Model
       advice = Advice.new Advice::AROUND, MethodMatcher.new, :advice_method, :group
     
       o = Object.new
-      o.class.send :define_method, :advice_method do |proxy, *args|
-        a4r_invoke proxy, *args
+      o.class.send :define_method, :advice_method do |*args, &block|
+        block.call *args
       end
     
-      o.expects(:a4r_invoke).with(:proxy, 1)
-    
-      advice.invoke(o, :proxy, 1)
+      advice.invoke(o, 1) { 'test' }.should == 'test'
     end
   end
 end

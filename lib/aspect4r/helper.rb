@@ -98,7 +98,7 @@ module Aspect4r
       wrapped_method = instance_method(:<%= method %>)
 <% end %>
 
-      define_method :<%= method %> do |*args|
+      define_method :<%= method %> do |*args, &block|
         result = nil
 
         # Before advices
@@ -117,10 +117,18 @@ module Aspect4r
 
 <% if around_advice %>
         # around advice
-        result = <%= around_advice.with_method %> wrapped_method, *args
+<%   if around_advice.options[:method_name_arg] %>
+		    result = <%= around_advice.with_method %> '<%= method %>', *args do |*args|
+          wrapped_method.bind(self).call *args, &block
+        end
+<%   else %>
+        result = <%= around_advice.with_method %> *args do |*args|
+          wrapped_method.bind(self).call *args, &block
+        end
+<%   end %>
 <% else %>
         # Invoke wrapped method
-        result = wrapped_method.bind(self).call *args
+        result = wrapped_method.bind(self).call *args, &block
 <% end %>
 
         # After advices

@@ -20,9 +20,9 @@ class Klass
     @value = []
   end
   
-  around :test do |proxy, input|
+  around :test do |input, &block|
     @value << "around(before)"
-    a4r_invoke proxy, input
+    block.call input
     @value << "around(after)"
   end
   
@@ -56,8 +56,7 @@ describe Klass do
     advice.around?.should be_true
 
     o = Klass.new
-    o.expects(:a4r_invoke).with(:proxy, 1)
-     
+
     advice.invoke(o, :proxy, 1)
 
     o.value.should == %w(around(before) around(after))

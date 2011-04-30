@@ -17,9 +17,9 @@ describe Aspect4r::Classic do
         @value << "test"
       end
 
-      a4r_around :test do |proxy_method|
+      a4r_around :test do |&block|
         @value << "around1"
-        a4r_invoke proxy_method
+        block.call
         @value << "around2"
       end
       

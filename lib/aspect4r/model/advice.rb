@@ -36,8 +36,8 @@ module Aspect4r
         type == AROUND
       end
       
-      def invoke obj, *args
-        obj.send with_method, *args
+      def invoke obj, *args, &block
+        obj.send with_method, *args, &block
       end
     end
   end

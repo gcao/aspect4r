@@ -15,9 +15,9 @@ describe "singleton_method_added" do
           @value ||= []
         end
   
-        around :test do |proxy|
+        around :test do |&block|
           value << "around1"
-          a4r_invoke proxy
+          block.call
           value << "around2"
         end   
       

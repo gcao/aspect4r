@@ -43,9 +43,9 @@ describe Aspect4r::Helper do
           result
         end
         
-        def around_test proxy
+        def around_test
           @value << "around_test_before"
-          result = a4r_invoke proxy
+          result = yield
           @value << "around_test_after"
           result
         end

@@ -12,8 +12,8 @@ class AroundTest < Test::Unit::TestCase
     
     def test; end
     
-    def around_test proxy
-      a4r_invoke proxy
+    def around_test
+      yield
     end
   end
   

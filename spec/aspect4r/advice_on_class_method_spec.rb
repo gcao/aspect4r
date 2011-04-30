@@ -11,9 +11,9 @@ describe "Advices on singleton method (also known as class method)" do
           @value ||= []
         end
         
-        around :test do |proxy|
+        around :test do |&block|
           value << "around(before)"
-          a4r_invoke proxy
+          block.call
           value << "around(after)"
         end
         
@@ -45,9 +45,9 @@ describe "Advices on singleton method (also known as class method)" do
           @value ||= []
         end
         
-        around :test do |proxy|
+        around :test do |&block|
           value << "around(before)"
-          a4r_invoke proxy
+          block.call
           value << "around(after)"
         end
         

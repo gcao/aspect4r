@@ -6,9 +6,9 @@ class A
   class << self
     include Aspect4r
     
-    around :test do |proxy, input|
+    around :test do |input, &block|
       puts 'around test (before)'
-      result = a4r_invoke proxy, input
+      result = block.call input
       puts 'around test (after)'
       result
     end

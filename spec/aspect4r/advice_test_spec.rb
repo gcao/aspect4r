@@ -11,9 +11,9 @@ describe "Test Advices" do
         @value = []
       end
       
-      around :test do |proxy, input|
+      around :test do |input, &block|
         @value << "around(before)"
-        a4r_invoke proxy, input
+        block.call input
         @value << "around(after)"
       end
       
@@ -46,26 +46,14 @@ describe "Test Advices" do
     advice.around?.should be_true
 
     o = @klass.new
-    o.expects(:a4r_invoke).with(:proxy, 1)
      
-    advice.invoke(o, :proxy, 1)
+    advice.invoke(o, 1) {}
 
     o.value.should == %w(around(before) around(after))
   end
   
   it "before advice" do
     advice = @klass.a4r_data.advices_for_method(:test)[1]
-    advice.before?.should be_true
-
-    o = @klass.new
-    advice.invoke(o, 1)
-
-    o.value.should == %w(before)
-  end
-  
-  it "before advice retrieved by name" do
-    pending "This will be deprecated?!"
-    advice = @klass.a4r_data.advices_for_method(:test)[:before_advice]
     advice.before?.should be_true
 
     o = @klass.new

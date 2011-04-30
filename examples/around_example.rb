@@ -10,9 +10,9 @@ class A
     value
   end
   
-  around :test do |proxy, value|
+  around :test do |value, &block|
     puts 'before test'
-    result = a4r_invoke proxy, value
+    result = block.call value
     puts 'after test'
     result
   end
