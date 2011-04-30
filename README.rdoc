@@ -59,6 +59,8 @@ Execution model: http://gcao.posterous.com/aspect4r-documentation-advice-executi
 
 See github issues http://github.com/gcao/aspect4r/issues
 
+Use "yield *args" to call wrapped method in around advice.
+
 Support regular expression on methods to be advised. When such an advice is defined, methods defined before it 
 will not be processed, only new methods are.
 

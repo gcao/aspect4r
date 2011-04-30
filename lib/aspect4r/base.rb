@@ -29,13 +29,14 @@ module Aspect4r
       def method_added method
         super method
 
-        return if method.to_s[0..2] == "a4r"
+        method = method.to_s
+        return if method[0..2] == "a4r"
 
         # save unbound method and create new method
         if not Aspect4r::Helper.creating_method?
           advices = a4r_data.advices_for_method(method)
           unless advices.empty?
-            a4r_data.wrapped_methods[method.to_s] = instance_method(method)
+            a4r_data.wrapped_methods[method] = instance_method(method)
             Aspect4r::Helper.create_method self, method
           end
         end
@@ -44,7 +45,8 @@ module Aspect4r
       def singleton_method_added method
         super method
     
-        return if method.to_s[0..2] == "a4r"
+        method = method.to_s
+        return if method[0..2] == "a4r"
 
         eigen_class = class << self; self; end
 
@@ -52,7 +54,7 @@ module Aspect4r
         if not Aspect4r::Helper.creating_method?
           advices = eigen_class.a4r_data.advices_for_method(method)
           unless advices.empty?
-            a4r_data.wrapped_methods[method.to_s] = eigen_class.instance_method(method)
+            eigen_class.a4r_data.wrapped_methods[method] = eigen_class.instance_method(method)
             Aspect4r::Helper.create_method eigen_class, method
           end
         end
