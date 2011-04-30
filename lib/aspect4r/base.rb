@@ -1,6 +1,5 @@
 require 'aspect4r/errors'
 require 'aspect4r/model/advice'
-require 'aspect4r/model/advices_for_method'
 require 'aspect4r/model/aspect_data'
 require 'aspect4r/model/advice_metadata'
 require 'aspect4r/model/method_matcher'
