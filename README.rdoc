@@ -72,9 +72,12 @@ methods are stored in hash. (Do this only when performance is proved to be a pro
 Advice name: each advice can take a :name option. If no name is given, the advice method name is used as the advice
 name. If advice logic is in a block and :name is not set, the advice will not have a name. Multiple advices can 
 have same name.
+What use can this bring? skip advice for specific methods. debugging purpose. testing purpose.
 
 Inherit advices: add option :inherit to all advices. Advices whose :inherit options are set to true will be copied to 
 child modules/classes. By default :inherit is set to false.
+This adds a lot complexity and might not be a good idea.
+This can be achieved by putting advices in ModuleX.included or ClassY.inherited
 
 a4r_remove_advices: will remove advices with given names. If no name is given, all advices are removed.
 

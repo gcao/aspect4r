@@ -39,6 +39,30 @@ module Aspect4r
       def invoke obj, *args, &block
         obj.send with_method, *args, &block
       end
+      
+      def to_s
+        s = "<" << @group << "> "
+        case @type
+        when BEFORE
+          if @options[:skip_if_false]
+            s << "BEFORE_FILTER: "
+          else
+            s << "BEFORE: "
+          end
+        when AFTER
+          s << "AFTER : "
+        when AROUND
+          s << "AROUND: "
+        end
+        s << "[" << @method_matcher.to_s << "] DO "
+        s << @with_method.to_s
+        s << " WITH OPTIONS "
+        @options.each do |key, value|
+          next if key == :skip_if_false
+          s << key.to_s << ":" << value.to_s
+        end
+        s
+      end
     end
   end
 end

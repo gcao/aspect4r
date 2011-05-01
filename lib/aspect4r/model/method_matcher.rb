@@ -25,8 +25,6 @@ module Aspect4r
         #       false
         #     end
         #   end
-        # else
-        #   @match_data = match_data
         # end
       end
 
@@ -35,6 +33,10 @@ module Aspect4r
           (item.is_a? String and item == method) or
           (item.is_a? Regexp and item =~ method)
         end
+      end
+      
+      def to_s
+        @match_data.map {|item| item.inspect }.join ", "
       end
     end
   end

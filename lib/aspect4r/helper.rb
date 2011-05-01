@@ -48,7 +48,7 @@ module Aspect4r
                                              a4r_data.group, 
                                              options)
       a4r_data << advice
-      
+
       methods.each do |method|
         next unless method.is_a? String
         
