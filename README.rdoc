@@ -59,8 +59,6 @@ Execution model: http://gcao.posterous.com/aspect4r-documentation-advice-executi
 
 See github issues http://github.com/gcao/aspect4r/issues
 
-Use "yield *args" to call wrapped method in around advice.
-
 Support regular expression on methods to be advised. When such an advice is defined, methods defined before it 
 will not be processed, only new methods are.
 
@@ -78,7 +76,7 @@ have same name.
 Inherit advices: add option :inherit to all advices. Advices whose :inherit options are set to true will be copied to 
 child modules/classes. By default :inherit is set to false.
 
-a4r_disable_advices: will remove advices with given names. If no name is given, all advices are removed.
+a4r_remove_advices: will remove advices with given names. If no name is given, all advices are removed.
 
 == Note on Patches/Pull Requests
 

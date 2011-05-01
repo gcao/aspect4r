@@ -251,4 +251,38 @@ describe Aspect4r do
     
     o.value.should == %w(around(before) before test after around(after))
   end
+  
+  it "inherit advice from module" do
+    pending
+    mod = Module.new do
+      include Aspect4r
+      
+      before :test, :inherit => true do
+        @value << "before"
+      end
+      
+      after :test do
+        @value << "after"
+      end
+    end
+    
+    klass = Class.new do
+      include mod
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+    end
+
+    o = klass.new
+    o.test
+    
+    o.value.should == %w(before test)
+  end
 end
