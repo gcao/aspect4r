@@ -7,12 +7,12 @@ module Aspect4r::Model
       advice.before?.should be_true
     end
   
-    it "before_filter? returns false for before_filter advice" do
+    it "before_filter? returns false for before advice" do
       advice = Advice.new Advice::BEFORE, MethodMatcher.new, :advice_method, :group
       advice.before_filter?.should be_false
     end
   
-    it "before? returns false for before advice" do
+    it "before? returns false for before_filter advice" do
       advice = Advice.new Advice::BEFORE, MethodMatcher.new, :advice_method, :group, :skip_if_false => true
       advice.before?.should be_false
     end
@@ -26,11 +26,7 @@ module Aspect4r::Model
       advice = Advice.new Advice::BEFORE, MethodMatcher.new, :advice_method, :group
     
       o = Object.new
-      o.class.send :define_method, :advice_method do |*args|
-        do_something *args
-      end
-    
-      o.expects(:do_something).with(1)
+      o.expects(:advice_method).with(1)
     
       advice.invoke(o, 1)
     end
@@ -39,11 +35,7 @@ module Aspect4r::Model
       advice = Advice.new Advice::AFTER, MethodMatcher.new, :advice_method, :group
     
       o = Object.new
-      o.class.send :define_method, :advice_method do |result, *args|
-        do_something result, *args
-      end
-    
-      o.expects(:do_something).with(1)
+      o.expects(:advice_method).with(1)
     
       advice.invoke(o, 1)
     end
@@ -52,11 +44,9 @@ module Aspect4r::Model
       advice = Advice.new Advice::AROUND, MethodMatcher.new, :advice_method, :group
     
       o = Object.new
-      o.class.send :define_method, :advice_method do |*args, &block|
-        block.call *args
-      end
+      o.expects(:advice_method).with(1)
     
-      advice.invoke(o, 1) { 'test' }.should == 'test'
+      advice.invoke(o, 1)
     end
   end
 end

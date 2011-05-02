@@ -1,5 +1,41 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
+describe "Mixing regular expressions and string" do
+  it "should work" do
+    @klass = Class.new do
+      include Aspect4r
+      
+      before /do_/, "test" do
+        @value << "before"
+      end
+      
+      attr :value
+      
+      def initialize
+        @value = []
+      end
+      
+      def test
+        @value << "test"
+      end
+      
+      def do_something
+        @value << "do_something"
+      end
+    end
+    
+    o = @klass.new
+    o.test
+    
+    o.value.should == %w(before test)
+    
+    o = @klass.new
+    o.do_something
+    
+    o.value.should == %w(before do_something)
+  end
+end
+
 describe "Aspect4r execution order" do
   before do
     @klass = Class.new do
