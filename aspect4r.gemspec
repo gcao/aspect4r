@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aspect4r}
-  s.version = "0.9.0"
+  s.version = "0.9.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guoliang Cao"]
-  s.date = %q{2011-04-29}
+  s.date = %q{2011-05-02}
   s.description = %q{AOP for ruby - use before, after and around to trim your fat methods and reduce code duplication}
   s.email = %q{gcao99@gmail.com}
   s.extra_rdoc_files = [
@@ -39,15 +39,12 @@ Gem::Specification.new do |s|
     "lib/aspect4r/helper.rb",
     "lib/aspect4r/model/advice.rb",
     "lib/aspect4r/model/advice_metadata.rb",
-    "lib/aspect4r/model/advices_for_method.rb",
     "lib/aspect4r/model/aspect_data.rb",
+    "lib/aspect4r/model/method_matcher.rb",
     "lib/aspect4r/return_this.rb",
-    "spec/aspect4r/advice_group_spec.rb",
     "spec/aspect4r/advice_on_class_method_spec.rb",
     "spec/aspect4r/advice_scope_spec.rb",
-    "spec/aspect4r/advice_spec.rb",
     "spec/aspect4r/advice_test_spec.rb",
-    "spec/aspect4r/advices_for_method_spec.rb",
     "spec/aspect4r/after_spec.rb",
     "spec/aspect4r/around_spec.rb",
     "spec/aspect4r/before_spec.rb",
@@ -57,7 +54,11 @@ Gem::Specification.new do |s|
     "spec/aspect4r/include_advices_from_module_spec.rb",
     "spec/aspect4r/inheritance_inclusion_combined_spec.rb",
     "spec/aspect4r/method_added_spec.rb",
+    "spec/aspect4r/model/advice_group_spec.rb",
+    "spec/aspect4r/model/advice_spec.rb",
+    "spec/aspect4r/model/method_matcher_spec.rb",
     "spec/aspect4r/module_inclusion_spec.rb",
+    "spec/aspect4r/regexp_methods_spec.rb",
     "spec/aspect4r/singleton_method_added_spec.rb",
     "spec/aspect4r/super_in_method_spec.rb",
     "spec/aspect4r_spec.rb",
@@ -81,12 +82,9 @@ Gem::Specification.new do |s|
     "examples/before_example.rb",
     "examples/combined_example.rb",
     "examples/test_advices_example.rb",
-    "spec/aspect4r/advice_group_spec.rb",
     "spec/aspect4r/advice_on_class_method_spec.rb",
     "spec/aspect4r/advice_scope_spec.rb",
-    "spec/aspect4r/advice_spec.rb",
     "spec/aspect4r/advice_test_spec.rb",
-    "spec/aspect4r/advices_for_method_spec.rb",
     "spec/aspect4r/after_spec.rb",
     "spec/aspect4r/around_spec.rb",
     "spec/aspect4r/before_spec.rb",
@@ -96,7 +94,11 @@ Gem::Specification.new do |s|
     "spec/aspect4r/include_advices_from_module_spec.rb",
     "spec/aspect4r/inheritance_inclusion_combined_spec.rb",
     "spec/aspect4r/method_added_spec.rb",
+    "spec/aspect4r/model/advice_group_spec.rb",
+    "spec/aspect4r/model/advice_spec.rb",
+    "spec/aspect4r/model/method_matcher_spec.rb",
     "spec/aspect4r/module_inclusion_spec.rb",
+    "spec/aspect4r/regexp_methods_spec.rb",
     "spec/aspect4r/singleton_method_added_spec.rb",
     "spec/aspect4r/super_in_method_spec.rb",
     "spec/aspect4r_spec.rb",
