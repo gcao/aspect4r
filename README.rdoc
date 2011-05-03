@@ -7,31 +7,29 @@ Aspect Oriented Programming support for Ruby
 * extract common logic from multiple methods into before, after, around advices
 * before_filter as method filters (work like before_filters in web application)
 * advices can be customized (e.g. to take an optional method name argument)
-* work as a supporting piece for more complex AOP tasks
+* well-tested and optimized
 
 == Usage
 
-API documentation: http://gcao.posterous.com/aspect4r-usage-and-public-api
+API documentation: https://github.com/gcao/aspect4r/wiki/Api
 
   class A
     include Aspect4r
     
-    around :test do |proxy_method, value|
-      a4r_invoke proxy_method, value
-    end
-
-    before :test do |value|
-      puts "entering test(#{value})"
+    around /test/ do |*args, &block|
+      ...
+      block.call *args
+      ...
     end
 
     before :test, :do_something
     
-    before_filter :test do |value|
-      value >= 0
+    before_filter :test do |*args|
+      authorized?
     end
 
-    after :test do |result, value|
-      puts "test(#{value}) returned #{result}"
+    after :test do |result, *args|
+      puts "test(#{*args}) returned #{result}"
       result
     end
 
@@ -58,28 +56,6 @@ Execution model: http://gcao.posterous.com/aspect4r-documentation-advice-executi
 == TODO
 
 See github issues http://github.com/gcao/aspect4r/issues
-
-Support regular expression on methods to be advised. When such an advice is defined, methods defined before it 
-will not be processed, only new methods are.
-
-Advices are stored in an array. Whenever a method is created, the whole array is checked to find the advices that
-are applicable to it. Those applicable advices are used to construct the new method. This provides a lot 
-flexibilities but can be a performance burden. 
-
-One way to improve performance is to use array to store advices that use regular expression. Advices specific to 
-methods are stored in hash. (Do this only when performance is proved to be a problem in real world scenarios)
-
-Advice name: each advice can take a :name option. If no name is given, the advice method name is used as the advice
-name. If advice logic is in a block and :name is not set, the advice will not have a name. Multiple advices can 
-have same name.
-What use can this bring? skip advice for specific methods. debugging purpose. testing purpose.
-
-Inherit advices: add option :inherit to all advices. Advices whose :inherit options are set to true will be copied to 
-child modules/classes. By default :inherit is set to false.
-This adds a lot complexity and might not be a good idea.
-This can be achieved by putting advices in ModuleX.included or ClassY.inherited
-
-a4r_remove_advices: will remove advices with given names. If no name is given, all advices are removed.
 
 == Note on Patches/Pull Requests
 
