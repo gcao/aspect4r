@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
 require 'rubygems'
+require 'mocha'
 require 'spec'
 require 'spec/autorun'
 
@@ -48,22 +49,22 @@ end
 # =============================== Tests start here ===========================
 describe Klass do
   it "number of advices" do
-    Klass.a4r_data[:test].size.should == 4
+    Klass.a4r_data.advices_for_method(:test).size.should == 4
   end
   
   it "around advice" do
-    advice = Klass.a4r_data[:test][0]
+    advice = Klass.a4r_data.advices_for_method(:test)[0]
     advice.around?.should be_true
 
     o = Klass.new
 
-    advice.invoke(o, :proxy, 1)
+    advice.invoke(o, 1) {}
 
     o.value.should == %w(around(before) around(after))
   end
   
   it "before advice" do
-    advice = Klass.a4r_data[:test][1]
+    advice = Klass.a4r_data.advices_for_method(:test)[1]
     advice.before?.should be_true
 
     o = Klass.new
@@ -71,19 +72,9 @@ describe Klass do
 
     o.value.should == %w(before)
   end
-  
-  it "before advice retrieved by name" do
-    advice = Klass.a4r_data[:test][:before_advice]
-    advice.before?.should be_true
 
-    o = Klass.new
-    advice.invoke(o, 1)
-
-    o.value.should == %w(before)
-  end
-  
   it "before_filter advice returns true if input is not negative" do
-    advice = Klass.a4r_data[:test][2]
+    advice = Klass.a4r_data.advices_for_method(:test)[2]
     advice.before_filter?.should be_true
 
     o = Klass.new
@@ -93,14 +84,14 @@ describe Klass do
   end
   
   it "before_filter advice returns false if input is negative" do
-    advice = Klass.a4r_data[:test][2]
+    advice = Klass.a4r_data.advices_for_method(:test)[2]
 
     o = Klass.new
     advice.invoke(o, -1).should be_false
   end
   
   it "after advice" do
-    advice = Klass.a4r_data[:test][3]
+    advice = Klass.a4r_data.advices_for_method(:test)[3]
     advice.after?.should be_true
 
     o = Klass.new

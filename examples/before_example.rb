@@ -5,10 +5,6 @@ require 'aspect4r'
 class A
   include Aspect4r
   
-  def test value
-    puts 'test'
-  end
-  
   before :test do |value|
     puts 'before test'
   end
@@ -16,6 +12,10 @@ class A
   before_filter :test do |value|
     puts 'check before test'
     value >= 0
+  end
+  
+  def test value
+    puts 'test'
   end
 end
 

@@ -3,9 +3,9 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'aspect4r'
 
 class A
-  class << self
-    include Aspect4r
-    
+  include Aspect4r
+
+  class << self    
     around :test do |input, &block|
       puts 'around test (before)'
       result = block.call input

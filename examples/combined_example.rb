@@ -5,11 +5,6 @@ require 'aspect4r'
 class A
   include Aspect4r
   
-  def test value
-    puts 'test'
-    value
-  end
-  
   around :test do |value, &block|
     puts 'around test 1'
     result = block.call value
@@ -24,6 +19,11 @@ class A
   after :test do |result, value|
     puts 'after test'
     result
+  end
+  
+  def test value
+    puts 'test'
+    value
   end
 end
 
