@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{aspect4r}
-  s.version = "0.9.1"
+  s.version = "0.10.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Guoliang Cao"]
-  s.date = %q{2011-05-02}
+  s.date = %q{2011-09-01}
   s.description = %q{AOP for ruby - use before, after and around to trim your fat methods and reduce code duplication}
   s.email = %q{gcao99@gmail.com}
   s.extra_rdoc_files = [
@@ -75,41 +75,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.4.2}
   s.summary = %q{Aspect Oriented Programming for ruby}
-  s.test_files = [
-    "examples/advices_on_class_method_example.rb",
-    "examples/after_example.rb",
-    "examples/around_example.rb",
-    "examples/before_example.rb",
-    "examples/combined_example.rb",
-    "examples/test_advices_example.rb",
-    "spec/aspect4r/advice_on_class_method_spec.rb",
-    "spec/aspect4r/advice_scope_spec.rb",
-    "spec/aspect4r/advice_test_spec.rb",
-    "spec/aspect4r/after_spec.rb",
-    "spec/aspect4r/around_spec.rb",
-    "spec/aspect4r/before_spec.rb",
-    "spec/aspect4r/class_inheritance_spec.rb",
-    "spec/aspect4r/classic_spec.rb",
-    "spec/aspect4r/helper_spec.rb",
-    "spec/aspect4r/include_advices_from_module_spec.rb",
-    "spec/aspect4r/inheritance_inclusion_combined_spec.rb",
-    "spec/aspect4r/method_added_spec.rb",
-    "spec/aspect4r/model/advice_group_spec.rb",
-    "spec/aspect4r/model/advice_spec.rb",
-    "spec/aspect4r/model/method_matcher_spec.rb",
-    "spec/aspect4r/module_inclusion_spec.rb",
-    "spec/aspect4r/regexp_methods_spec.rb",
-    "spec/aspect4r/singleton_method_added_spec.rb",
-    "spec/aspect4r/super_in_method_spec.rb",
-    "spec/aspect4r_spec.rb",
-    "spec/spec_helper.rb",
-    "test/after_test.rb",
-    "test/around_test.rb",
-    "test/before_test.rb",
-    "test/combined_test.rb",
-    "test/method_invocation_test.rb",
-    "test/test_helper.rb"
-  ]
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
