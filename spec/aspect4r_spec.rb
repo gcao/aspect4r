@@ -126,7 +126,7 @@ describe "Aspect4r execution order" do
         @value << "after1"
       end
       
-      after :test do
+      after :test do |result|
         @value << "after2"
       end
     end
@@ -232,7 +232,7 @@ describe "Aspect4r chaining (add advice to advice method)" do
         @value << "before(do_something)"
       end
       
-      after :do_something do
+      after :do_something do |result|
         @value << "after(do_something)"
       end
       
@@ -242,11 +242,11 @@ describe "Aspect4r chaining (add advice to advice method)" do
       
       after :test, :process_result
       
-      before :process_result do
+      before :process_result do |result|
         @value << "before(process_result)"
       end
       
-      after :process_result do
+      after :process_result do |result, *args|
         @value << "after(process_result)"
       end
     end

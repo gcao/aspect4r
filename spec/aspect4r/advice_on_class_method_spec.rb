@@ -21,7 +21,7 @@ describe "Advices on singleton method (also known as class method)" do
           value << "before"
         end
         
-        after :test do
+        after :test do |result|
           value << "after"
         end
         
@@ -38,9 +38,9 @@ describe "Advices on singleton method (also known as class method)" do
   it "module singleton method" do
     module AdvicesOnModuleSingletonMethod
       include Aspect4r
-
+  
       class << self
- 
+   
         def value
           @value ||= []
         end
@@ -55,7 +55,7 @@ describe "Advices on singleton method (also known as class method)" do
           value << "before"
         end
         
-        after :test do
+        after :test do |result|
           value << "after"
         end
         

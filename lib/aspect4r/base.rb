@@ -78,7 +78,7 @@ module Aspect4r
       ensure
         methods.each do |method|
           method_with_advices = "#{method}_with_advices"
-          next unless instance_methods.include?(method_with_advices)
+          next unless instance_methods.detect {|method| method.to_s == method_with_advices }
 
           send :alias_method, method, method_with_advices
           self.send :remove_method, method_with_advices

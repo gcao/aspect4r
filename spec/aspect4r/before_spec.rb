@@ -86,7 +86,7 @@ describe Aspect4r::Before do
     
     o = @klass.new
     o.test('something')
-
+  
     o.value.should == 'something'
   end
   
@@ -101,7 +101,7 @@ describe Aspect4r::Before do
     
     o = @klass.new
     o.test('something')
-
+  
     s.should == 'test'
   end
   
@@ -110,7 +110,7 @@ describe Aspect4r::Before do
       def do_something value
         Aspect4r::ReturnThis.new('do_something')
       end
-
+  
       before :test, :do_something
     end
     
@@ -122,7 +122,7 @@ describe Aspect4r::Before do
   
   it "should skip original method if before_filter advice returned false" do
     @klass.class_eval do
-      before_filter :test do
+      before_filter :test do |value|
         false
       end
     end
@@ -135,7 +135,7 @@ describe Aspect4r::Before do
   
   it "should not skip original method if before_filter did not return false or nil" do
     @klass.class_eval do
-      before_filter :test do
+      before_filter :test do |value|
         true
       end
     end
