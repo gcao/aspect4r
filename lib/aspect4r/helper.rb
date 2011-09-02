@@ -5,7 +5,7 @@ module Aspect4r
     def self.find_available_method_name klass, method_name_prefix
       0.upto(10000) do |i|
         m = "#{method_name_prefix}#{i}_#{klass.hash.abs}"
-        return m unless klass.private_instance_methods(false).detect {|method| method.to_s == m }
+        return m unless klass.private_instance_methods(false).include?(RUBY_VERSION =~ /^1\.8/ ? m : m.to_sym)
       end
     end
     
@@ -54,7 +54,7 @@ module Aspect4r
         
         wrapped_method = a4r_data.wrapped_methods[method]
         
-        if not wrapped_method and klass_or_module.instance_methods.detect {|m| m.to_s == method }
+        if not wrapped_method and klass_or_module.instance_methods.include?(RUBY_VERSION =~ /^1\.8/ ? method : method.to_sym)
           wrapped_method = klass_or_module.instance_method(method)
           a4r_data.wrapped_methods[method] = wrapped_method
         end
