@@ -159,7 +159,7 @@ module Aspect4r
       
       code = METHOD_TEMPLATE.result(binding)
       # puts code
-      klass.class_eval code, __FILE__
+      klass.class_eval code, __FILE__, __LINE__
     end
   end
 end
