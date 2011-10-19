@@ -29,7 +29,6 @@ class A
   end
 end
 
-puts "Example 1:"
 puts A.test(1)
 # ==== Output ====
 # before test
