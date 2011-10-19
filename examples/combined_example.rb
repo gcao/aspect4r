@@ -27,10 +27,8 @@ class A
   end
 end
 
-puts "Example 1:"
 puts A.new.test(1)
 # ==== Output ====
-# Example 1:
 # before test
 # around test 1
 # test
