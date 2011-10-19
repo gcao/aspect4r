@@ -20,7 +20,6 @@ class A
   end
 end
 
-puts "Example 1:"
 puts A.new.test(1)
 # ==== Output ====
 # test
