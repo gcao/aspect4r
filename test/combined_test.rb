@@ -28,13 +28,10 @@ class CombinedTest < Test::Unit::TestCase
       yield
     end
   end
-  
-  def setup
-    @obj = Test.new
-  end
 
   def test_combined
-    @obj.test_no_aspect
-    @obj.test
+    o = Test.new
+    o.test_no_aspect
+    o.test
   end
 end
