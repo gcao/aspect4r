@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 class AfterTest < Test::Unit::TestCase
   include RubyProf::Test
 
-  class Test
+  class Klass
     include Aspect4r
     
     after :test, :after_test
@@ -20,7 +20,7 @@ class AfterTest < Test::Unit::TestCase
   end
 
   def test_after
-    o = Test.new
+    o = Klass.new
     o.test_no_aspect
     o.test
   end
