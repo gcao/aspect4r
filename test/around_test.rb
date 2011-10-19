@@ -3,7 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 class AroundTest < Test::Unit::TestCase
   include RubyProf::Test
 
-  class Test
+  class Klass
     include Aspect4r
     
     around :test, :around_test
@@ -16,13 +16,10 @@ class AroundTest < Test::Unit::TestCase
       yield
     end
   end
-  
-  def setup
-    @obj = Test.new
-  end
 
   def test_around
-    @obj.test_no_aspect
-    @obj.test
+    o = Klass.new
+    o.test_no_aspect
+    o.test
   end
 end
