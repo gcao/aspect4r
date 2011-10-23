@@ -5,7 +5,7 @@ Aspect Oriented Programming support for Ruby
 == Feature
 
 * extract common logic from multiple methods into before, after, around advices
-* before_filter as method filters (work like before_filters in web application)
+* before_filter (works like before_filters in web application)
 * advices can be customized (e.g. to take an optional method name argument)
 * well-tested and optimized
 
@@ -15,12 +15,6 @@ API documentation: https://github.com/gcao/aspect4r/wiki/Api
 
   class A
     include Aspect4r
-    
-    around /test/ do |*args, &block|
-      ...
-      block.call *args
-      ...
-    end
 
     before :test, :do_something
     
@@ -28,12 +22,13 @@ API documentation: https://github.com/gcao/aspect4r/wiki/Api
       authorized?
     end
 
-    after :test do |result, *args|
-      puts "test(#{*args}) returned #{result}"
-      result
-    end
-
     after :test, :do_something_else
+
+    around :test do |*args, &block|
+      ...
+      block.call *args
+      ...
+    end
     
     def test value
       ...
@@ -44,6 +39,10 @@ API documentation: https://github.com/gcao/aspect4r/wiki/Api
     end
     
     def do_something_else result, value
+      ...
+    end
+
+    def authorized?
       ...
     end
 
