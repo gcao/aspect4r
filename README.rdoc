@@ -16,13 +16,13 @@ API documentation: https://github.com/gcao/aspect4r/wiki/Api
   class A
     include Aspect4r
 
-    before :test, :do_something
+    before :test, :do_this
     
     before_filter :test do |*args|
       authorized?
     end
 
-    after :test, :do_something_else
+    after :test, :do_that
 
     around :test do |*args, &block|
       ...
@@ -34,12 +34,13 @@ API documentation: https://github.com/gcao/aspect4r/wiki/Api
       ...
     end
 
-    def do_something value
+    def do_this value
       ...
     end
     
-    def do_something_else result, value
+    def do_that result, value
       ...
+      result
     end
 
     def authorized?
