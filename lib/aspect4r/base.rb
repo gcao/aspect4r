@@ -16,7 +16,7 @@ module Aspect4r
       eigen_class.extend(ClassMethods)
     end
 
-    module ClassMethods      
+    module ClassMethods
       def method_added method
         super method
 
@@ -32,12 +32,12 @@ module Aspect4r
           Aspect4r::Helper.create_method self, method
         end
       end
-  
+
       def singleton_method_added method
         super method
 
         return if Aspect4r::Helper.creating_method?
-    
+
         method = method.to_s
         return if method[0..2] == "a4r"
 
@@ -54,10 +54,10 @@ module Aspect4r
       def a4r_data
         @a4r_data ||= Aspect4r::Model::AspectData.new(self)
       end
-      
+
       def a4r_group &block
         a4r_data.change_group
-        
+
         if block_given?
           instance_eval &block
           a4r_data.change_group
@@ -69,11 +69,11 @@ module Aspect4r
           method = method.to_s
           advices = a4r_data.advices_for_method(method)
           next if advices.empty?
-          
+
           send :alias_method, :"#{method}_with_advices", method
           Aspect4r::Helper.define_method self, method, a4r_data.wrapped_methods[method]
         end
-        
+
         yield
       ensure
         methods.each do |method|

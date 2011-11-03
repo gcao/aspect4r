@@ -8,7 +8,7 @@ module Aspect4r
         @default_options   = default_options   || {}
         @mandatory_options = mandatory_options || {}
       end
-    
+
       def with_method_prefix
         case advice_type
         when Aspect4r::Model::Advice::BEFORE then "a4r_before_"
@@ -17,11 +17,11 @@ module Aspect4r
         else raise "Aspect4r internal error."
         end
       end
-    
-      BEFORE        = new Aspect4r::Model::Advice::BEFORE, nil, :skip_if_false => false
-      BEFORE_FILTER = new Aspect4r::Model::Advice::BEFORE, nil, :skip_if_false => true
-      AFTER         = new Aspect4r::Model::Advice::AFTER, :result_arg => true
-      AROUND        = new Aspect4r::Model::Advice::AROUND
+
+      BEFORE        = new Aspect4r::Model::Advice::BEFORE, { :new_methods_only => true }, :skip_if_false => false
+      BEFORE_FILTER = new Aspect4r::Model::Advice::BEFORE, { :new_methods_only => true }, :skip_if_false => true
+      AFTER         = new Aspect4r::Model::Advice::AFTER,  { :new_methods_only => true, :result_arg => true }
+      AROUND        = new Aspect4r::Model::Advice::AROUND, { :new_methods_only => true }
     end
   end
 end

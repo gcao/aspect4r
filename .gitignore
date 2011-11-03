@@ -19,5 +19,5 @@ rdoc
 pkg
 
 ## PROJECT::SPECIFIC
-test/output
-test/experiment*.rb
+performance-tests/output
+performance-tests/experiment*.rb

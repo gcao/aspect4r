@@ -6,7 +6,7 @@ module Aspect4r
       def initialize klass_or_module
         @group = klass_or_module.hash
       end
-      
+
       def wrapped_methods
         @wrapped_methods ||= {}
       end
@@ -22,10 +22,10 @@ module Aspect4r
       def change_group
         @group_index = group_index + 1
       end
-      
+
       def advices_for_method method
         method = method.to_s
-        select {|advice| advice.method_matcher.match?(method) }
+        select {|advice| advice.match?(method) }
       end
     end
   end
