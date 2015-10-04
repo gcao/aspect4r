@@ -1,12 +1,12 @@
 rvm_gemset_create_on_use_flag=1
 
-if [ "${RUBY_PLATFORM}" == "1.8.7" ] ; then
+if [ "${RUBY_PLATFORM}" == "1.8" ] ; then
   rvm use 1.8.7@aspect4r
-elif [ "${RUBY_PLATFORM}" == "1.9.2" ] ; then
-  rvm use 1.9.2@aspect4r
+elif [ "${RUBY_PLATFORM}" == "1.9" ] ; then
+  rvm use 1.9.3@aspect4r
 elif [ "${RUBY_PLATFORM}" == "jruby" ] ; then
   rvm use jruby@aspect4r
 else
-  rvm use 1.8.7@aspect4r
+  rvm use 2.2.3@aspect4r
 fi
 
