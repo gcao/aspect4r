@@ -128,7 +128,7 @@ describe Aspect4r::Before do
     end
 
     o = @klass.new
-    o.test('something').should be_false
+    o.test('something').should be_falsy
 
     o.value.should == 'init'
   end

@@ -32,11 +32,11 @@ module Aspect4r
       end
 
       def before?
-        type == BEFORE and not options[:skip_if_false]
+        !!(type == BEFORE and not options[:skip_if_false])
       end
 
       def before_filter?
-        type == BEFORE and options[:skip_if_false]
+        !!(type == BEFORE and options[:skip_if_false])
       end
 
       def after?

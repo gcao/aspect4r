@@ -43,7 +43,7 @@ describe "Test Advices" do
 
   it "around advice" do
     advice = @klass.a4r_data.advices_for_method(:test)[0]
-    advice.around?.should be_true
+    advice.around?.should be true
 
     o = @klass.new
      
@@ -54,7 +54,7 @@ describe "Test Advices" do
   
   it "before advice" do
     advice = @klass.a4r_data.advices_for_method(:test)[1]
-    advice.before?.should be_true
+    advice.before?.should be true
 
     o = @klass.new
     advice.invoke(o, 1)
@@ -64,10 +64,10 @@ describe "Test Advices" do
   
   it "before_filter advice returns true if input is not negative" do
     advice = @klass.a4r_data.advices_for_method(:test)[2]
-    advice.before_filter?.should be_true
+    advice.before_filter?.should be true
 
     o = @klass.new
-    advice.invoke(o, 1).should be_true
+    advice.invoke(o, 1).should be true
 
     o.value.should == %w(before_filter)
   end
@@ -76,12 +76,12 @@ describe "Test Advices" do
     advice = @klass.a4r_data.advices_for_method(:test)[2]
 
     o = @klass.new
-    advice.invoke(o, -1).should be_false
+    advice.invoke(o, -1).should be false
   end
   
   it "after advice" do
     advice = @klass.a4r_data.advices_for_method(:test)[3]
-    advice.after?.should be_true
+    advice.after?.should be true
 
     o = @klass.new
     advice.invoke(o, 1, 1).should == 100
