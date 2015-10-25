@@ -185,3 +185,27 @@ describe Aspect4r::Before do
     lambda { o.test('something') }.should raise_error('error')
   end
 end
+
+describe Aspect4r::Before do
+  it "apply to next method to be created" do
+    @klass = Class.new do
+      include Aspect4r::Before
+
+      attr :value
+
+      def initialize
+        @value = []
+      end
+
+      before { @value << 'before' }
+      def test
+        @value << 'test'
+      end
+    end
+
+    o = @klass.new
+    o.test
+    o.value.should == %w(before test)
+  end
+end
+
