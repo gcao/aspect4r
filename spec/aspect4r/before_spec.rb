@@ -178,11 +178,11 @@ describe Aspect4r::Before do
         @value = 'test1'
       end
 
-      before /test/, :do_something, :new_methods_only => false
+      before /test/, :do_something, :new_methods_only => true
     end
 
     o = @klass.new
-    lambda { o.test('something') }.should raise_error('error')
+    o.value.should == %w(test)
   end
 end
 

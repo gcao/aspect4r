@@ -49,25 +49,26 @@ module Aspect4r
                                              options)
       a4r_data << advice
 
-      methods.each do |method|
-        next unless method.is_a? String
+      if not advice.next_method_only?
+        klass_or_module.instance_methods.each do |method|
+          method = method.to_s
+          next if not advice.match? method
 
-        wrapped_method = a4r_data.wrapped_methods[method]
+          if not a4r_data.wrapped_methods[method]
+            wrapped_method = klass_or_module.instance_method(method)
+            a4r_data.wrapped_methods[method] = wrapped_method
+          end
 
-        if not wrapped_method and klass_or_module.instance_methods.include?(RUBY_VERSION =~ /^1\.8/ ? method : method.to_sym)
-          wrapped_method = klass_or_module.instance_method(method)
-          a4r_data.wrapped_methods[method] = wrapped_method
+          create_method klass_or_module, method, true
         end
-
-        create_method klass_or_module, method if wrapped_method
       end
     end
 
     # method - target method
-    def self.create_method klass, method
+    def self.create_method klass, method, is_existing_method = false
       @creating_method = true
 
-      advices = klass.a4r_data.advices_for_method method
+      advices = klass.a4r_data.advices_for_method method, is_existing_method
       return if advices.empty?
 
       grouped_advices = []
@@ -88,6 +89,12 @@ module Aspect4r
 
       # create wrap method for before/after advices which are not wrapped inside around advice.
       create_method_with_advices klass, method, grouped_advices, inner_most unless grouped_advices.empty?
+
+      if not is_existing_method
+        advices.each do |advice|
+          advice.next_method_processed!
+        end
+      end
     ensure
       @creating_method = nil
     end

@@ -23,9 +23,13 @@ module Aspect4r
         @group_index = group_index + 1
       end
 
-      def advices_for_method method
+      def advices_for_method method, is_existing_method = false
         method = method.to_s
-        select {|advice| advice.match?(method) }
+        if is_existing_method
+          select {|advice| !advice.next_method_only? && advice.match?(method) }
+        else
+          select {|advice| advice.match?(method) }
+        end
       end
     end
   end

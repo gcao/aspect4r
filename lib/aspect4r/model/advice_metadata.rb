@@ -18,10 +18,10 @@ module Aspect4r
         end
       end
 
-      BEFORE        = new Aspect4r::Model::Advice::BEFORE, { :new_methods_only => true }, :skip_if_false => false
-      BEFORE_FILTER = new Aspect4r::Model::Advice::BEFORE, { :new_methods_only => true }, :skip_if_false => true
-      AFTER         = new Aspect4r::Model::Advice::AFTER,  { :new_methods_only => true, :result_arg => true }
-      AROUND        = new Aspect4r::Model::Advice::AROUND, { :new_methods_only => true }
+      BEFORE        = new Aspect4r::Model::Advice::BEFORE, { :new_methods_only => false }, :skip_if_false => false
+      BEFORE_FILTER = new Aspect4r::Model::Advice::BEFORE, { :new_methods_only => false }, :skip_if_false => true
+      AFTER         = new Aspect4r::Model::Advice::AFTER,  { :new_methods_only => false, :result_arg => true }
+      AROUND        = new Aspect4r::Model::Advice::AROUND, { :new_methods_only => false }
     end
   end
 end

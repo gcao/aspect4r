@@ -20,8 +20,23 @@ module Aspect4r
         options[:name] || with_method
       end
 
+      def next_method_only?
+        method_matcher.next_method_only?
+      end
+
+      def next_method_processed!
+        if next_method_only?
+          @next_method_processed = true
+        end
+      end
+
       def match? method
         return if method == with_method
+
+        if next_method_only?
+          return !@next_method_processed
+        end
+
         return unless @method_matcher.match?(method)
 
         return true unless @options[:except]

@@ -28,6 +28,10 @@ module Aspect4r
         # end
       end
 
+      def next_method_only?
+        @match_data.empty?
+      end
+
       def match? method
         @match_data.detect do |item|
           (item.is_a? String and item == method) or
