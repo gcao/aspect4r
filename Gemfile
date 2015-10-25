@@ -1,5 +1,15 @@
 source 'https://rubygems.org'
 
 gem 'jeweler', '~>2.0.1'
-gem 'nokogiri', '~>1.6.6.2'
-gem 'rspec'
+
+group :development do
+  gem 'rspec'
+  gem 'guard'
+  gem 'guard-bundler'
+  gem 'guard-rspec'
+  gem 'guard-shell'
+  gem 'rubocop'
+  gem 'pry'
+  gem 'simplecov'
+  gem 'ruby-prof'
+end
